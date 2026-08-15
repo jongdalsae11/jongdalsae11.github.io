@@ -3,37 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>이름 — 개인 사이트</title>
-
+  <title>홈 — 이름</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div class="layout">
+    <div id="nav-mount"></div>
+    <main>
+      <div class="page-head">
+        <p class="eyebrow">경쟁 프로그래밍 · 알고리즘 연구 · 글쓰기</p>
+        <h1>이름</h1>
+        <p class="lede">한 줄 소개를 여기에 적으세요.</p>
+      </div>
 
-  <header class="site-header">
-    <a class="logo" href="index.html">이름</a>
-    <nav>
-      <a href="index.html" class="active">이력</a>
-      <a href="blog.html">블로그</a>
-      <a href="archive.html">문제 아카이브</a>
-    </nav>
-  </header>
-
-  <main>
-    <section class="hero">
-      <p class="eyebrow">競技 · 硏究 · 記錄</p>
-      <h1>이름을 여기에 적어보세요.</h1>
-      <p class="lede">
-        한 줄 소개를 적어보세요. 예: 알고리즘 연구와 경쟁 프로그래밍을 하고, 가끔 수학과 글에 대해 씁니다.
-      </p>
-    </section>
-  </main>
-
-  <footer>
-    <p>&copy; 2026</p>
-  </footer>
-
+      <h2>최근 활동</h2>
+      <ul class="card-list">
+        <li><a class="card" href="posts-math.html">
+          <p class="card-meta">글 · 수학</p>
+          <p class="card-title">첫 번째 글 제목</p>
+          <p class="card-desc">글의 첫 문단이나 요약이 여기 들어갑니다.</p>
+        </a></li>
+        <li><a class="card" href="archive.html">
+          <p class="card-meta">문제 아카이브</p>
+          <p class="card-title">새로 만든 문제 제목</p>
+          <p class="card-desc">문제에 대한 짧은 설명이 여기 들어갑니다.</p>
+        </a></li>
+        <li><a class="card" href="research.html">
+          <p class="card-meta">연구 업데이트</p>
+          <p class="card-title">진행 중인 연구 제목</p>
+          <p class="card-desc">최근 진척 상황을 한두 줄로 적습니다.</p>
+        </a></li>
+      </ul>
+    </main>
+  </div>
+  <footer><p>&copy; 2026</p></footer>
+  <script src="nav.js"></script>
 </body>
 </html>

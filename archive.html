@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>문제 아카이브 — 이름</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="layout">
+    <div id="nav-mount"></div>
+    <main>
+      <div class="page-head">
+        <p class="eyebrow">문제 아카이브</p>
+        <h1>문제 아카이브</h1>
+        <p class="lede">직접 만든 경쟁 프로그래밍 문제들입니다.</p>
+      </div>
+
+      <div class="filters">
+        <button class="filter-btn active">전체</button>
+        <button class="filter-btn">쉬움</button>
+        <button class="filter-btn">보통</button>
+        <button class="filter-btn">어려움</button>
+      </div>
+
+      <table>
+        <thead><tr><th>제목</th><th>난이도</th><th>태그</th><th>풀이</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>문제 제목</td>
+            <td>보통</td>
+            <td><span class="tag">그래프</span></td>
+            <td><a href="#">보기</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+  <footer><p>&copy; 2026</p></footer>
+  <script src="nav.js"></script>
+</body>
+</html>

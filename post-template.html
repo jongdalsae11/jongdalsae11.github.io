@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>글 제목 — 이름</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="layout">
+    <div id="nav-mount"></div>
+    <main>
+
+      <div class="page-head">
+        <p class="eyebrow">글 · 수학</p>
+        <h1>글 제목이 여기 들어갑니다</h1>
+        <p class="post-meta">2026-01-01 · 수학</p>
+      </div>
+
+      <div class="post-wrap">
+        <article class="post-body">
+          <p>
+            본문 첫 문단입니다. 여백주석을 달고 싶은 자리에는 이렇게 작은 번호만
+            붙여둡니다.<span class="sidenote-ref" data-sn="1">1</span> 번호는 흐름을 끊지 않을 만큼만
+            작게 두고, 실제 내용은 오른쪽 여백에 나란히 떠 있습니다.
+          </p>
+
+          <div class="sidenote-inline" data-sn="1">
+            <span class="sn-num">주 1</span>
+            여백주석 내용입니다. 다른 글을 연결할 때는
+            <a href="#">글 제목</a>처럼 링크를 걸고, 왜 연결되는지를 한 줄로 적습니다.
+          </div>
+
+          <p>
+            두 번째 문단입니다. 다른 글의 논증을 이어받을 때도 마찬가지로
+            표시합니다.<span class="sidenote-ref" data-sn="2">2</span>
+          </p>
+
+          <div class="sidenote-inline" data-sn="2">
+            <span class="sn-num">주 2</span>
+            두 번째 여백주석입니다.
+          </div>
+
+          <h2>소제목</h2>
+          <p>이어지는 본문입니다.</p>
+        </article>
+
+        <aside class="sidenote-col" id="sidenoteCol"></aside>
+      </div>
+
+      <section class="backlinks">
+        <h2>연결된 글</h2>
+
+        <div class="backlink-group">
+          <p>이 글이 인용한 글</p>
+          <ul>
+            <li><a href="#">인용한 글 제목</a></li>
+          </ul>
+        </div>
+
+        <div class="backlink-group">
+          <p>이 글을 인용한 글</p>
+          <ul>
+            <li><a href="#">이 글을 인용한 글 제목</a></li>
+          </ul>
+        </div>
+
+        <div class="cite-graph">
+          <svg viewBox="0 0 560 200" xmlns="http://www.w3.org/2000/svg">
+            <!-- 왼쪽: 이 글이 인용한 글 / 오른쪽: 이 글을 인용한 글 -->
+            <path class="edge" d="M150,60 C215,60 215,100 280,100"/>
+            <path class="edge" d="M150,140 C215,140 215,100 280,100"/>
+            <path class="edge" d="M280,100 C345,100 345,60 410,60"/>
+            <path class="edge" d="M280,100 C345,100 345,140 410,140"/>
+
+            <circle class="vertex" cx="150" cy="60"  r="5"/>
+            <circle class="vertex" cx="150" cy="140" r="5"/>
+            <circle class="vertex active-ring" cx="280" cy="100" r="8"/>
+            <circle class="vertex" cx="410" cy="60"  r="5"/>
+            <circle class="vertex" cx="410" cy="140" r="5"/>
+
+            <text class="g-label" x="140" y="64" text-anchor="end">인용한 글 A</text>
+            <text class="g-label" x="140" y="144" text-anchor="end">인용한 글 B</text>
+            <text class="g-label center" x="280" y="82" text-anchor="middle">이 글</text>
+            <text class="g-label" x="422" y="64">인용한 글 C</text>
+            <text class="g-label" x="422" y="144">인용한 글 D</text>
+          </svg>
+        </div>
+      </section>
+
+    </main>
+  </div>
+  <footer><p>&copy; 2026</p></footer>
+
+  <script src="nav.js"></script>
+  <script src="sidenotes.js"></script>
+</body>
+</html>
