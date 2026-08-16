@@ -20,12 +20,13 @@ VSCode 다크 테마 기반 개인 아카이브. `https://jongdalsae11.github.io
 ├── archive.html    문제 아카이브 (문제집 스타일 + 난이도 필터)
 ├── library.html    자료정리집 — #math, #algo, #physics … 해시로 분류
 ├── contact.html    연락처
-├── write.html      글쓰기 도구 (메뉴에 없음 · 주소 직접 입력)
+├── write.html      작성 도구 — 글·자료·문제·연구 4가지 모드
+│                   (사이드바 "+ 새로 쓰기" 버튼으로 진입)
 ├── 404.html
 ├── posts/          글 HTML 파일들
 └── assets/
     ├── data/content.js   ★ 모든 콘텐츠 목록 (이 파일만 고치면 됨)
-    ├── css/  base · layout · components · post
+    ├── css/  base · layout · components · post · write
     ├── js/   nav · lists · heatmap · progress · code · post · write
     ├── img/  글에 쓰는 이미지
     └── files/  자료정리집 PDF 등
@@ -40,7 +41,7 @@ VSCode 다크 테마 기반 개인 아카이브. `https://jongdalsae11.github.io
 | 카테고리 한글 이름 | `content.js`의 `labels` |
 | 이름 바꾸기 | `assets/js/nav.js`의 `SITE_NAME` |
 | 색 바꾸기 | `assets/css/base.css`의 `:root` |
-| 글 작성 | `/write.html` → HTML 내보내기 → `posts/`에 넣고 `content.js` 등록 |
+| 글·자료·문제·연구 작성 | 사이드바 **+ 새로 쓰기** → 모드 선택 → 등록하기 탭의 코드 복사 |
 
 **팔레트** — bg `#0a0a14` · surface `#141423` · text `#e4e4ed` · line `#3a3a52`
 · cyan `#38bdf8`(상호작용) · purple `#a855f7`(분류·보조) · orange `#f97316`(1% 강조)

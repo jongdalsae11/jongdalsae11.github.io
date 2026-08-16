@@ -4,37 +4,29 @@
 
 .w-wrap { max-width: 1460px; margin: 0 auto; }
 
-/* 진행 단계 */
-.w-steps {
+/* 무엇을 만들지 고르는 모드 탭 */
+.w-modes {
   display: flex;
-  gap: 8px;
-  list-style: none;
-  margin: 0 0 16px;
-  padding: 0;
+  gap: 6px;
+  margin: 0 0 12px;
   flex-wrap: wrap;
 }
-.w-steps li {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.76rem;
+.w-modes button {
+  font-size: 0.8rem;
   color: var(--faint);
+  background: var(--surface);
   border: 1px solid var(--line-soft);
   border-radius: 20px;
-  padding: 4px 14px 4px 5px;
+  padding: 5px 16px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.w-steps li b {
-  display: grid;
-  place-items: center;
-  width: 18px; height: 18px;
-  border-radius: 50%;
-  background: var(--surface-2);
-  font-family: var(--mono);
-  font-size: 0.64rem;
-  color: var(--faint);
+.w-modes button:hover { color: var(--soft); border-color: var(--line); }
+.w-modes button.on {
+  color: var(--cyan);
+  border-color: rgba(56, 189, 248, 0.5);
+  background: rgba(56, 189, 248, 0.08);
 }
-.w-steps li.on { color: var(--soft); border-color: var(--line); }
-.w-steps li.on b { background: rgba(56, 189, 248, 0.15); color: var(--cyan); }
 
 .write-grid {
   display: grid;
@@ -50,8 +42,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 190px);
-  min-height: 560px;
+  height: calc(100vh - 150px);
+  min-height: 420px;
 }
 .w-panel-head {
   display: flex;
@@ -71,14 +63,27 @@
 .w-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px 12px;
-  padding: 16px;
+  gap: 7px 10px;
+  padding: 11px 14px;
   border-bottom: 1px solid var(--line-soft);
+  flex: 0 0 auto;
+  max-height: 38vh;
+  overflow-y: auto;
 }
+.w-fields[hidden] { display: none; }
+.w-field-row {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.w-body { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.w-body[hidden] { display: none; }
 .w-field { display: flex; flex-direction: column; gap: 4px; }
 .w-field--wide { grid-column: 1 / -1; }
 .w-field > span {
-  font-size: 0.7rem;
+  font-size: 0.67rem;
   color: var(--faint);
   letter-spacing: 0.02em;
 }
@@ -87,18 +92,18 @@
   color: var(--line);
   font-size: 0.92em;
 }
-.w-field input {
+.w-field input, .w-field select {
   font: inherit;
-  font-size: 0.86rem;
+  font-size: 0.83rem;
   color: var(--text);
   background: var(--bg);
   border: 1px solid var(--line-soft);
   border-radius: 7px;
-  padding: 7px 11px;
+  padding: 5px 10px;
   outline: none;
   transition: border-color 0.15s ease;
 }
-.w-field input:focus { border-color: var(--cyan); }
+.w-field input:focus, .w-field select:focus { border-color: var(--cyan); }
 .w-check {
   display: flex;
   align-items: center;
@@ -109,10 +114,12 @@
 }
 .w-check input { accent-color: var(--orange); }
 .w-filename {
-  grid-column: 1 / -1;
   margin: 0;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .w-filename code {
   font-family: var(--mono);
@@ -126,9 +133,10 @@
 /* 툴바 */
 .w-toolbar {
   display: flex;
-  gap: 14px;
+  gap: 10px;
   flex-wrap: wrap;
-  padding: 10px 14px;
+  padding: 7px 12px;
+  flex: 0 0 auto;
   border-bottom: 1px solid var(--line-soft);
   background: var(--bg);
 }
@@ -184,6 +192,7 @@
 #editor {
   flex: 1;
   width: 100%;
+  min-height: 200px;
   resize: none;
   border: 0;
   outline: none;
@@ -191,8 +200,8 @@
   color: var(--text);
   font-family: var(--mono);
   font-size: 0.85rem;
-  line-height: 1.8;
-  padding: 20px;
+  line-height: 1.75;
+  padding: 16px 18px;
 }
 
 .w-actions {
@@ -200,9 +209,11 @@
   gap: 8px;
   justify-content: flex-end;
   align-items: center;
-  padding: 12px 14px;
+  padding: 9px 13px;
   border-top: 1px solid var(--line-soft);
+  flex: 0 0 auto;
 }
+.w-actions button[hidden] { display: none; }
 .w-actions button {
   font-family: var(--mono);
   font-size: 0.74rem;
@@ -314,6 +325,15 @@ button.mini.ok { color: var(--cyan); }
 
 @media (max-width: 1100px) {
   .write-grid { grid-template-columns: 1fr; }
-  .w-panel { height: auto; min-height: 460px; }
+  .w-panel { height: auto; min-height: 420px; }
+  #editor { min-height: 320px; }
   .w-fields { grid-template-columns: 1fr; }
+}
+
+/* 자료·문제·연구 미리보기 안내 */
+.pv-note {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--faint);
+  margin: 0 0 14px;
 }

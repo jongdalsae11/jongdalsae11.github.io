@@ -142,46 +142,98 @@
 
   function refresh() {
     var pv = $('#preview');
-    pv.innerHTML =
-      '<div class="post-head"><h1>' + esc(F.title.value || '제목 없음') + '</h1>' +
-      '<div class="post-meta"><span class="post-date">' +
-      (F.date.value || '').replace(/-/g, '.') + '</span>' +
-      tagArr().map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('') +
-      '</div></div><div class="post-body">' + bodyHTML() + '</div>';
 
-    /* 미리보기에서도 인용 마크를 실제 자료 정보로 보여줌 */
-    pv.querySelectorAll('.cite[data-ref]').forEach(function (mk) {
-      var id = mk.getAttribute('data-ref');
-      var r = (S.library || []).filter(function (x) { return x.ref === id; })[0];
-      var sn = document.createElement('span');
-      sn.className = 'sidenote sidenote--ref';
-      sn.innerHTML = r
-        ? '<span class="sn-cite">[' + r.ref + ']</span> ' + esc(r.title) +
-          (r.author ? ' · ' + esc(r.author) : '') + (r.year ? ' (' + r.year + ')' : '')
-        : '<span class="sn-cite">[' + esc(id) + ']</span> 자료정리집에 없는 인용입니다';
-      mk.parentNode.replaceChild(sn, mk);
-    });
+    if (MODE === 'post') {
+      pv.innerHTML =
+        '<div class="post-head"><h1>' + esc(F.title.value || '제목 없음') + '</h1>' +
+        '<div class="post-meta"><span class="post-date">' +
+        (F.date.value || '').replace(/-/g, '.') + '</span>' +
+        tagArr().map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('') +
+        '</div></div><div class="post-body">' + bodyHTML() + '</div>';
 
-    if (window.renderMathInElement) {
-      window.renderMathInElement(pv, {
-        delimiters: [{ left: '$$', right: '$$', display: true },
-                     { left: '$', right: '$', display: false }],
-        throwOnError: false
+      /* 미리보기에서도 인용 마크를 실제 자료 정보로 보여줌 */
+      pv.querySelectorAll('.cite[data-ref]').forEach(function (mk) {
+        var id = mk.getAttribute('data-ref');
+        var r = (S.library || []).filter(function (x) { return x.ref === id; })[0];
+        var sn = document.createElement('span');
+        sn.className = 'sidenote sidenote--ref';
+        sn.innerHTML = r
+          ? '<span class="sn-cite">[' + r.ref + ']</span> ' + esc(r.title) +
+            (r.author ? ' · ' + esc(r.author) : '') + (r.year ? ' (' + r.year + ')' : '')
+          : '<span class="sn-cite">[' + esc(id) + ']</span> 자료정리집에 없는 인용입니다';
+        mk.parentNode.replaceChild(sn, mk);
       });
+
+      if (window.renderMathInElement) {
+        window.renderMathInElement(pv, {
+          delimiters: [{ left: '$$', right: '$$', display: true },
+                       { left: '$', right: '$', display: false }],
+          throwOnError: false
+        });
+      }
+      if (window.hljs) {
+        pv.querySelectorAll('pre code').forEach(function (c) { window.hljs.highlightElement(c); });
+      }
+      $('#f-filename').textContent = fileBase() + '.html';
+
+    } else {
+      /* 자료 · 문제 · 연구 — 실제 페이지에 어떻게 보일지 그대로 렌더 */
+      pv.innerHTML = '<p class="pv-note">실제 페이지에 이렇게 표시됩니다</p>' + itemPreview();
     }
-    if (window.hljs) {
-      pv.querySelectorAll('pre code').forEach(function (c) { window.hljs.highlightElement(c); });
-    }
-    $('#f-filename').textContent = fileBase() + '.html';
+
     genRegister();
     save();
   }
+
+  function tagHTML(a) {
+    return a.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
+  }
+  function itemPreview() {
+    if (MODE === 'library') {
+      return '<ul class="ref-list"><li class="ref">' +
+        '<div class="ref-body">' +
+          '<div class="ref-title">' + esc(val('l-title') || '자료 제목') + '</div>' +
+          '<div class="ref-src">' + esc(val('l-author')) +
+            (val('l-year') ? ' · ' + esc(val('l-year')) : '') + '</div>' +
+          (val('l-desc') ? '<p class="ref-desc">' + esc(val('l-desc')) + '</p>' : '') +
+          '<div class="row-tags">' + tagHTML(listOf('l-tags')) + '</div>' +
+        '</div>' +
+        '<span class="ref-fmt tag tag--dim">' + esc(val('l-fmt') || 'PDF') + '</span>' +
+        '<button class="ref-id">[' + esc(val('l-ref') || 'Ref-XX') + ']</button>' +
+      '</li></ul>';
+    }
+    if (MODE === 'problem') {
+      var dl = { easy: '쉬움', mid: '보통', hard: '어려움' }[val('p-diff')] || val('p-diff');
+      return '<ul class="prob-list"><li class="prob">' +
+        '<div class="prob-head">' +
+          '<h3 class="prob-title">' + esc(val('p-title') || '문제 제목') + '</h3>' +
+          '<div class="prob-meta">' + tagHTML(listOf('p-tags')) +
+            '<span class="tag tag--dim">' + dl + '</span></div>' +
+        '</div>' +
+        (val('p-note') ? '<p class="prob-note">' + esc(val('p-note')) + '</p>' : '') +
+        '<p class="prob-date mono">' + val('p-date').replace(/-/g, '.') + '</p>' +
+      '</li></ul>';
+    }
+    var linked = val('r-post');
+    return '<ul class="cards"><li><div class="card card--static">' +
+      '<p class="card-meta">' + esc(val('r-kind') || 'PROJECT') + ' · ' + esc(val('r-year')) + '</p>' +
+      '<p class="card-title">' + esc(val('r-title') || '제목') + '</p>' +
+      '<p class="card-desc">' + esc(val('r-desc')) + '</p>' +
+      '<div class="row-tags">' + tagHTML(listOf('r-tags')) + '</div>' +
+      (linked ? '<p class="card-link mono">관련 글 →</p>' : '') +
+    '</div></li></ul>';
+  }
+
   var t = null;
   function queue() { clearTimeout(t); t = setTimeout(refresh, 220); }
   Object.keys(F).forEach(function (k) {
     F[k].addEventListener(F[k].type === 'checkbox' ? 'change' : 'input', queue);
   });
   ed.addEventListener('input', queue);
+  document.querySelectorAll('.w-fields input, .w-fields select').forEach(function (el) {
+    el.addEventListener('input', queue);
+    el.addEventListener('change', queue);
+  });
 
   /* ── 자동 저장 ───────────────────────────────────── */
   function save() {
@@ -217,26 +269,136 @@
     refresh();
   });
 
+  /* ── 모드 (글 / 자료 / 문제 / 연구) ────────────── */
+  var MODE = 'post';
+  var G = function (id) { return document.getElementById(id); };
+  var MODE_LABEL = { post: '글 작성', library: '자료 등록',
+                     problem: '문제 등록', research: '연구·프로젝트 등록' };
+
+  function setMode(m) {
+    MODE = m;
+    document.querySelectorAll('#w-modes button').forEach(function (b) {
+      b.classList.toggle('on', b.getAttribute('data-mode') === m);
+    });
+    document.querySelectorAll('[data-for]').forEach(function (el) {
+      var f = el.getAttribute('data-for');
+      if (f === 'other') el.hidden = (m === 'post');
+      else el.hidden = (f !== m && ['post', 'library', 'problem', 'research'].indexOf(f) >= 0);
+    });
+    $('#w-mode-label').textContent = MODE_LABEL[m];
+    document.body.setAttribute('data-crumb', '~ / <b>' + MODE_LABEL[m] + '</b>');
+    var cr = document.querySelector('.topbar .crumb');
+    if (cr) cr.innerHTML = '~ / <b>' + MODE_LABEL[m] + '</b>';
+    refresh();
+  }
+  document.querySelectorAll('#w-modes button').forEach(function (b) {
+    b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); });
+  });
+  $('#go-register').addEventListener('click', function () {
+    document.querySelector('.w-tabs button[data-tab="register"]').click();
+  });
+
+  /* 자료 분류 후보 + 연구의 '연결할 글' 목록 채우기 */
+  var libCats = [];
+  (S.library || []).forEach(function (r) {
+    if (r.category && libCats.indexOf(r.category) < 0) libCats.push(r.category);
+  });
+  $('#lib-cat-list').innerHTML = libCats.map(function (c) {
+    var l = (S.labels || {})[c];
+    return '<option value="' + c + '">' + (l ? c + ' — ' + l : c) + '</option>';
+  }).join('');
+  G('r-post').innerHTML = '<option value="">— 없음 —</option>' +
+    (S.posts || []).map(function (p) {
+      return '<option value="' + p.file + '">' + esc(p.title) + '</option>';
+    }).join('');
+
+  function val(id) { return (G(id) && G(id).value || '').trim(); }
+  function listOf(id) {
+    return val(id).split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+  }
+  function q(s) { return "'" + String(s).replace(/'/g, "\\'") + "'"; }
+  function arr(a) { return '[' + a.map(q).join(', ') + ']'; }
+
   /* ── 등록 코드 생성 ──────────────────────────────── */
   function genRegister() {
-    var entry =
-      "    { title: '" + (F.title.value || '제목').replace(/'/g, "\\'") + "',\n" +
-      "      file: '" + fileBase() + ".html',\n" +
-      "      category: '" + (F.cat.value || 'essay') + "',\n" +
-      "      date: '" + F.date.value + "',\n" +
-      "      tags: [" + tagArr().map(function (t) { return "'" + t.replace(/'/g, "\\'") + "'"; }).join(', ') + "],\n" +
-      (F.pinned.checked ? "      pinned: true,\n" : "") +
-      "      summary: '" + (F.summary.value || '').replace(/'/g, "\\'") + "' },";
-    $('#gen-entry').textContent = entry;
+    var entry = '', where = '', steps = '', tip = '', commitMsg = '';
 
-    $('#gen-git').textContent =
+    if (MODE === 'post') {
+      entry =
+        "    { title: " + q(F.title.value || '제목') + ",\n" +
+        "      file: '" + fileBase() + ".html',\n" +
+        "      category: '" + (F.cat.value || 'essay') + "',\n" +
+        "      date: '" + F.date.value + "',\n" +
+        "      tags: " + arr(tagArr()) + ",\n" +
+        (F.pinned.checked ? "      pinned: true,\n" : "") +
+        "      summary: " + q(F.summary.value || '') + " },";
+      where = "content.js 의 posts: [ 아래에 붙여 넣기";
+      steps = '<li>내려받은 파일을 <code>jongdal/posts/</code> 폴더에 넣습니다.</li>' +
+              '<li>아래 코드를 <code>assets/data/content.js</code> 의 <code>posts: [</code> 바로 아래에 붙여 넣습니다.</li>' +
+              '<li>터미널에서 아래 명령을 실행합니다.</li>';
+      tip = '분류에 새 이름을 쓰면 왼쪽 트리에 항목이 자동으로 생깁니다. 한글 이름표는 ' +
+            '<code>labels</code> 에 <code>' + (F.cat.value || 'essay') + ": '한글이름'</code> 을 추가하세요.";
+      commitMsg = '새 글: ' + (F.title.value || '제목');
+
+    } else if (MODE === 'library') {
+      entry =
+        "    { ref: '" + (val('l-ref') || 'Ref-XX') + "',\n" +
+        "      title: " + q(val('l-title') || '자료 제목') + ",\n" +
+        "      author: " + q(val('l-author')) + ",\n" +
+        "      year: " + (val('l-year') || 'null') + ",\n" +
+        "      fmt: '" + (val('l-fmt') || 'PDF') + "',\n" +
+        "      category: '" + (val('l-cat') || 'misc') + "',\n" +
+        "      url: " + q(val('l-url') || '#') + ",\n" +
+        "      desc: " + q(val('l-desc')) + ",\n" +
+        "      tags: " + arr(listOf('l-tags')) + " },";
+      where = "content.js 의 library: [ 아래에 붙여 넣기";
+      steps = (val('l-fmt') === 'LINK' ? '' :
+              '<li>PDF 파일을 <code>jongdal/assets/files/</code> 폴더에 넣습니다.</li>') +
+              '<li>아래 코드를 <code>assets/data/content.js</code> 의 <code>library: [</code> 바로 아래에 붙여 넣습니다.</li>' +
+              '<li>터미널에서 아래 명령을 실행합니다.</li>';
+      tip = '등록하면 글에서 <code>{{' + (val('l-ref') || 'Ref-XX') +
+            '}}</code> 로 인용할 수 있고, 새 분류를 쓰면 트리에 자동으로 생깁니다.';
+      commitMsg = '자료 추가: ' + (val('l-title') || '자료');
+
+    } else if (MODE === 'problem') {
+      entry =
+        "    { title: " + q(val('p-title') || '문제 제목') + ",\n" +
+        "      date: '" + val('p-date') + "',\n" +
+        "      diff: '" + val('p-diff') + "',\n" +
+        "      tags: " + arr(listOf('p-tags')) + ",\n" +
+        "      url: " + q(val('p-url') || '#') + ",\n" +
+        "      note: " + q(val('p-note')) + " },";
+      where = "content.js 의 problems: [ 아래에 붙여 넣기";
+      steps = '<li>아래 코드를 <code>assets/data/content.js</code> 의 <code>problems: [</code> 바로 아래에 붙여 넣습니다.</li>' +
+              '<li>터미널에서 아래 명령을 실행합니다.</li>';
+      tip = '주소를 비워 두면 링크 없이 제목만 표시됩니다. 날짜는 홈 활동 잔디에도 반영됩니다.';
+      commitMsg = '문제 추가: ' + (val('p-title') || '문제');
+
+    } else {
+      entry =
+        "    { title: " + q(val('r-title') || '제목') + ",\n" +
+        "      kind: '" + (val('r-kind') || 'PROJECT') + "',\n" +
+        "      year: " + (val('r-year') || 'null') + ",\n" +
+        "      desc: " + q(val('r-desc')) + ",\n" +
+        "      tags: " + arr(listOf('r-tags')) + ",\n" +
+        "      url: " + q(val('r-url') || '#') + ",\n" +
+        "      post: " + (val('r-post') ? q(val('r-post')) : 'null') + " },";
+      where = "content.js 의 research: [ 아래에 붙여 넣기";
+      steps = '<li>아래 코드를 <code>assets/data/content.js</code> 의 <code>research: [</code> 바로 아래에 붙여 넣습니다.</li>' +
+              '<li>터미널에서 아래 명령을 실행합니다.</li>';
+      tip = '연결할 글을 고르면 카드가 그 글로 이어지고, 아니면 주소로 이어집니다.';
+      commitMsg = '연구 추가: ' + (val('r-title') || '제목');
+    }
+
+    G('gen-entry').textContent = entry;
+    G('reg-where').textContent = where;
+    G('reg-steps').innerHTML = steps;
+    G('reg-tip').innerHTML = tip;
+    G('gen-git').textContent =
       'cd C:\\Users\\songh\\jongdal\n' +
       'git add -A\n' +
-      'git commit -m "새 글: ' + (F.title.value || '제목') + '"\n' +
+      'git commit -m "' + commitMsg + '"\n' +
       'git push';
-
-    var c = F.cat.value || 'essay';
-    $('#gen-label').textContent = c + ": '한글이름'";
   }
 
   /* ── 툴바 ────────────────────────────────────────── */
@@ -426,5 +588,7 @@
   });
 
   restore();
-  refresh();
+  if (!G('p-date').value) G('p-date').value = todayStr();
+  if (!G('r-year').value) G('r-year').value = new Date().getFullYear();
+  setMode('post');
 })();

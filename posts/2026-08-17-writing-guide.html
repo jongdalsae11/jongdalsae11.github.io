@@ -94,15 +94,20 @@ git push</code></pre></div>
 
           <h2>1. 글 한 편을 새로 쓰는 전체 흐름</h2>
           <p>
-            글쓰기 도구는 트리 메뉴에 없다. 주소창에 <code>/write.html</code> 을 직접 입력해서 연다.
-            왼쪽에 쓰고 오른쪽에서 결과를 실시간으로 확인하는 2단 구성이며,
-            화면 위에 <strong>1 정보 입력 → 2 본문 작성 → 3 파일 내려받기 → 4 폴더에 넣고 등록</strong>
-            네 단계가 표시된다.
+            왼쪽 사이드바 위쪽의 <strong>+ 새로 쓰기</strong> 버튼을 누르면 열린다.
+            (주소로 바로 가려면 <code>/write.html</code>)
+            왼쪽에 쓰고 오른쪽에서 결과를 실시간으로 확인하는 2단 구성이다.
+          </p>
+          <p>
+            화면 맨 위에 <strong>글 · 자료 · 문제 · 연구·프로젝트</strong> 네 가지 모드가 있다.
+            글이 아닌 것도 여기서 만들 수 있고, 어느 모드든 <strong>등록하기</strong> 탭에
+            <code>content.js</code> 에 붙여 넣을 코드가 자동으로 만들어진다.<span class="sidenote">글 모드에서만
+            HTML 파일을 내려받는다. 자료·문제·연구는 파일이 필요 없고 등록 코드만 있으면 된다.</span>
           </p>
           <ol>
             <li>제목·분류·날짜·태그·요약을 위쪽 칸에 채운다. 저장될 파일명이 그 아래 바로 표시된다.</li>
             <li>툴바 버튼을 눌러 가며 본문을 쓴다. 작성 내용은 자동 저장되므로 창을 닫아도 남아 있다.</li>
-            <li><strong>③ 글 파일 내려받기</strong> 를 누른다. 누르면 오른쪽이 <strong>④ 등록하기</strong> 탭으로 자동 전환된다.</li>
+            <li><strong>글 파일 내려받기</strong> 를 누른다. 누르면 오른쪽이 <strong>등록하기</strong> 탭으로 자동 전환된다.</li>
             <li>그 탭에 <code>content.js</code> 에 붙여 넣을 코드와 터미널 명령이 <em>이미 채워진 채로</em>
               나오므로, 복사 버튼을 눌러 그대로 쓰면 된다.</li>
           </ol>
@@ -247,6 +252,7 @@ $$</code></pre></div>
             교재·논문·링크는 글이 아니라 <strong>자료</strong>다.
             PDF 파일은 <code>assets/files/</code> 에 넣고,
             <code>content.js</code> 의 <code>library</code> 배열에 등록한다.
+            글쓰기 도구의 <strong>자료</strong> 모드를 쓰면 아래 코드를 직접 쓰지 않아도 된다.
           </p>
           <div class="codeblock"><pre><code class="language-javascript">library: [
     { ref: 'Ref-M03',              // 인용에 쓸 고유 태그 (겹치지 않게)
@@ -286,6 +292,7 @@ HTML을 직접 쓸 때: 이 문장에 근거를 단다 &lt;span class="cite" dat
           <p>
             <code>research</code> 배열에 등록한다. <code>post</code> 에 글 파일명을 적으면
             카드가 그 글로 연결되고, 비워 두면 <code>url</code> 로 연결된다.
+            글쓰기 도구의 <strong>연구·프로젝트</strong> 모드에서 연결할 글을 목록에서 고를 수 있다.
           </p>
           <div class="codeblock"><pre><code class="language-javascript">research: [
     { title: '프로젝트 제목',
@@ -302,6 +309,7 @@ HTML을 직접 쓸 때: 이 문장에 근거를 단다 &lt;span class="cite" dat
             <code>problems</code> 배열에 등록한다. <code>note</code> 에 적은 뒷이야기가
             제목 아래 기울임체로 붙는 것이 이 아카이브의 특징이다.
             <code>diff</code> 값으로 난이도 필터가 동작한다.
+            글쓰기 도구의 <strong>문제</strong> 모드에서 미리보기를 보며 작성할 수 있다.
           </p>
           <div class="codeblock"><pre><code class="language-javascript">problems: [
     { title: '문제 제목',
@@ -318,13 +326,16 @@ HTML을 직접 쓸 때: 이 문장에 근거를 단다 &lt;span class="cite" dat
             <li><strong>최근 글</strong> — 날짜 순으로 자동 정렬되어 5개까지 표시된다.</li>
             <li><strong>현재 탐구 중</strong> — <code>content.js</code> 맨 아래 <code>now</code> 문자열을 고친다.</li>
             <li><strong>활동 잔디</strong> — 글·문제·연구에 적은 <code>date</code> 를 모아 자동으로 칠한다.
-              오늘이 항상 오른쪽 끝이며, 등록한 기록이 없는 날은 빈칸으로 남는다.</li>
+              오늘이 항상 오른쪽 끝이며, 등록한 기록이 없는 날은 빈칸으로 남는다.
+              칸에 커서를 올리면 그날의 날짜와 기록 목록이 뜬다.</li>
           </ul>
 
           <h2>8. 그 밖의 기능</h2>
           <ul>
             <li><strong>검색</strong> — 어느 페이지에서든 <code>Ctrl + K</code>.
               글·자료·문제·연구의 제목과 태그를 한 번에 찾는다.</li>
+            <li><strong>현재 위치 표시</strong> — 글을 읽는 중이면 왼쪽 트리에서 그 분류가 펼쳐지고
+              지금 보고 있는 글의 제목이 아래에 표시된다.</li>
             <li><strong>부분 코멘트</strong> — 본문에서 문장을 드래그하면 "이 부분에 코멘트" 버튼이 뜬다.
               누르면 그 문장이 인용된 채로 GitHub 이슈 작성 화면이 열린다.<span class="sidenote">정적
               사이트라 댓글을 서버에 저장할 수 없어서, 대신 저장소 이슈로 남기는 방식을 썼다.</span></li>

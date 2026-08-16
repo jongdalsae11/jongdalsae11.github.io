@@ -71,6 +71,8 @@ var SITE_SUB  = 'archive';
              '<span class="site-sub">' + SITE_SUB + '</span></a></div>' +
              '<button class="nav-search" type="button" id="open-search">' +
              '<span>검색</span><kbd>Ctrl K</kbd></button>' +
+             '<a class="nav-new plain" href="' + ROOT + '/write.html">' +
+             '<span class="plus">+</span> 새로 쓰기</a>' +
              '<ul class="tree">';
 
   NODES.forEach(function (n, i) {

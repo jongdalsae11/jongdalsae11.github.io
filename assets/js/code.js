@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var pre  = block.querySelector('pre');
     var code = block.querySelector('code');
     if (!pre || !code) return;
+    if (block.dataset.ready) return;   /* 두 번 실행돼 줄번호가 겹치는 것 방지 */
+    block.dataset.ready = '1';
 
     /* 신택스 하이라이팅 (highlight.js 가 로드된 경우) */
     if (window.hljs) { window.hljs.highlightElement(code); }
