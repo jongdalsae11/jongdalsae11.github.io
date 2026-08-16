@@ -29,26 +29,15 @@
     return '<option value="' + c + '">' + (l ? c + ' — ' + l : c) + '</option>';
   }).join('');
 
-  /* ── 유틸 ────────────────────────────────────────── */
-  function esc(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-  function slug(t) {
-    return String(t).trim().toLowerCase()
-      .replace(/[^\w가-힣]+/g, '-').replace(/^-|-$/g, '');
-  }
+  /* ── 유틸 (공통 함수는 util.js) ──────────────────── */
+  var U = window.U;
+  var esc = U.esc, slug = U.slug, todayStr = U.today;
+
   function fileBase() {
     return (F.date.value || '날짜') + '-' + (slug(F.title.value) || 'untitled');
   }
   function tagArr() {
     return F.tags.value.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
-  }
-  /* 오늘 날짜 (UTC 아님 — 한국에서 오전에 쓰면 하루 밀리는 문제 방지) */
-  function todayStr() {
-    var d = new Date();
-    return d.getFullYear() + '-' +
-      String(d.getMonth() + 1).padStart(2, '0') + '-' +
-      String(d.getDate()).padStart(2, '0');
   }
 
   /* ── 확장 마크다운 파서 ──────────────────────────── */
@@ -185,9 +174,7 @@
     save();
   }
 
-  function tagHTML(a) {
-    return a.map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
-  }
+  var tagHTML = U.tags;
   function itemPreview() {
     if (MODE === 'library') {
       return '<ul class="ref-list"><li class="ref">' +
@@ -581,9 +568,13 @@
     var html = '<!doctype html>\n<html lang="ko">\n<head>\n' +
       '  <meta charset="UTF-8">\n' +
       '  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+      '  <meta name="description" content="' + esc(F.summary.value || F.title.value) + '">\n' +
       '  <title>' + esc(F.title.value) + ' — ' + SITE_NAME + '</title>\n' +
+      '  <meta property="og:type" content="article">\n' +
       '  <meta property="og:title" content="' + esc(F.title.value) + '">\n' +
       '  <meta property="og:description" content="' + esc(F.summary.value) + '">\n' +
+      '  <meta property="og:image" content="https://jongdalsae11.github.io/assets/og.png">\n' +
+      '  <meta name="twitter:card" content="summary_large_image">\n' +
       '  <link rel="icon" href="../assets/favicon.svg">\n' +
       '  <link rel="preconnect" href="https://fonts.googleapis.com">\n' +
       '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
@@ -596,17 +587,19 @@
       '  <link rel="stylesheet" href="../assets/css/post.css">\n' +
       '</head>\n<body data-crumb="글 / ' + esc(catLabel) +
       ' / <b>' + esc(F.title.value) + '</b>">\n' +
-      '  <main>\n    <div class="page page--post">\n      <article>\n' +
+      '  <main id="main">\n    <div class="page page--post">\n      <article>\n' +
       '        <div class="post-head">\n          <h1>' + esc(F.title.value) + '</h1>\n' +
       '          <div class="post-meta">\n            <span class="post-date">' +
       F.date.value.replace(/-/g, '.') + '</span>\n' +
       (tagHTML ? '            ' + tagHTML + '\n' : '') +
       '          </div>\n        </div>\n' +
       '        <div class="post-body">\n' + bodyHTML() + '\n        </div>\n' +
+      '        <section class="backlinks"></section>\n' +
       '      </article>\n      <div class="margin-col"></div>\n    </div>\n  </main>\n' +
       '  <footer><p>&copy; 2026</p></footer>\n' +
       '  <script>window.ROOT=\'..\'<\/script>\n' +
       '  <script src="../assets/data/content.js"><\/script>\n' +
+      '  <script src="../assets/js/util.js"><\/script>\n' +
       '  <script src="../assets/js/nav.js"><\/script>\n' +
       '  <script src="../assets/js/progress.js"><\/script>\n' +
       '  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"><\/script>\n' +

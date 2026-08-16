@@ -18,38 +18,54 @@ window.SITE = {
     physics: '물리'
   },
 
+  /* 분류별 강조색 (선택).
+     적지 않으면 등장 순서대로 자동 배정됩니다.
+     특정 분류의 색만 바꾸고 싶을 때 한 줄 추가하세요.
+     예) colors: { math: '#34d399' }                          */
+  colors: {},
+
   /* ── 글 ────────────────────────────────────────────
      category 에 새 값을 쓰면 트리에 새 항목이 자동 생성됩니다.
-     file: posts/ 안의 파일명 · pinned: 홈 상단 고정 여부      */
+     file:   posts/ 안의 파일명
+     pinned: 홈 상단 고정 여부
+     links:  이 글이 인용한 다른 글의 file 목록.
+             적어 두면 글 하단의 백링크 두 목록과 인용 관계
+             그래프가 자동으로 만들어집니다. (양쪽 다 자동)     */
   posts: [
     { title: '이 사이트에 글 쓰는 법 — 기능 전부 설명',
       file: '2026-08-17-writing-guide.html', category: 'essay',
       date: '2026-08-17', tags: ['가이드', '사용법'], pinned: true,
+      links: ['2026-08-17-lis-segment-tree.html', '2026-08-10-euler-phi.html'],
       summary: '코드블록·수식·이미지·여백주석·인용까지, 이 사이트의 모든 기능을 예제와 함께 정리한 글.' },
 
     { title: '세그먼트 트리를 활용한 LIS O(N log N) 구현',
       file: '2026-08-17-lis-segment-tree.html', category: 'algo',
       date: '2026-08-17', tags: ['세그먼트 트리', 'C++'], pinned: true,
+      links: [],
       summary: '값 좌표압축 위에 max 세그먼트 트리를 얹는 표준 구성.' },
 
     { title: '느리게 갱신되는 구간 트리 노트',
       file: '2026-08-12-lazy-propagation.html', category: 'algo',
       date: '2026-08-12', tags: ['세그먼트 트리', 'lazy'],
+      links: ['2026-08-17-lis-segment-tree.html'],
       summary: '구간 갱신을 미뤄 두는 아이디어를 짧게 정리한 더미 글.' },
 
     { title: '오일러 피 함수의 곱셈적 성질',
       file: '2026-08-10-euler-phi.html', category: 'math',
       date: '2026-08-10', tags: ['정수론'],
+      links: ['2026-08-05-series-convergence.html'],
       summary: '서로소 조건에서 곱셈적임을 보이는 과정을 담은 더미 글.' },
 
     { title: '급수의 수렴 판정을 다시 보기',
       file: '2026-08-05-series-convergence.html', category: 'math',
       date: '2026-08-05', tags: ['해석학'],
+      links: [],
       summary: '비판정법과 근판정법의 관계를 정리한 더미 글.' },
 
     { title: '첫 합주, 주말의 여백',
       file: '2026-08-01-first-ensemble.html', category: 'essay',
       date: '2026-08-01', tags: ['일상'],
+      links: ['2026-08-17-writing-guide.html'],
       summary: '연습실에서의 하루를 적은 더미 에세이.' }
   ],
 

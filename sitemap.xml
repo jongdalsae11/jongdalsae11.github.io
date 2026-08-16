@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://jongdalsae11.github.io/</loc><priority>1.0</priority></url>
+  <url><loc>https://jongdalsae11.github.io/about.html</loc><priority>0.7</priority></url>
+  <url><loc>https://jongdalsae11.github.io/archive.html</loc><priority>0.7</priority></url>
+  <url><loc>https://jongdalsae11.github.io/contact.html</loc><priority>0.7</priority></url>
+  <url><loc>https://jongdalsae11.github.io/library.html</loc><priority>0.7</priority></url>
+  <url><loc>https://jongdalsae11.github.io/posts.html</loc><priority>0.7</priority></url>
+  <url><loc>https://jongdalsae11.github.io/research.html</loc><priority>0.7</priority></url>
+  <url><loc>https://jongdalsae11.github.io/posts/2026-08-17-writing-guide.html</loc><lastmod>2026-08-17</lastmod><priority>0.8</priority></url>
+  <url><loc>https://jongdalsae11.github.io/posts/2026-08-17-lis-segment-tree.html</loc><lastmod>2026-08-17</lastmod><priority>0.8</priority></url>
+  <url><loc>https://jongdalsae11.github.io/posts/2026-08-12-lazy-propagation.html</loc><lastmod>2026-08-12</lastmod><priority>0.8</priority></url>
+  <url><loc>https://jongdalsae11.github.io/posts/2026-08-10-euler-phi.html</loc><lastmod>2026-08-10</lastmod><priority>0.8</priority></url>
+  <url><loc>https://jongdalsae11.github.io/posts/2026-08-05-series-convergence.html</loc><lastmod>2026-08-05</lastmod><priority>0.8</priority></url>
+  <url><loc>https://jongdalsae11.github.io/posts/2026-08-01-first-ensemble.html</loc><lastmod>2026-08-01</lastmod><priority>0.8</priority></url>
+</urlset>

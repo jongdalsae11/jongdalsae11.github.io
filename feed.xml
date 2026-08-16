@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>archive</title>
+    <link>https://jongdalsae11.github.io/</link>
+    <description>경쟁 프로그래밍 · 알고리즘 연구 · 글쓰기</description>
+    <language>ko</language>
+    <lastBuildDate>Mon, 17 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <atom:link href="https://jongdalsae11.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>이 사이트에 글 쓰는 법 — 기능 전부 설명</title>
+      <link>https://jongdalsae11.github.io/posts/2026-08-17-writing-guide.html</link>
+      <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-17-writing-guide.html</guid>
+      <pubDate>Mon, 17 Aug 2026 00:00:00 GMT</pubDate>
+      <category>에세이</category>
+      <description>코드블록·수식·이미지·여백주석·인용까지, 이 사이트의 모든 기능을 예제와 함께 정리한 글.</description>
+    </item>
+    <item>
+      <title>세그먼트 트리를 활용한 LIS O(N log N) 구현</title>
+      <link>https://jongdalsae11.github.io/posts/2026-08-17-lis-segment-tree.html</link>
+      <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-17-lis-segment-tree.html</guid>
+      <pubDate>Mon, 17 Aug 2026 00:00:00 GMT</pubDate>
+      <category>알고리즘</category>
+      <description>값 좌표압축 위에 max 세그먼트 트리를 얹는 표준 구성.</description>
+    </item>
+    <item>
+      <title>느리게 갱신되는 구간 트리 노트</title>
+      <link>https://jongdalsae11.github.io/posts/2026-08-12-lazy-propagation.html</link>
+      <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-12-lazy-propagation.html</guid>
+      <pubDate>Wed, 12 Aug 2026 00:00:00 GMT</pubDate>
+      <category>알고리즘</category>
+      <description>구간 갱신을 미뤄 두는 아이디어를 짧게 정리한 더미 글.</description>
+    </item>
+    <item>
+      <title>오일러 피 함수의 곱셈적 성질</title>
+      <link>https://jongdalsae11.github.io/posts/2026-08-10-euler-phi.html</link>
+      <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-10-euler-phi.html</guid>
+      <pubDate>Mon, 10 Aug 2026 00:00:00 GMT</pubDate>
+      <category>수학</category>
+      <description>서로소 조건에서 곱셈적임을 보이는 과정을 담은 더미 글.</description>
+    </item>
+    <item>
+      <title>급수의 수렴 판정을 다시 보기</title>
+      <link>https://jongdalsae11.github.io/posts/2026-08-05-series-convergence.html</link>
+      <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-05-series-convergence.html</guid>
+      <pubDate>Wed, 05 Aug 2026 00:00:00 GMT</pubDate>
+      <category>수학</category>
+      <description>비판정법과 근판정법의 관계를 정리한 더미 글.</description>
+    </item>
+    <item>
+      <title>첫 합주, 주말의 여백</title>
+      <link>https://jongdalsae11.github.io/posts/2026-08-01-first-ensemble.html</link>
+      <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-01-first-ensemble.html</guid>
+      <pubDate>Sat, 01 Aug 2026 00:00:00 GMT</pubDate>
+      <category>에세이</category>
+      <description>연습실에서의 하루를 적은 더미 에세이.</description>
+    </item>
+  </channel>
+</rss>

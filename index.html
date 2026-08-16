@@ -2,11 +2,13 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="description" content="경쟁 프로그래밍 · 알고리즘 연구 · 글쓰기를 기록하는 개인 아카이브.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>이름 — archive</title>
   <meta property="og:title" content="이름 — archive">
   <meta property="og:description" content="경쟁 프로그래밍 · 알고리즘 연구 · 글쓰기">
   <meta property="og:image" content="/assets/og.png">
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
   <link rel="icon" href="./assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +19,7 @@
   <link rel="stylesheet" href="./assets/css/components.css">
 </head>
 <body data-crumb="~ / <b>홈</b>">
-  <main>
+  <main id="main">
     <div class="page">
       <div class="page-head">
         <p class="eyebrow">COMPETITIVE · RESEARCH · WRITING</p>
@@ -26,6 +28,8 @@
       </div>
 
       <p class="term" data-render="now"></p>
+
+      <div data-render="stats"></div>
 
       <h2>고정된 글</h2>
       <div class="pins" data-render="pins"></div>
@@ -42,6 +46,7 @@
 
   <script>window.ROOT='.'</script>
   <script src="./assets/data/content.js"></script>
+  <script src="./assets/js/util.js"></script>
   <script src="./assets/js/nav.js"></script>
   <script src="./assets/js/lists.js"></script>
   <script src="./assets/js/heatmap.js"></script>

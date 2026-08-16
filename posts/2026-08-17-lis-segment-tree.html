@@ -2,8 +2,16 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="description" content="값 좌표압축 위에 max 세그먼트 트리를 얹는 표준 구성.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>세그먼트 트리를 활용한 LIS O(N log N) 구현 — 이름</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="세그먼트 트리를 활용한 LIS O(N log N) 구현">
+  <meta property="og:description" content="값 좌표압축 위에 max 세그먼트 트리를 얹는 표준 구성.">
+  <meta property="og:url" content="https://jongdalsae11.github.io/posts/2026-08-17-lis-segment-tree.html">
+  <meta property="og:image" content="https://jongdalsae11.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
   <link rel="icon" href="../assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,8 +23,8 @@
   <link rel="stylesheet" href="../assets/css/components.css">
   <link rel="stylesheet" href="../assets/css/post.css">
 </head>
-<body data-crumb="글 / 알고리즘 / <b>세그먼트 트리를 활용한 LIS</b>">
-  <main>
+<body data-cat="algo" data-crumb="글 / 알고리즘 / <b>세그먼트 트리를 활용한 LIS</b>">
+  <main id="main">
     <div class="page page--post">
       <article>
         <div class="post-head">
@@ -111,27 +119,7 @@ int main() {
           </figure>
         </div>
 
-        <section class="backlinks">
-          <h2>이 글이 인용한 글</h2>
-          <ul class="bl-list">
-            <li><span class="nolink">DP 상태 정의 연습</span>
-              <span class="bl-why">끝점을 고정하는 상태 정의의 근거</span></li>
-            <li><span class="nolink">값 좌표압축</span>
-              <span class="bl-why">세그먼트 트리 인덱스 구성에 사용</span></li>
-          </ul>
-
-          <h2>이 글을 인용한 글</h2>
-          <ul class="bl-list">
-            <li><span class="nolink">아직 없음</span>
-              <span class="bl-why">다른 글에서 [[세그먼트 트리를 활용한 LIS]]로 연결하면 여기에 나타납니다.</span></li>
-          </ul>
-
-          <h2>인용 관계</h2>
-          <div class="cite-graph" id="cite-graph"
-               data-me="이 글"
-               data-cites="DP 상태 정의 연습|값 좌표압축"
-               data-cited-by=""></div>
-        </section>
+        <section class="backlinks"></section>
       </article>
 
       <div class="margin-col"></div>
@@ -141,6 +129,7 @@ int main() {
 
   <script>window.ROOT='..'</script>
   <script src="../assets/data/content.js"></script>
+  <script src="../assets/js/util.js"></script>
   <script src="../assets/js/nav.js"></script>
   <script src="../assets/js/progress.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>

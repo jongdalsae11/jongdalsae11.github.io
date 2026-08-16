@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /write.html
+
+Sitemap: https://jongdalsae11.github.io/sitemap.xml

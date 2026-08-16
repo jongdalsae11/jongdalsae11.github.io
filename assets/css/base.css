@@ -140,3 +140,71 @@ blockquote {
   border-left: 2px solid var(--line);
   color: var(--soft);
 }
+
+/* ── 키보드 포커스 표시 ─────────────────────────────
+   마우스 클릭에는 나타나지 않고 Tab 이동에만 보입니다.   */
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* 본문 바로가기 (Tab 첫 번째로 잡힘) */
+.skip-link {
+  position: fixed;
+  top: 8px; left: 8px;
+  z-index: 200;
+  transform: translateY(-200%);
+  background: var(--surface);
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  color: var(--cyan);
+  transition: transform 0.15s ease;
+}
+.skip-link:focus { transform: none; }
+
+/* ── 움직임 최소화 설정 존중 ───────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── 인쇄 ────────────────────────────────────────────
+   사이드바·레일·버튼을 빼고 본문만 흰 종이에 얹습니다.   */
+@media print {
+  :root {
+    --bg: #fff; --surface: #fff; --surface-2: #fff;
+    --text: #111; --soft: #333; --faint: #555;
+    --line: #bbb; --line-soft: #ddd;
+    --cyan: #0b6; --purple: #639; --orange: #a50;
+  }
+  body { background: #fff !important; color: #111; font-size: 11pt; }
+  .sidebar, .topbar, .rail, .nav-fab, .nav-backdrop, .search-modal,
+  .sel-btn, .sheet, .cb-copy, .cb-expand, .post-nav, .heat-tip { display: none !important; }
+  main, footer { margin-left: 0 !important; padding: 0 !important; }
+  .page--post { display: block !important; max-width: none !important; }
+  /* 여백주석은 인쇄 시 본문 흐름 안으로 */
+  .margin-col { display: none !important; }
+  .post-body .sidenote {
+    display: block !important;
+    position: static !important;
+    border-left: 2px solid #bbb;
+    background: none;
+    font-size: 9.5pt;
+  }
+  .codeblock { border: 1px solid #ccc; background: #fafafa; page-break-inside: avoid; }
+  .codeblock .cb-gutter { background: #fafafa; color: #999; }
+  .hljs, .hljs-keyword, .hljs-title, .hljs-string, .hljs-number,
+  .hljs-built_in, .hljs-comment { color: #111 !important; }
+  h1, h2, h3 { page-break-after: avoid; }
+  figure, table, blockquote { page-break-inside: avoid; }
+  /* 링크 주소를 각주처럼 노출 */
+  .post-body a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8.5pt; color: #666; }
+}

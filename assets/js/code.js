@@ -48,6 +48,15 @@ document.addEventListener('DOMContentLoaded', function () {
     scroll.appendChild(gutter);
     scroll.appendChild(pre);
 
+    /* 언어 라벨 */
+    var langCls = (code.className.match(/language-([\w+#-]+)/) || [])[1];
+    if (langCls && langCls !== 'plaintext') {
+      var lab = document.createElement('span');
+      lab.className = 'cb-lang';
+      lab.textContent = langCls;
+      block.appendChild(lab);
+    }
+
     /* 복사 버튼 */
     var copy = document.createElement('button');
     copy.type = 'button';

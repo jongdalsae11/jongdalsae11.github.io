@@ -6,34 +6,22 @@
 
 (function () {
   var S = window.SITE; if (!S) return;
+  var U = window.U;
   var ROOT = window.ROOT || '.';
-  function label(id) { return (S.labels && S.labels[id]) || id; }
-  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
-  function dot(d) { return d.replace(/-/g, '.'); }
-  function tags(a) {
-    return (a || []).map(function (t) { return '<span class="tag">' + esc(t) + '</span>'; }).join('');
-  }
-  function byDateDesc(a, b) { return (b.date || '').localeCompare(a.date || ''); }
-  function postHref(p) { return ROOT + '/posts/' + p.file; }
 
-  /* 링크 주소가 비었거나 '#' 이면 죽은 링크 대신 일반 텍스트로 렌더.
-     ('#' 로 두면 클릭 시 같은 페이지 맨 위로 점프해 버림)         */
-  function real(url) { return url && url !== '#'; }
-  function linkify(text, url, cls) {
-    if (!real(url)) {
-      return '<span class="' + (cls || '') + ' nolink" title="아직 연결된 주소가 없습니다">' +
-             text + '</span>';
-    }
-    var ext = /^https?:/.test(url) ? ' target="_blank" rel="noopener"' : '';
-    return '<a class="' + (cls || '') + '" href="' + url + '"' + ext + '>' + text + '</a>';
-  }
+  /* 공통 도구는 util.js 에 모여 있습니다 */
+  var esc = U.esc, dot = U.dot, tags = U.tags, label = U.label,
+      real = U.real, linkify = U.linkify, byDateDesc = U.byDateDesc;
+
+  function postHref(p) { return ROOT + '/posts/' + p.file; }
 
   function rowsOf(list) {
     if (!list.length) return '<li class="empty">아직 항목이 없습니다.</li>';
     return list.map(function (p) {
-      return '<li><a class="row plain" href="' + postHref(p) + '">' +
+      return '<li' + U.catVar(p.category) + '><a class="row plain" href="' + postHref(p) + '">' +
         '<span class="row-date">' + dot(p.date) + '</span>' +
         '<span class="row-title">' + esc(p.title) + '</span>' +
+        '<span class="row-cat">' + label(p.category) + '</span>' +
         '<span class="row-tags">' + tags(p.tags) + '</span></a></li>';
     }).join('');
   }
@@ -44,11 +32,43 @@
       el.innerHTML = esc(S.now || '') + '<span class="cursor"></span>';
     },
 
+    /* ── 홈: 분류별 현황 막대 ── */
+    stats: function (el) {
+      var posts = S.posts || [];
+      var counts = {}, order = [];
+      posts.forEach(function (p) {
+        if (!(p.category in counts)) { counts[p.category] = 0; order.push(p.category); }
+        counts[p.category]++;
+      });
+      var max = Math.max.apply(null, order.map(function (c) { return counts[c]; }).concat([1]));
+
+      el.innerHTML =
+        '<div class="stat-row">' +
+          order.map(function (c) {
+            return '<a class="stat plain" href="' + ROOT + '/posts.html#' + c + '"' +
+              U.catVar(c) + '>' +
+              '<span class="stat-n">' + counts[c] + '</span>' +
+              '<span class="stat-l">' + label(c) + '</span>' +
+              '<span class="stat-bar"><i style="width:' +
+                Math.round(counts[c] / max * 100) + '%"></i></span>' +
+            '</a>';
+          }).join('') +
+          '<div class="stat stat--misc">' +
+            '<span class="stat-n">' + (S.problems || []).length + '</span>' +
+            '<span class="stat-l">문제</span>' +
+          '</div>' +
+          '<div class="stat stat--misc">' +
+            '<span class="stat-n">' + (S.library || []).length + '</span>' +
+            '<span class="stat-l">자료</span>' +
+          '</div>' +
+        '</div>';
+    },
+
     /* ── 홈: 고정 글 ── */
     pins: function (el) {
       var pinned = (S.posts || []).filter(function (p) { return p.pinned; });
       el.innerHTML = pinned.map(function (p) {
-        return '<a class="pin plain" href="' + postHref(p) + '">' +
+        return '<a class="pin plain" href="' + postHref(p) + '"' + U.catVar(p.category) + '>' +
           '<span class="pin-label">PINNED · ' + label(p.category).toUpperCase() + '</span>' +
           '<p class="pin-title">' + esc(p.title) + '</p>' +
           '<p class="pin-desc">' + esc(p.summary || '') + '</p></a>';
@@ -57,22 +77,52 @@
 
     /* ── 홈: 최근 글 ── */
     recent: function (el) {
-      el.innerHTML = rowsOf((S.posts || []).slice().sort(byDateDesc).slice(0, 5));
+      el.innerHTML = rowsOf(U.sortedPosts().slice(0, 5));
     },
 
     /* ── 글 목록 페이지 (해시 = 카테고리) ── */
     posts: function (el) {
       function draw() {
-        var cat = (location.hash || '').slice(1);
-        var all = (S.posts || []).slice().sort(byDateDesc);
-        var list = cat ? all.filter(function (p) { return p.category === cat; }) : all;
+        var h = decodeURIComponent((location.hash || '').slice(1));
+        var isTag = h.indexOf('tag=') === 0;
+        var tag = isTag ? h.slice(4) : '';
+        var cat = isTag ? '' : h;
+
+        var list = isTag
+          ? U.sortedPosts().filter(function (p) { return (p.tags || []).indexOf(tag) >= 0; })
+          : U.sortedPosts(cat);
+
         el.innerHTML = rowsOf(list);
-        var h = document.querySelector('[data-cat-title]');
-        var sub = document.querySelector('[data-cat-sub]');
-        if (h) h.textContent = cat ? label(cat) : '전체 글';
-        if (sub) sub.textContent = list.length + '편';
+
+        var titleEl = document.querySelector('[data-cat-title]');
+        var subEl = document.querySelector('[data-cat-sub]');
+        var name = isTag ? '#' + tag : (cat ? label(cat) : '전체 글');
+        if (titleEl) {
+          titleEl.innerHTML = esc(name) +
+            (isTag ? ' <a class="clear-filter plain" href="#">전체 보기 ✕</a>' : '');
+          if (cat) titleEl.style.setProperty('--cat', U.catColor(cat));
+          else titleEl.style.removeProperty('--cat');
+        }
+        if (subEl) subEl.textContent = list.length + '편';
         var crumb = document.querySelector('.topbar .crumb');
-        if (crumb) crumb.innerHTML = '글 / <b>' + (cat ? label(cat) : '전체') + '</b>';
+        if (crumb) crumb.innerHTML = '글 / <b>' + esc(name) + '</b>';
+
+        /* 분류를 보고 있을 땐 그 분류의 태그 모음을 위에 노출 */
+        var bar = document.querySelector('[data-tagbar]');
+        if (bar) {
+          var pool = {}, src = cat ? U.sortedPosts(cat) : U.sortedPosts();
+          src.forEach(function (p) {
+            (p.tags || []).forEach(function (t) { pool[t] = (pool[t] || 0) + 1; });
+          });
+          var keys = Object.keys(pool).sort(function (a, b) { return pool[b] - pool[a]; });
+          bar.innerHTML = keys.length
+            ? keys.map(function (t) {
+                return '<a class="tag tag--link plain' + (t === tag ? ' on' : '') +
+                  '" href="#tag=' + encodeURIComponent(t) + '">' + esc(t) +
+                  '<span class="tg-n">' + pool[t] + '</span></a>';
+              }).join('')
+            : '';
+        }
       }
       draw();
       window.addEventListener('hashchange', draw);
@@ -114,7 +164,7 @@
           });
         }
         el.innerHTML = groups.map(function (g) {
-          return '<h2 id="' + g.id + '">' + label(g.id) +
+          return '<h2 id="' + g.id + '"' + U.catVar(g.id) + ' class="cat-head">' + label(g.id) +
             ' <span class="h-count">' + g.items.length + '</span></h2>' +
             '<ul class="ref-list">' +
             (g.items.length ? g.items.map(item).join('') : '<li class="empty">항목 없음</li>') +

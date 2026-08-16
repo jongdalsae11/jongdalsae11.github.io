@@ -9,6 +9,7 @@
   var host = document.getElementById('heat');
   if (!host) return;
   var S = window.SITE || {};
+  var U = window.U;
   var WEEKS = 26;
   var DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
