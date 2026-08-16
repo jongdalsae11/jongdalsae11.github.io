@@ -164,6 +164,32 @@
   color: var(--faint);
 }
 
+/* 트리에 표시되는 '지금 보고 있는 글' */
+.tree .leaf { padding-left: 14px; }
+.node-current {
+  display: block;
+  padding: 5px 10px;
+  margin: 1px 0;
+  border-left: 2px solid var(--purple);
+  font-size: 0.78rem;
+  color: var(--soft);
+  line-height: 1.45;
+  background: rgba(168, 85, 247, 0.06);
+  border-radius: 0 6px 6px 0;
+}
+
+/* 주소가 없는 항목 — 죽은 '#' 링크 대신 일반 텍스트 */
+.nolink { color: var(--soft); cursor: default; }
+.card--static { cursor: default; }
+.card--static:hover { border-color: var(--line-soft); background: var(--surface); }
+
+/* 인용에서 넘어온 자료 강조 */
+.ref--target {
+  background: rgba(56, 189, 248, 0.07);
+  box-shadow: inset 2px 0 0 var(--cyan);
+  border-radius: 0 8px 8px 0;
+}
+
 .search-modal {
   position: fixed; inset: 0;
   background: rgba(10, 10, 20, 0.6);

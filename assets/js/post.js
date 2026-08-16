@@ -14,17 +14,27 @@ document.addEventListener('DOMContentLoaded', function () {
   var S = window.SITE || {};
 
   /* ── 2. 인용 마크 → 자료 정보를 여백주석으로 변환 ── */
+  var ROOT = window.ROOT || '.';
   body.querySelectorAll('.cite[data-ref]').forEach(function (mark) {
     var id = mark.getAttribute('data-ref');
     var r = (S.library || []).filter(function (x) { return x.ref === id; })[0];
     var note = document.createElement('span');
     note.className = 'sidenote sidenote--ref';
-    note.innerHTML = r
-      ? '<span class="sn-cite">[' + r.ref + ']</span> ' + r.title +
+
+    if (r) {
+      /* '자료정리집에서 보기' → 해당 자료가 있는 분류를 열고 그 항목을 강조 */
+      var libLink = ' <a href="' + ROOT + '/library.html#' + r.ref + '">자료정리집에서 보기</a>';
+      var srcLink = (r.url && r.url !== '#')
+        ? ' · <a href="' + r.url + '"' +
+          (/^https?:/.test(r.url) ? ' target="_blank" rel="noopener"' : '') + '>원문</a>'
+        : '';
+      note.innerHTML = '<span class="sn-cite">[' + r.ref + ']</span> ' + r.title +
         (r.author ? ' · ' + r.author : '') + (r.year ? ' (' + r.year + ')' : '') +
-        (r.url ? ' <a href="' + r.url + '"' +
-          (/^https?:/.test(r.url) ? ' target="_blank" rel="noopener"' : '') + '>자료 보기</a>' : '')
-      : '<span class="sn-cite">[' + id + ']</span> 자료정리집에서 찾을 수 없는 인용입니다.';
+        libLink + srcLink;
+    } else {
+      note.innerHTML = '<span class="sn-cite">[' + id + ']</span> ' +
+        '자료정리집에 등록되지 않은 인용입니다. content.js 의 library 를 확인하세요.';
+    }
     mark.parentNode.insertBefore(note, mark.nextSibling);
     mark.remove();
   });

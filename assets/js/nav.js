@@ -29,13 +29,21 @@ var SITE_SUB  = 'archive';
     return out;
   }
 
+  /* 지금 열려 있는 글이 무엇인지 (posts/파일명.html 로 접속한 경우) */
+  var currentPost = (S.posts || []).filter(function (p) { return p.file === here; })[0];
+
   var NODES = [
     { label: '홈',            href: 'index.html' },
     { label: '이력',          href: 'about.html' },
     { label: '연구·프로젝트', href: 'research.html' },
     { key: 'posts',   label: '글',
       children: cats(S.posts).map(function (c) {
-        return { label: c.label, href: 'posts.html#' + c.id };
+        var node = { label: c.label, href: 'posts.html#' + c.id };
+        /* 읽고 있는 글이 이 분류에 속하면 트리에 그 글을 펼쳐서 보여줌 */
+        if (currentPost && currentPost.category === c.id) {
+          node.current = currentPost.title;
+        }
+        return node;
       }) },
     { label: '문제 아카이브', href: 'archive.html' },
     { key: 'library', label: '자료정리집',
@@ -69,15 +77,23 @@ var SITE_SUB  = 'archive';
     if (n.children) {
       var key = n.key || ('b' + i);
       /* 현재 페이지가 그 안에 있으면 무조건 펼친 상태 */
-      var hasHere = n.children.some(function (c) { return fileOf(c.href) === here; });
+      var hasHere = n.children.some(function (c) {
+        return fileOf(c.href) === here || c.current;
+      });
       var open = hasHere || !!openSet[key];
       html += '<li><button type="button" class="branch-btn" data-key="' + key +
               '" aria-expanded="' + open + '"><span class="caret">▸</span>' + n.label +
               '<span class="count">' + n.children.length + '</span></button>' +
               '<ul class="branch" data-branch="' + key + '">';
       n.children.forEach(function (c) {
-        html += '<li><a class="plain' + (isActive(c.href) ? ' active' : '') +
-                '" href="' + ROOT + '/' + c.href + '">' + c.label + '</a></li>';
+        html += '<li><a class="plain' + (isActive(c.href) || c.current ? ' active' : '') +
+                '" href="' + ROOT + '/' + c.href + '">' + c.label + '</a>';
+        /* 현재 읽고 있는 글을 분류 아래에 표시 (위치 확인용) */
+        if (c.current) {
+          html += '<ul class="leaf"><li><span class="node-current" title="' +
+                  c.current.replace(/"/g, '&quot;') + '">' + c.current + '</span></li></ul>';
+        }
+        html += '</li>';
       });
       html += '</ul></li>';
     } else {

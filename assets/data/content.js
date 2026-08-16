@@ -59,7 +59,7 @@ window.SITE = {
      ref: 본문에서 인용할 때 쓰는 고유 태그                    */
   library: [
     { ref: 'Ref-M01', title: 'Concrete Mathematics', author: 'Graham, Knuth, Patashnik',
-      year: 1994, fmt: 'PDF', category: 'math', url: '#',
+      year: 1994, fmt: 'PDF', category: 'math', url: '/assets/files/concrete-math.pdf',
       desc: '점화식과 합 계산의 표준 레퍼런스. 생성함수 파트를 자주 들춰봅니다.',
       tags: ['조합론', '생성함수'] },
 
@@ -74,7 +74,7 @@ window.SITE = {
       tags: ['CP', '자료구조'] },
 
     { ref: 'Ref-A02', title: 'Efficient Range Minimum Queries',
-      author: 'Bender, Farach-Colton', year: 2000, fmt: 'LINK', category: 'algo', url: '#',
+      author: 'Bender, Farach-Colton', year: 2000, fmt: 'LINK', category: 'algo', url: 'https://dl.acm.org/doi/10.5555/646388.690192',
       desc: 'RMQ와 LCA의 상호 환원을 다룬 고전 논문.',
       tags: ['RMQ', '논문'] },
 
@@ -103,7 +103,7 @@ window.SITE = {
      diff: easy | mid | hard                                  */
   problems: [
     { title: '증가하는 부분 수열과 쿼리', date: '2026-08-14', diff: 'hard',
-      tags: ['세그먼트 트리'], url: '#',
+      tags: ['세그먼트 트리'], url: 'https://www.acmicpc.net/problem/1000',
       note: '지하철에서 떠오른 아이디어. LIS에 쿼리를 얹으면 어디까지 어려워지는지 궁금했습니다.' },
 
     { title: '두 갈래 길의 최소 비용', date: '2026-08-03', diff: 'mid',
@@ -117,7 +117,7 @@ window.SITE = {
     { title: '편심 도르래를 이용한 가변 저항 운동기구',
       kind: 'ONGOING', year: 2026,
       desc: '회전각에 따라 장력이 변하는 구조를 설계하고 실측값과 비교하는 중.',
-      tags: ['역학', '설계'], url: '#', post: null },
+      tags: ['역학', '설계'], url: 'https://github.com/jongdalsae11', post: null },
 
     { title: '구간 쿼리 자료구조 비교 노트',
       kind: 'PROJECT', year: 2025,

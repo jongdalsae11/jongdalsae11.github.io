@@ -16,6 +16,18 @@
   function byDateDesc(a, b) { return (b.date || '').localeCompare(a.date || ''); }
   function postHref(p) { return ROOT + '/posts/' + p.file; }
 
+  /* 링크 주소가 비었거나 '#' 이면 죽은 링크 대신 일반 텍스트로 렌더.
+     ('#' 로 두면 클릭 시 같은 페이지 맨 위로 점프해 버림)         */
+  function real(url) { return url && url !== '#'; }
+  function linkify(text, url, cls) {
+    if (!real(url)) {
+      return '<span class="' + (cls || '') + ' nolink" title="아직 연결된 주소가 없습니다">' +
+             text + '</span>';
+    }
+    var ext = /^https?:/.test(url) ? ' target="_blank" rel="noopener"' : '';
+    return '<a class="' + (cls || '') + '" href="' + url + '"' + ext + '>' + text + '</a>';
+  }
+
   function rowsOf(list) {
     if (!list.length) return '<li class="empty">아직 항목이 없습니다.</li>';
     return list.map(function (p) {
@@ -66,14 +78,14 @@
       window.addEventListener('hashchange', draw);
     },
 
-    /* ── 자료정리집 (해시 = 카테고리, 없으면 카테고리별 전체) ── */
+    /* ── 자료정리집 ────────────────────────────────────
+       해시가 카테고리면 그 분류만, 해시가 Ref-xx 면
+       그 자료가 속한 분류를 열고 해당 항목을 강조합니다.  */
     library: function (el) {
       function item(r) {
-        return '<li class="ref">' +
+        return '<li class="ref" id="' + r.ref + '">' +
           '<div class="ref-body">' +
-            '<div class="ref-title"><a href="' + (r.url || '#') + '"' +
-              (/^https?:/.test(r.url || '') ? ' target="_blank" rel="noopener"' : '') + '>' +
-              esc(r.title) + '</a></div>' +
+            '<div class="ref-title">' + linkify(esc(r.title), r.url) + '</div>' +
             '<div class="ref-src">' + esc(r.author || '') +
               (r.year ? ' · ' + r.year : '') + '</div>' +
             (r.desc ? '<p class="ref-desc">' + esc(r.desc) + '</p>' : '') +
@@ -85,8 +97,10 @@
         '</li>';
       }
       function draw() {
-        var cat = (location.hash || '').slice(1);
+        var h = (location.hash || '').slice(1);
         var all = S.library || [];
+        var hit = all.filter(function (r) { return r.ref === h; })[0];
+        var cat = hit ? hit.category : h;
         var groups = [];
         if (cat) {
           groups = [{ id: cat, items: all.filter(function (r) { return r.category === cat; }) }];
@@ -109,6 +123,15 @@
         var crumb = document.querySelector('.topbar .crumb');
         if (crumb) crumb.innerHTML = '자료정리집 / <b>' + (cat ? label(cat) : '전체') + '</b>';
         bindCopy();
+
+        /* 특정 자료로 들어온 경우 그 항목을 강조하고 스크롤 */
+        if (hit) {
+          var node = document.getElementById(hit.ref);
+          if (node) {
+            node.classList.add('ref--target');
+            node.scrollIntoView({ block: 'center' });
+          }
+        }
       }
       function bindCopy() {
         el.querySelectorAll('.ref-id').forEach(function (b) {
@@ -131,7 +154,7 @@
       el.innerHTML = (S.problems || []).slice().sort(byDateDesc).map(function (p) {
         return '<li class="prob" data-diff="' + p.diff + '">' +
           '<div class="prob-head">' +
-            '<h3 class="prob-title"><a href="' + (p.url || '#') + '">' + esc(p.title) + '</a></h3>' +
+            '<h3 class="prob-title">' + linkify(esc(p.title), p.url) + '</h3>' +
             '<div class="prob-meta">' + tags(p.tags) +
               '<span class="tag tag--dim">' + (diffLabel[p.diff] || p.diff) + '</span></div>' +
           '</div>' +
@@ -155,14 +178,19 @@
     /* ── 연구·프로젝트 ── */
     research: function (el) {
       el.innerHTML = (S.research || []).map(function (r) {
-        var href = r.post ? ROOT + '/posts/' + r.post : (r.url || '#');
-        return '<li><a class="card plain" href="' + href + '">' +
+        var href = r.post ? ROOT + '/posts/' + r.post : (real(r.url) ? r.url : null);
+        var inner =
           '<p class="card-meta">' + esc(r.kind || '') + ' · ' + (r.year || '') + '</p>' +
           '<p class="card-title">' + esc(r.title) + '</p>' +
           '<p class="card-desc">' + esc(r.desc || '') + '</p>' +
           '<div class="row-tags">' + tags(r.tags) + '</div>' +
-          (r.post ? '<p class="card-link mono">관련 글 →</p>' : '') +
-          '</a></li>';
+          (r.post ? '<p class="card-link mono">관련 글 →</p>'
+                  : (href ? '<p class="card-link mono">자세히 →</p>' : ''));
+        if (!href) {
+          return '<li><div class="card card--static">' + inner + '</div></li>';
+        }
+        var ext = /^https?:/.test(href) ? ' target="_blank" rel="noopener"' : '';
+        return '<li><a class="card plain" href="' + href + '"' + ext + '>' + inner + '</a></li>';
       }).join('');
     }
   };

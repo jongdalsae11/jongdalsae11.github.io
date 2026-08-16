@@ -14,160 +14,185 @@
   <link rel="stylesheet" href="./assets/css/layout.css">
   <link rel="stylesheet" href="./assets/css/components.css">
   <link rel="stylesheet" href="./assets/css/post.css">
-  <style>
-    /* ── 글쓰기 화면 전용 (2단: 작성 / 미리보기) ── */
-    main { padding-left: 24px; padding-right: 24px; }
-    .write-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    .w-panel {
-      border: 1px solid var(--line-soft);
-      border-radius: 10px;
-      background: var(--surface);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      min-height: 76vh;
-    }
-    .w-panel-head {
-      font-family: var(--mono);
-      font-size: 0.68rem;
-      color: var(--faint);
-      letter-spacing: 0.1em;
-      padding: 9px 16px;
-      border-bottom: 1px solid var(--line-soft);
-    }
-    .w-fields {
-      display: grid;
-      grid-template-columns: 1fr 130px 130px 1fr;
-      gap: 8px;
-      padding: 12px 14px;
-      border-bottom: 1px solid var(--line-soft);
-    }
-    .w-fields input, .w-fields select {
-      font: inherit;
-      font-size: 0.84rem;
-      color: var(--text);
-      background: var(--bg);
-      border: 1px solid var(--line-soft);
-      border-radius: 7px;
-      padding: 6px 10px;
-      outline: none;
-    }
-    .w-fields input:focus, .w-fields select:focus { border-color: var(--cyan); }
-    .w-toolbar {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-      padding: 8px 12px;
-      border-bottom: 1px solid var(--line-soft);
-    }
-    .w-toolbar button {
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--soft);
-      background: none;
-      border: 1px solid var(--line-soft);
-      border-radius: 6px;
-      padding: 3px 9px;
-      cursor: pointer;
-      transition: color .15s, border-color .15s;
-    }
-    .w-toolbar button:hover { color: var(--cyan); border-color: rgba(56,189,248,.4); }
-    #editor {
-      flex: 1;
-      width: 100%;
-      resize: none;
-      border: 0;
-      outline: none;
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 0.84rem;
-      line-height: 1.75;
-      padding: 18px;
-    }
-    #preview { flex: 1; overflow-y: auto; padding: 22px 26px; background: var(--bg); }
-    #preview .sidenote { display: block; }  /* 미리보기에선 항상 본문 내 박스 */
-    .w-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-      padding: 10px 14px;
-      border-top: 1px solid var(--line-soft);
-    }
-    .w-actions button {
-      font-family: var(--mono);
-      font-size: 0.74rem;
-      color: var(--text);
-      background: var(--surface-2);
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      padding: 6px 14px;
-      cursor: pointer;
-      transition: border-color .15s, color .15s;
-    }
-    .w-actions button:hover { color: var(--cyan); border-color: var(--cyan); }
-    .w-help {
-      max-width: 1400px;
-      margin: 14px auto 0;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      color: var(--faint);
-    }
-    @media (max-width: 1100px) {
-      .write-grid { grid-template-columns: 1fr; }
-      .w-fields { grid-template-columns: 1fr 1fr; }
-    }
-  </style>
+  <link rel="stylesheet" href="./assets/css/write.css">
 </head>
 <body data-crumb="~ / <b>글쓰기</b>">
   <main>
-    <div class="write-grid">
-      <section class="w-panel">
-        <div class="w-panel-head">WRITE — 마크다운 + ^[여백주석] + [[글 연결]]</div>
-        <div class="w-fields">
-          <input id="f-title" type="text" placeholder="제목">
-          <select id="f-cat">
-            <option value="math">수학</option>
-            <option value="algo" selected>알고리즘</option>
-            <option value="essay">에세이</option>
-          </select>
-          <input id="f-date" type="date">
-          <input id="f-tags" type="text" placeholder="태그 (쉼표로 구분)">
-        </div>
-        <div class="w-toolbar">
-          <button data-ins="h2">H2</button>
-          <button data-ins="bold">**굵게**</button>
-          <button data-ins="code">`code`</button>
-          <button data-ins="fence">```코드블록```</button>
-          <button data-ins="imath">$수식$</button>
-          <button data-ins="math">$$디스플레이$$</button>
-          <button data-ins="sn">^[여백주석]</button>
-          <button data-ins="wiki">[[글 연결]]</button>
-          <button data-ins="link">[링크]()</button>
-        </div>
-        <textarea id="editor" spellcheck="false" placeholder="본문을 작성하세요.
+    <div class="w-wrap">
 
-^[이렇게 쓰면 여백주석이 됩니다]
-[[다른 글 제목]] 으로 글을 연결할 수 있습니다.
-^[[[다른 글 제목]]에서 다룬 논증과 같은 구조 — 겹쳐 쓰기도 됩니다]"></textarea>
-        <div class="w-actions">
-          <button id="exp-md">.md 내보내기</button>
-          <button id="exp-html">HTML 내보내기</button>
-        </div>
-      </section>
+      <!-- 진행 단계 안내 -->
+      <ol class="w-steps">
+        <li class="on"><b>1</b> 정보 입력</li>
+        <li class="on"><b>2</b> 본문 작성</li>
+        <li><b>3</b> 파일 내려받기</li>
+        <li><b>4</b> 폴더에 넣고 등록</li>
+      </ol>
 
-      <section class="w-panel">
-        <div class="w-panel-head">PREVIEW — 실시간 미리보기</div>
-        <div id="preview"></div>
-      </section>
+      <div class="write-grid">
+        <!-- ══════════ 왼쪽: 작성 ══════════ -->
+        <section class="w-panel">
+          <div class="w-panel-head">
+            <span>작성</span>
+            <span class="w-saved" id="w-saved">자동 저장됨</span>
+          </div>
+
+          <!-- 글 정보 -->
+          <div class="w-fields">
+            <label class="w-field w-field--wide">
+              <span>제목</span>
+              <input id="f-title" type="text" placeholder="예: 세그먼트 트리로 LIS 구하기">
+            </label>
+            <label class="w-field">
+              <span>분류</span>
+              <input id="f-cat" list="cat-list" placeholder="essay">
+              <datalist id="cat-list"></datalist>
+            </label>
+            <label class="w-field">
+              <span>날짜</span>
+              <input id="f-date" type="date">
+            </label>
+            <label class="w-field w-field--wide">
+              <span>태그 <em>쉼표로 구분</em></span>
+              <input id="f-tags" type="text" placeholder="세그먼트 트리, C++">
+            </label>
+            <label class="w-field w-field--wide">
+              <span>한 줄 요약 <em>홈 카드에 표시</em></span>
+              <input id="f-summary" type="text" placeholder="이 글이 무엇을 다루는지 한 문장으로">
+            </label>
+            <label class="w-check">
+              <input id="f-pinned" type="checkbox">
+              <span>홈 상단에 고정</span>
+            </label>
+            <p class="w-filename">저장될 파일명 <code id="f-filename">…</code></p>
+          </div>
+
+          <!-- 툴바 -->
+          <div class="w-toolbar">
+            <div class="w-tgroup">
+              <button data-ins="h2" title="큰 제목">제목</button>
+              <button data-ins="h3" title="작은 제목">소제목</button>
+              <button data-ins="bold" title="굵게"><b>B</b></button>
+              <button data-ins="italic" title="기울임"><i>I</i></button>
+              <button data-ins="list" title="목록">목록</button>
+              <button data-ins="quote" title="인용">인용</button>
+            </div>
+            <div class="w-tgroup">
+              <button data-ins="code" title="문장 안의 코드">`코드`</button>
+              <button data-ins="fence" title="코드 블록">코드블록</button>
+              <button data-ins="imath" title="문장 안의 수식">$수식$</button>
+              <button data-ins="math" title="가운데 정렬 수식">수식블록</button>
+              <button data-ins="key" title="핵심 결론 강조 상자">결론강조</button>
+            </div>
+            <div class="w-tgroup">
+              <button data-ins="sn" title="오른쪽 여백에 붙는 주석">여백주석</button>
+              <button id="btn-wiki" title="내 다른 글 연결">글 연결 ▾</button>
+              <button id="btn-cite" title="자료정리집의 자료 인용">자료 인용 ▾</button>
+              <button id="btn-img" title="이미지 넣기">이미지</button>
+              <button data-ins="link" title="바깥 링크">링크</button>
+            </div>
+          </div>
+
+          <!-- 선택 목록 (글 연결 / 자료 인용) -->
+          <div class="w-picker" id="picker" hidden>
+            <input type="text" id="picker-q" placeholder="검색…">
+            <ul id="picker-list"></ul>
+          </div>
+
+          <textarea id="editor" spellcheck="false" placeholder="본문을 여기에 씁니다.
+
+· 문단은 빈 줄로 나눕니다.
+· 위 버튼을 누르면 문법이 자동으로 들어갑니다.
+· 오른쪽에서 결과를 바로 확인할 수 있습니다."></textarea>
+
+          <div class="w-actions">
+            <button class="ghost" id="btn-clear">비우기</button>
+            <button class="ghost" id="exp-md">원고(.md) 저장</button>
+            <button class="primary" id="exp-html">③ 글 파일 내려받기</button>
+          </div>
+        </section>
+
+        <!-- ══════════ 오른쪽: 미리보기 / 등록 ══════════ -->
+        <section class="w-panel">
+          <div class="w-tabs">
+            <button class="on" data-tab="preview">미리보기</button>
+            <button data-tab="register">④ 등록하기</button>
+            <button data-tab="help">문법 도움말</button>
+          </div>
+
+          <div id="tab-preview" class="w-tabbody"><div id="preview"></div></div>
+
+          <div id="tab-register" class="w-tabbody" hidden>
+            <div class="w-guide">
+              <h3>내려받은 뒤 할 일</h3>
+              <ol class="w-todo">
+                <li>받은 파일을 <code>jongdal/posts/</code> 폴더에 넣습니다.</li>
+                <li>아래 코드를 복사해서 <code>assets/data/content.js</code> 의
+                    <code>posts: [</code> 바로 아래에 붙여 넣습니다.</li>
+                <li>터미널에서 아래 명령을 실행합니다.</li>
+              </ol>
+
+              <div class="w-copybox">
+                <div class="w-copyhead">
+                  <span>content.js 에 붙여 넣을 코드</span>
+                  <button class="mini" data-copy="#gen-entry">복사</button>
+                </div>
+                <pre id="gen-entry"></pre>
+              </div>
+
+              <div class="w-copybox">
+                <div class="w-copyhead">
+                  <span>터미널 명령</span>
+                  <button class="mini" data-copy="#gen-git">복사</button>
+                </div>
+                <pre id="gen-git"></pre>
+              </div>
+
+              <p class="w-tip">분류에 새 이름을 쓰면 왼쪽 트리에 항목이 자동으로 생깁니다.
+                한글 이름표를 붙이려면 <code>content.js</code> 의 <code>labels</code> 에
+                <code id="gen-label">…</code> 를 추가하세요.</p>
+            </div>
+          </div>
+
+          <div id="tab-help" class="w-tabbody" hidden>
+            <div class="w-guide">
+              <h3>본문 문법</h3>
+              <table class="w-help-table">
+                <tr><td><code>## 제목</code></td><td>큰 제목</td></tr>
+                <tr><td><code>### 소제목</code></td><td>작은 제목</td></tr>
+                <tr><td><code>**굵게**</code></td><td>굵은 글씨</td></tr>
+                <tr><td><code>*기울임*</code></td><td>기울인 글씨</td></tr>
+                <tr><td><code>- 항목</code></td><td>목록</td></tr>
+                <tr><td><code>&gt; 인용</code></td><td>인용문</td></tr>
+                <tr><td><code>`코드`</code></td><td>문장 안의 코드</td></tr>
+                <tr><td><code>```cpp … ```</code></td><td>코드 블록 (줄번호·복사 자동)</td></tr>
+                <tr><td><code>$x^2$</code></td><td>문장 안의 수식</td></tr>
+                <tr><td><code>$$ … $$</code></td><td>가운데 정렬 수식</td></tr>
+                <tr><td><code>^[내용]</code></td><td>여백주석 (오른쪽에 표시)</td></tr>
+                <tr><td><code>[[글 제목]]</code></td><td>내 다른 글로 연결</td></tr>
+                <tr><td><code>{{Ref-A01}}</code></td><td>자료정리집 자료 인용</td></tr>
+                <tr><td><code>[텍스트](주소)</code></td><td>바깥 링크</td></tr>
+                <tr><td><code>!!결론!!</code></td><td>주황색 결론 강조 상자</td></tr>
+              </table>
+
+              <h3>이미지 넣기</h3>
+              <ol class="w-todo">
+                <li>이미지 파일을 <code>jongdal/assets/img/</code> 폴더에 넣습니다.</li>
+                <li>툴바의 <b>이미지</b> 버튼을 누르고 파일명을 입력합니다.</li>
+                <li>캡션은 비워 두면 표시되지 않습니다.</li>
+              </ol>
+
+              <h3>자료(PDF) 올리기</h3>
+              <ol class="w-todo">
+                <li>PDF를 <code>jongdal/assets/files/</code> 폴더에 넣습니다.</li>
+                <li><code>content.js</code> 의 <code>library</code> 에 등록하고
+                    <code>url</code> 을 <code>/assets/files/파일명.pdf</code> 로 씁니다.</li>
+                <li>그 뒤 글에서 <b>자료 인용</b> 버튼으로 불러 쓸 수 있습니다.</li>
+              </ol>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
-    <p class="w-help">HTML 내보내기 → 받은 파일을 posts/ 폴더에 넣으면 바로 글 페이지가 됩니다. (.md는 원고 보관용)</p>
   </main>
   <footer><p>&copy; 2026</p></footer>
 
