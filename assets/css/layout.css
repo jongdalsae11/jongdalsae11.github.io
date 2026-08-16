@@ -25,6 +25,13 @@
 }
 .topbar .crumb b { color: var(--soft); font-weight: 500; }
 
+/* 스크롤 내릴 때 헤더 숨김 (화면 개방감) */
+.topbar { transition: transform 0.25s ease; }
+body.hide-topbar .topbar { transform: translateY(-100%); }
+
+/* 트리 초기 렌더 시 애니메이션 끄기 (펼침 깜빡임 방지) */
+.tree-noanim .branch { transition: none !important; }
+
 /* ── 사이드바 트리 ────────────────────────────────── */
 .sidebar {
   position: fixed;

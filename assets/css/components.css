@@ -79,14 +79,15 @@
 .pin-desc { color: var(--soft); font-size: 0.83rem; margin: 0; }
 
 /* ── 대시보드: 활동 잔디 ──────────────────────────── */
+.heat-wrap { overflow-x: auto; padding-bottom: 4px; }
 .heat {
   display: grid;
   grid-auto-flow: column;
+  grid-auto-columns: 10px;
   grid-template-rows: repeat(7, 10px);
-  gap: 3px;
-  margin: 0.6em 0 0.4em;
-  overflow-x: auto;
-  padding-bottom: 4px;
+  gap: 2px;
+  margin: 0.4em 0 6px;
+  width: max-content;
 }
 .heat i {
   width: 10px; height: 10px;
@@ -97,7 +98,127 @@
 .heat i.l2 { background: rgba(56, 189, 248, 0.45); }
 .heat i.l3 { background: rgba(56, 189, 248, 0.72); }
 .heat i.l4 { background: var(--cyan); box-shadow: 0 0 5px rgba(56, 189, 248, 0.4); }
-.heat-note { font-family: var(--mono); font-size: 0.68rem; color: var(--faint); }
+.heat i.future { background: transparent; box-shadow: inset 0 0 0 1px #131326; }
+.heat i.today { outline: 1px solid var(--purple); outline-offset: 1px; }
+.heat-months {
+  display: grid;
+  grid-auto-columns: 10px;
+  grid-template-rows: 1fr;
+  gap: 2px;
+  width: max-content;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--faint);
+}
+.heat-months span { grid-row: 1; white-space: nowrap; }
+.heat-note { font-family: var(--mono); font-size: 0.68rem; color: var(--faint); margin-top: 4px; }
+
+/* ── 빈 상태 ──────────────────────────────────────── */
+.empty {
+  color: var(--faint);
+  font-size: 0.85rem;
+  padding: 14px 4px;
+  list-style: none;
+}
+.h-count {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--faint);
+  font-weight: 400;
+}
+.prob-date { font-size: 0.7rem; color: var(--faint); margin: 10px 0 0; }
+.ref-desc { color: var(--soft); font-size: 0.82rem; margin: 5px 0 6px; line-height: 1.6; }
+.card-link { font-size: 0.7rem; color: var(--cyan); margin: 10px 0 0; }
+.card .row-tags, .ref .row-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+
+/* ── 사이드바 검색 버튼 + Ctrl+K 모달 ─────────────── */
+.nav-search {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 7px 10px;
+  background: var(--bg);
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--faint);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.nav-search:hover { border-color: var(--line); color: var(--soft); }
+.nav-search kbd {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--faint);
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.tree .count {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  color: var(--faint);
+}
+
+.search-modal {
+  position: fixed; inset: 0;
+  background: rgba(10, 10, 20, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 90;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 14vh;
+}
+.search-modal[hidden] { display: none; }
+.search-box {
+  width: min(560px, 92vw);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+#search-input {
+  width: 100%;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--line-soft);
+  padding: 15px 18px;
+  outline: none;
+}
+.search-results { list-style: none; margin: 0; padding: 6px; max-height: 52vh; overflow-y: auto; }
+.search-results a {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 7px;
+}
+.search-results a:hover { background: var(--surface-2); }
+.sr-t { font-size: 0.88rem; }
+.sr-s { font-family: var(--mono); font-size: 0.66rem; color: var(--faint); white-space: nowrap; }
+.sr-empty { padding: 16px; color: var(--faint); font-size: 0.85rem; text-align: center; }
+
+/* ── 코드 들여쓰기 가이드 ─────────────────────────── */
+.codeblock pre { position: relative; }
+.cb-guides { position: absolute; inset: 14px 0; pointer-events: none; }
+.cb-guides span {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 1px;
+  margin-left: 18px;
+  background: rgba(180, 214, 240, 0.07);
+}
 
 /* ── 대시보드: 현재 탐구 중 (터미널 라인) ─────────── */
 .term {

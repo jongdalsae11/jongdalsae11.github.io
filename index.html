@@ -25,57 +25,29 @@
         <p class="lede">한 줄 소개를 여기에 적으세요.</p>
       </div>
 
-      <p class="term">현재 [세그먼트 트리 최적화]와 [에세이 한 편]을 번갈아 다루는 중<span class="cursor"></span></p>
+      <p class="term" data-render="now"></p>
 
       <h2>고정된 글</h2>
-      <div class="pins">
-        <a class="pin plain" href="./posts/2026-08-17-lis-segment-tree.html">
-          <span class="pin-label">PINNED</span>
-          <p class="pin-title">세그먼트 트리를 활용한 LIS O(N log N) 구현</p>
-          <p class="pin-desc">가장 공들여 쓴 글을 여기에 고정해 두세요.</p>
-        </a>
-      </div>
+      <div class="pins" data-render="pins"></div>
 
       <h2>최근 글</h2>
-      <ul class="rows">
-        <li><a class="row plain" href="./posts/2026-08-17-lis-segment-tree.html">
-          <span class="row-date">2026.08.17</span>
-          <span class="row-title">세그먼트 트리를 활용한 LIS O(N log N) 구현</span>
-          <span class="row-tags"><span class="tag">알고리즘</span><span class="tag">C++</span></span>
-        </a></li>
-        <li><a class="row plain" href="./posts/math.html">
-          <span class="row-date">2026.08.10</span>
-          <span class="row-title">두 번째 글 제목을 여기에</span>
-          <span class="row-tags"><span class="tag">수학</span></span>
-        </a></li>
-        <li><a class="row plain" href="./posts/essay.html">
-          <span class="row-date">2026.08.01</span>
-          <span class="row-title">세 번째 글 제목을 여기에</span>
-          <span class="row-tags"><span class="tag">에세이</span></span>
-        </a></li>
-      </ul>
+      <ul class="rows" data-render="recent"></ul>
 
       <h2>활동</h2>
-      <div class="heat" id="heat"></div>
-      <p class="heat-note">최근 26주 · 글 작성 / 문제 제작 / 연구 기록</p>
+      <div class="heat-wrap">
+        <div class="heat" id="heat"></div>
+        <div class="heat-months" id="heat-months"></div>
+      </div>
+      <p class="heat-note" id="heat-note"></p>
     </div>
   </main>
   <footer><p>&copy; 2026</p></footer>
 
   <script>window.ROOT='.'</script>
+  <script src="./assets/data/content.js"></script>
   <script src="./assets/js/nav.js"></script>
+  <script src="./assets/js/lists.js"></script>
+  <script src="./assets/js/heatmap.js"></script>
   <script src="./assets/js/progress.js"></script>
-  <script>
-    /* 활동 잔디 — 실제 데이터를 넣기 전까지는 데모 패턴 */
-    (function () {
-      var h = document.getElementById('heat'), html = '';
-      for (var i = 0; i < 26 * 7; i++) {
-        var r = Math.random();
-        var l = r > 0.93 ? 4 : r > 0.86 ? 3 : r > 0.76 ? 2 : r > 0.62 ? 1 : 0;
-        html += '<i' + (l ? ' class="l' + l + '"' : '') + '></i>';
-      }
-      h.innerHTML = html;
-    })();
-  </script>
 </body>
 </html>

@@ -90,6 +90,72 @@
 }
 .margin-col .sidenote:hover { color: var(--soft); }
 
+/* 인용 자료 주석 */
+.sidenote--ref .sn-cite {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--purple);
+}
+
+/* ── 모바일 바텀 시트 (주석) ──────────────────────── */
+.sheet {
+  position: fixed; inset: 0;
+  background: rgba(10, 10, 20, 0.4);
+  backdrop-filter: blur(3px);
+  z-index: 95;
+  display: flex;
+  align-items: flex-end;
+}
+.sheet[hidden] { display: none; }
+.sheet-panel {
+  width: 100%;
+  max-height: 50vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  border-radius: 16px 16px 0 0;
+  padding: 10px 22px 30px;
+  transform: translateY(100%);
+  transition: transform 0.22s cubic-bezier(0.33, 1, 0.68, 1);
+}
+.sheet.on .sheet-panel { transform: none; }
+.sheet-grip {
+  width: 36px; height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  margin: 4px auto 14px;
+}
+.sheet-body { font-size: 0.88rem; line-height: 1.75; color: var(--soft); }
+.sheet-body .sn-no { font-family: var(--mono); color: var(--purple); margin-right: 6px; }
+
+/* 좁은 화면에서 주석 번호는 누를 수 있게 */
+@media (max-width: 1180px) {
+  .sn-ref {
+    cursor: pointer;
+    border-bottom: 1px dotted var(--purple);
+  }
+  /* 본문 안 주석 박스는 숨기고 시트로만 표시 */
+  .post-body .sidenote { display: none; }
+}
+
+/* ── 드래그 코멘트 버튼 ───────────────────────────── */
+.sel-btn {
+  position: absolute;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--cyan);
+  border-radius: 7px;
+  padding: 5px 11px;
+  cursor: pointer;
+  z-index: 80;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+.sel-btn[hidden] { display: none; }
+.sel-btn:hover { color: var(--cyan); }
+
 /* ── 백링크 ───────────────────────────────────────── */
 .backlinks { margin-top: 4em; }
 .backlinks h2 {

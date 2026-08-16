@@ -185,6 +185,7 @@
       '      </article>\n      <div class="margin-col"></div>\n    </div>\n  </main>\n' +
       '  <footer><p>&copy; 2026</p></footer>\n' +
       '  <script>window.ROOT=\'..\'<\/script>\n' +
+      '  <script src="../assets/data/content.js"><\/script>\n' +
       '  <script src="../assets/js/nav.js"><\/script>\n' +
       '  <script src="../assets/js/progress.js"><\/script>\n' +
       '  <script src="../assets/js/code.js"><\/script>\n' +

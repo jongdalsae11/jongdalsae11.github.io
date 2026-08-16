@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>느리게 갱신되는 구간 트리 노트 — 이름</title>
+  <link rel="icon" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/post.css">
+</head>
+<body data-crumb="글 / 알고리즘 / <b>느리게 갱신되는 구간 트리 노트</b>">
+  <main>
+    <div class="page page--post">
+      <article>
+        <div class="post-head">
+          <h1>느리게 갱신되는 구간 트리 노트</h1>
+          <div class="post-meta">
+            <span class="post-date">2026.08.12</span>
+            <span class="tag">세그먼트 트리</span>
+            <span class="tag">lazy</span>
+          </div>
+        </div>
+        <div class="post-body">
+<p>구간 갱신을 매번 내려가며 처리하면 최악의 경우 $O(N)$이 든다. 갱신을 노드에
+    "미뤄 두었다가" 필요할 때만 자식으로 내려보내면 질의와 갱신 모두 $O(\log N)$이
+    된다.<span class="sidenote">이 아이디어를 처음 봤을 때는 게으른 게 어떻게 더 빠른지
+    납득이 안 갔다.</span></p>
+    <h2>내려보내기</h2>
+    <p>핵심은 <code>push_down</code> 한 함수다. 노드에 쌓인 지연값을 자식에게 전달하고
+    자신은 비운다.</p>
+    <div class="codeblock"><pre><code class="language-cpp">void push_down(int node, int l, int r) {
+    if (!lazy[node]) return;
+    int mid = (l + r) / 2;
+    apply(node * 2,     l,       mid, lazy[node]);
+    apply(node * 2 + 1, mid + 1, r,   lazy[node]);
+    lazy[node] = 0;
+}</code></pre></div>
+    <p>자세한 배경은 <span class="cite" data-ref="Ref-A01"></span> 4장에 정리되어 있다.</p>
+        </div>
+      </article>
+      <div class="margin-col"></div>
+    </div>
+  </main>
+  <footer><p>&copy; 2026</p></footer>
+  <script>window.ROOT='..'</script>
+  <script src="../assets/data/content.js"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="../assets/js/code.js"></script>
+  <script src="../assets/js/post.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
+</body>
+</html>

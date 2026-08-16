@@ -13,67 +13,23 @@
   <link rel="stylesheet" href="./assets/css/layout.css">
   <link rel="stylesheet" href="./assets/css/components.css">
 </head>
-<body data-crumb="~ / <b>자료정리집</b>">
+<body data-crumb="자료정리집">
   <main>
     <div class="page">
       <div class="page-head">
         <p class="eyebrow">REFERENCE LIBRARY</p>
         <h1>자료정리집</h1>
-        <p class="lede">교재·자료·논문을 모아두는 창고. 글에서 인용할 때 우측의 태그를 복사해 쓰세요.</p>
+        <p class="lede">교재·논문·링크 보관소. 오른쪽 <span class="mono">[Ref-xx]</span> 를 누르면
+          인용 문구가 복사되고, 글 본문에서 그 태그로 자료를 불러올 수 있습니다.</p>
       </div>
-
-      <h2 id="math">수학</h2>
-      <ul class="ref-list">
-        <li class="ref">
-          <div class="ref-body">
-            <div class="ref-title"><a href="#">교재/논문 제목</a></div>
-            <div class="ref-src">저자 · 2024</div>
-          </div>
-          <span class="ref-fmt tag tag--dim">PDF</span>
-          <button class="ref-id" data-cite="[Ref-M01] 교재/논문 제목, 저자 (2024)">[Ref-M01]</button>
-        </li>
-      </ul>
-
-      <h2 id="algo">알고리즘</h2>
-      <ul class="ref-list">
-        <li class="ref">
-          <div class="ref-body">
-            <div class="ref-title"><a href="#">자료 제목</a></div>
-            <div class="ref-src">출처 · 연도</div>
-          </div>
-          <span class="ref-fmt tag tag--dim">LINK</span>
-          <button class="ref-id" data-cite="[Ref-A01] 자료 제목, 출처 (연도)">[Ref-A01]</button>
-        </li>
-      </ul>
-
-      <h2 id="misc">잡다한 것</h2>
-      <ul class="ref-list">
-        <li class="ref">
-          <div class="ref-body">
-            <div class="ref-title"><a href="#">자료 제목</a></div>
-            <div class="ref-src">출처 · 연도</div>
-          </div>
-          <span class="ref-fmt tag tag--dim">PDF</span>
-          <button class="ref-id" data-cite="[Ref-X01] 자료 제목, 출처 (연도)">[Ref-X01]</button>
-        </li>
-      </ul>
+      <div data-render="library"></div>
     </div>
   </main>
   <footer><p>&copy; 2026</p></footer>
   <script>window.ROOT='.'</script>
+  <script src="./assets/data/content.js"></script>
   <script src="./assets/js/nav.js"></script>
+  <script src="./assets/js/lists.js"></script>
   <script src="./assets/js/progress.js"></script>
-  <script>
-    /* 인용 태그 클릭 → 클립보드 복사 */
-    document.querySelectorAll('.ref-id').forEach(function (b) {
-      b.addEventListener('click', function () {
-        navigator.clipboard.writeText(b.getAttribute('data-cite')).then(function () {
-          var t = b.textContent;
-          b.textContent = '복사됨 ✓';
-          setTimeout(function () { b.textContent = t; }, 1400);
-        });
-      });
-    });
-  </script>
 </body>
 </html>

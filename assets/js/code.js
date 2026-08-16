@@ -13,6 +13,26 @@ document.addEventListener('DOMContentLoaded', function () {
     /* 신택스 하이라이팅 (highlight.js 가 로드된 경우) */
     if (window.hljs) { window.hljs.highlightElement(code); }
 
+    /* IDE식 들여쓰기 가이드라인 — 몇 단계 안으로 들어갔는지 보여줌 */
+    var indentUnit = 4;
+    var raw = code.textContent.replace(/\n$/, '').split('\n');
+    var maxDepth = 0;
+    raw.forEach(function (l) {
+      if (!l.trim()) return;
+      var sp = l.match(/^[ \t]*/)[0].replace(/\t/g, '    ').length;
+      maxDepth = Math.max(maxDepth, Math.floor(sp / indentUnit));
+    });
+    if (maxDepth > 0) {
+      var guides = document.createElement('div');
+      guides.className = 'cb-guides';
+      var gh = '';
+      for (var d = 1; d <= maxDepth; d++) {
+        gh += '<span style="left:calc(' + (d * indentUnit) + 'ch)"></span>';
+      }
+      guides.innerHTML = gh;
+      pre.appendChild(guides);
+    }
+
     /* 줄 번호 거터 */
     var lines = code.textContent.replace(/\n$/, '').split('\n').length;
     var nums = '';

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오일러 피 함수의 곱셈적 성질 — 이름</title>
+  <link rel="icon" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/post.css">
+</head>
+<body data-crumb="글 / 수학 / <b>오일러 피 함수의 곱셈적 성질</b>">
+  <main>
+    <div class="page page--post">
+      <article>
+        <div class="post-head">
+          <h1>오일러 피 함수의 곱셈적 성질</h1>
+          <div class="post-meta">
+            <span class="post-date">2026.08.10</span>
+            <span class="tag">정수론</span>
+          </div>
+        </div>
+        <div class="post-body">
+<p>$\gcd(m,n)=1$일 때 $\varphi(mn)=\varphi(m)\varphi(n)$이 성립한다.
+    중국인의 나머지 정리로 두 잉여계 사이의 전단사를 만들면 바로 따라온다.<span class="sidenote">"곱셈적"이라는
+    말은 모든 곱이 아니라 서로소인 곱에서만 성립한다는 뜻이라는 점이 늘 헷갈린다.</span></p>
+    <h2>증명 스케치</h2>
+    <p>$$\mathbb{Z}/mn\mathbb{Z} \;\cong\; \mathbb{Z}/m\mathbb{Z} \times \mathbb{Z}/n\mathbb{Z}$$</p>
+    <p>이 동형은 가역원 집합끼리도 대응시키므로 크기를 비교하면 결론이 나온다.</p>
+    <div class="key">따라서 $n=\prod p_i^{e_i}$이면
+    $\varphi(n)=n\prod\left(1-\frac{1}{p_i}\right)$.</div>
+    <p>표기는 <span class="cite" data-ref="Ref-M02"></span>를 따랐다.</p>
+        </div>
+      </article>
+      <div class="margin-col"></div>
+    </div>
+  </main>
+  <footer><p>&copy; 2026</p></footer>
+  <script>window.ROOT='..'</script>
+  <script src="../assets/data/content.js"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="../assets/js/code.js"></script>
+  <script src="../assets/js/post.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
+</body>
+</html>
