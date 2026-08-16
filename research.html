@@ -4,36 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>연구·프로젝트 — 이름</title>
+  <link rel="icon" href="./assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <link rel="stylesheet" href="./assets/css/layout.css">
+  <link rel="stylesheet" href="./assets/css/components.css">
 </head>
-<body>
-  <div class="layout">
-    <div id="nav-mount"></div>
-    <main>
+<body data-crumb="~ / <b>연구·프로젝트</b>">
+  <main>
+    <div class="page">
       <div class="page-head">
-        <p class="eyebrow">연구 · 프로젝트</p>
+        <p class="eyebrow">RESEARCH · PROJECTS</p>
         <h1>연구·프로젝트</h1>
-        <p class="lede">진행했거나 진행 중인 연구와 프로젝트들입니다.</p>
+        <p class="lede">진행 중이거나 완료한 연구와 프로젝트를 정리합니다.</p>
       </div>
 
-      <ul class="card-list">
-        <li><a class="card" href="#">
-          <p class="card-title">연구 제목</p>
-          <p class="card-desc">한두 문장으로 무엇을 다루는 연구인지 설명합니다.</p>
-          <p class="card-meta">2026 · 진행 중</p>
+      <ul class="cards">
+        <li><a class="card plain" href="#">
+          <p class="card-meta">ONGOING · 2026</p>
+          <p class="card-title">진행 중인 연구 제목</p>
+          <p class="card-desc">연구 주제와 현재 진척 상황을 두세 줄로 요약합니다.</p>
         </a></li>
-        <li><a class="card" href="#">
+        <li><a class="card plain" href="#">
+          <p class="card-meta">PROJECT · 2025</p>
           <p class="card-title">프로젝트 제목</p>
-          <p class="card-desc">한두 문장으로 무엇을 만들었는지 설명합니다.</p>
-          <p class="card-meta">2025 · 팀 프로젝트</p>
+          <p class="card-desc">무엇을 만들었고 어떤 문제를 해결했는지 적습니다.</p>
+        </a></li>
+        <li><a class="card plain" href="#">
+          <p class="card-meta">PAPER · 2025</p>
+          <p class="card-title">소논문 / 리포트 제목</p>
+          <p class="card-desc">개요 한 줄. 클릭하면 상세 페이지나 PDF로 연결하세요.</p>
         </a></li>
       </ul>
-    </main>
-  </div>
+    </div>
+  </main>
   <footer><p>&copy; 2026</p></footer>
-  <script src="nav.js"></script>
+  <script>window.ROOT='.'</script>
+  <script src="./assets/js/nav.js"></script>
+  <script src="./assets/js/progress.js"></script>
 </body>
 </html>

@@ -4,423 +4,178 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>글쓰기 — 이름</title>
+  <link rel="icon" href="./assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <link rel="stylesheet" href="./assets/css/layout.css">
+  <link rel="stylesheet" href="./assets/css/components.css">
+  <link rel="stylesheet" href="./assets/css/post.css">
   <style>
-    /* 글쓰기 화면은 전체 폭을 씁니다 */
-    body.write-mode main { max-width: none; padding: 40px 40px 60px; }
-
-    .w-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; }
-    .w-head h1 { margin: 0; font-size: 1.9rem; }
-    .w-status { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-faint); }
-
-    /* 메타 입력 */
-    .meta-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 12px; margin-bottom: 16px; }
-    .field { display: flex; flex-direction: column; gap: 5px; }
-    .field label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.08em; }
-    .field input, .field select {
-      background: var(--surface);
-      border: 1px solid var(--surface-line);
-      border-radius: 2px;
-      color: var(--ink);
-      font-family: var(--font-sans);
-      font-size: 0.95rem;
-      padding: 9px 11px;
+    /* ── 글쓰기 화면 전용 (2단: 작성 / 미리보기) ── */
+    main { padding-left: 24px; padding-right: 24px; }
+    .write-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      max-width: 1400px;
+      margin: 0 auto;
     }
-    .field input:focus, .field select:focus { outline: none; border-color: var(--accent); }
-    .field select option { background: var(--paper); }
-
-    /* 툴바 */
-    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-    .tool {
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--ink-soft);
+    .w-panel {
+      border: 1px solid var(--line-soft);
+      border-radius: 10px;
       background: var(--surface);
-      border: 1px solid var(--surface-line);
-      border-radius: 2px;
-      padding: 7px 12px;
-      cursor: pointer;
-      transition: all 0.15s ease;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 76vh;
     }
-    .tool:hover { color: var(--ink); border-color: var(--accent); }
-    .tool.primary { color: var(--paper); background: var(--accent); border-color: var(--accent); font-weight: 600; }
-    .tool.primary:hover { color: var(--paper); opacity: 0.9; }
-
-    /* 편집기 / 미리보기 2단 */
-    .editor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
-
-    .pane-label {
-      font-family: var(--font-mono);
+    .w-panel-head {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--faint);
+      letter-spacing: 0.1em;
+      padding: 9px 16px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .w-fields {
+      display: grid;
+      grid-template-columns: 1fr 130px 130px 1fr;
+      gap: 8px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .w-fields input, .w-fields select {
+      font: inherit;
+      font-size: 0.84rem;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--line-soft);
+      border-radius: 7px;
+      padding: 6px 10px;
+      outline: none;
+    }
+    .w-fields input:focus, .w-fields select:focus { border-color: var(--cyan); }
+    .w-toolbar {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .w-toolbar button {
+      font-family: var(--mono);
       font-size: 0.7rem;
-      color: var(--ink-faint);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin: 0 0 8px;
+      color: var(--soft);
+      background: none;
+      border: 1px solid var(--line-soft);
+      border-radius: 6px;
+      padding: 3px 9px;
+      cursor: pointer;
+      transition: color .15s, border-color .15s;
     }
-
+    .w-toolbar button:hover { color: var(--cyan); border-color: rgba(56,189,248,.4); }
     #editor {
+      flex: 1;
       width: 100%;
-      min-height: 62vh;
-      background: var(--surface);
-      border: 1px solid var(--surface-line);
-      border-radius: 3px;
-      color: var(--ink);
-      font-family: var(--font-mono);
-      font-size: 0.92rem;
+      resize: none;
+      border: 0;
+      outline: none;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.84rem;
       line-height: 1.75;
-      padding: 20px;
-      resize: vertical;
-      tab-size: 2;
+      padding: 18px;
     }
-    #editor:focus { outline: none; border-color: var(--accent); }
-
-    .preview {
-      min-height: 62vh;
-      border: 1px solid var(--surface-line);
-      border-radius: 3px;
-      padding: 24px 26px;
-      background: rgba(180, 214, 240, 0.02);
-      overflow-x: auto;
+    #preview { flex: 1; overflow-y: auto; padding: 22px 26px; background: var(--bg); }
+    #preview .sidenote { display: block; }  /* 미리보기에선 항상 본문 내 박스 */
+    .w-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      padding: 10px 14px;
+      border-top: 1px solid var(--line-soft);
     }
-    .preview h1 { font-size: 1.7rem; margin: 0 0 12px; }
-    .preview h2 { font-size: 1.3rem; margin: 30px 0 12px; }
-    .preview h3 { font-size: 1.05rem; margin: 22px 0 10px; }
-    .preview p { line-height: 1.75; margin: 0 0 1.15em; font-size: 0.98rem; }
-    .preview ul, .preview ol { line-height: 1.75; font-size: 0.98rem; }
-    .preview code {
-      font-family: var(--font-mono);
-      font-size: 0.86em;
-      background: rgba(180, 214, 240, 0.1);
-      padding: 2px 6px;
-      border-radius: 2px;
+    .w-actions button {
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      color: var(--text);
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
     }
-    .preview pre {
-      background: rgba(0, 0, 0, 0.22);
-      border: 1px solid var(--surface-line);
-      border-radius: 3px;
-      padding: 14px 16px;
-      overflow-x: auto;
+    .w-actions button:hover { color: var(--cyan); border-color: var(--cyan); }
+    .w-help {
+      max-width: 1400px;
+      margin: 14px auto 0;
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      color: var(--faint);
     }
-    .preview pre code { background: none; padding: 0; }
-    .preview blockquote {
-      border-left: 2px solid var(--accent);
-      margin: 0 0 1.15em;
-      padding: 2px 0 2px 16px;
-      color: var(--ink-soft);
-    }
-    .preview .wikilink { color: var(--accent); border-bottom: 1px solid rgba(127,209,232,0.4); text-decoration: none; }
-    .preview .wikilink.missing { color: var(--accent-warm); border-bottom-color: rgba(232,163,61,0.4); }
-
-    .preview .sidenote-inline { display: block; }
-
-    /* 도움말 */
-    .syntax-help {
-      margin-top: 28px;
-      padding: 18px 20px;
-      border: 1px dashed var(--surface-line);
-      border-radius: 3px;
-      font-size: 0.86rem;
-      color: var(--ink-soft);
-      line-height: 1.7;
-    }
-    .syntax-help code {
-      font-family: var(--font-mono);
-      color: var(--accent);
-      background: rgba(180, 214, 240, 0.08);
-      padding: 1px 6px;
-      border-radius: 2px;
-    }
-    .syntax-help p { margin: 0 0 8px; }
-    .syntax-help p:last-child { margin: 0; }
-
-    @media (max-width: 1000px) {
-      .editor-grid { grid-template-columns: 1fr; }
-      .meta-row { grid-template-columns: 1fr 1fr; }
+    @media (max-width: 1100px) {
+      .write-grid { grid-template-columns: 1fr; }
+      .w-fields { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
-<body class="write-mode">
-  <div class="layout">
-    <div id="nav-mount"></div>
-    <main>
-
-      <div class="w-head">
-        <h1>글쓰기</h1>
-        <span class="w-status" id="status">글자 0자</span>
-      </div>
-
-      <div class="meta-row">
-        <div class="field">
-          <label for="m-title">제목</label>
-          <input id="m-title" type="text" placeholder="글 제목">
-        </div>
-        <div class="field">
-          <label for="m-cat">분류</label>
-          <select id="m-cat">
+<body data-crumb="~ / <b>글쓰기</b>">
+  <main>
+    <div class="write-grid">
+      <section class="w-panel">
+        <div class="w-panel-head">WRITE — 마크다운 + ^[여백주석] + [[글 연결]]</div>
+        <div class="w-fields">
+          <input id="f-title" type="text" placeholder="제목">
+          <select id="f-cat">
             <option value="math">수학</option>
-            <option value="algo">알고리즘</option>
+            <option value="algo" selected>알고리즘</option>
             <option value="essay">에세이</option>
           </select>
+          <input id="f-date" type="date">
+          <input id="f-tags" type="text" placeholder="태그 (쉼표로 구분)">
         </div>
-        <div class="field">
-          <label for="m-date">날짜</label>
-          <input id="m-date" type="date">
+        <div class="w-toolbar">
+          <button data-ins="h2">H2</button>
+          <button data-ins="bold">**굵게**</button>
+          <button data-ins="code">`code`</button>
+          <button data-ins="fence">```코드블록```</button>
+          <button data-ins="imath">$수식$</button>
+          <button data-ins="math">$$디스플레이$$</button>
+          <button data-ins="sn">^[여백주석]</button>
+          <button data-ins="wiki">[[글 연결]]</button>
+          <button data-ins="link">[링크]()</button>
         </div>
-        <div class="field">
-          <label for="m-tags">태그 (쉼표로 구분)</label>
-          <input id="m-tags" type="text" placeholder="그래프, 조합론">
+        <textarea id="editor" spellcheck="false" placeholder="본문을 작성하세요.
+
+^[이렇게 쓰면 여백주석이 됩니다]
+[[다른 글 제목]] 으로 글을 연결할 수 있습니다.
+^[[[다른 글 제목]]에서 다룬 논증과 같은 구조 — 겹쳐 쓰기도 됩니다]"></textarea>
+        <div class="w-actions">
+          <button id="exp-md">.md 내보내기</button>
+          <button id="exp-html">HTML 내보내기</button>
         </div>
-      </div>
+      </section>
 
-      <div class="toolbar">
-        <button class="tool" data-wrap="**|**">굵게</button>
-        <button class="tool" data-wrap="*|*">기울임</button>
-        <button class="tool" data-wrap="`|`">코드</button>
-        <button class="tool" data-line="## ">소제목</button>
-        <button class="tool" data-line="- ">목록</button>
-        <button class="tool" data-line="> ">인용</button>
-        <button class="tool" id="btn-sidenote">여백주석 ^[ ]</button>
-        <button class="tool" id="btn-wikilink">글 연결 [[ ]]</button>
-        <button class="tool primary" id="btn-export">.md 파일로 내보내기</button>
-        <button class="tool" id="btn-html">완성 HTML 내보내기</button>
-      </div>
-
-      <div class="editor-grid">
-        <section>
-          <p class="pane-label">작성</p>
-          <textarea id="editor" spellcheck="false" placeholder="여기에 글을 씁니다.
-
-마크다운 문법을 그대로 쓸 수 있고,
-^[여백주석] 과 [[글 연결]] 두 가지가 추가로 지원됩니다."></textarea>
-        </section>
-
-        <section>
-          <p class="pane-label">미리보기</p>
-          <div class="preview" id="preview"></div>
-        </section>
-      </div>
-
-      <div class="syntax-help">
-        <p><code>^[내용]</code> — 여백주석. 본문에는 작은 번호만 남고, 실제 글 페이지에서는 오른쪽 여백에 나란히 뜹니다.</p>
-        <p><code>[[글 제목]]</code> — 다른 글 연결. 이 표시를 기준으로 백링크와 인용 관계 그래프가 자동으로 만들어집니다.</p>
-        <p><code>^[[[글 제목]]에서 다룬 논증과 같은 구조]</code> — 둘을 겹쳐 쓰면, 왜 연결되는지를 여백에 설명하면서 링크까지 걸 수 있습니다.</p>
-        <p>다 쓰면 <strong>.md 파일로 내보내기</strong>로 저장해서 <code>posts/</code> 폴더에 넣고 커밋하면 됩니다.</p>
-      </div>
-
-    </main>
-  </div>
+      <section class="w-panel">
+        <div class="w-panel-head">PREVIEW — 실시간 미리보기</div>
+        <div id="preview"></div>
+      </section>
+    </div>
+    <p class="w-help">HTML 내보내기 → 받은 파일을 posts/ 폴더에 넣으면 바로 글 페이지가 됩니다. (.md는 원고 보관용)</p>
+  </main>
   <footer><p>&copy; 2026</p></footer>
 
-  <script src="nav.js"></script>
-  <script>
-  (function () {
-    var ed      = document.getElementById('editor');
-    var preview = document.getElementById('preview');
-    var status  = document.getElementById('status');
-    var mTitle  = document.getElementById('m-title');
-    var mCat    = document.getElementById('m-cat');
-    var mDate   = document.getElementById('m-date');
-    var mTags   = document.getElementById('m-tags');
-
-    mDate.value = new Date().toISOString().slice(0, 10);
-
-    /* ---------- 아주 작은 마크다운 변환기 ---------- */
-    function esc(s) {
-      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
-    function inline(s) {
-      // 여백주석은 이미 앞 단계에서 뽑아냈으므로 여기서는 나머지만 처리
-      s = s.replace(/\[\[([^\]]+)\]\]/g, '<a class="wikilink" href="#">$1</a>');
-      s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-      s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-      s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-      s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-      return s;
-    }
-
-    function render(src) {
-      var notes = [];
-      // ^[...] 형태의 여백주석을 뽑아 번호를 매깁니다 (중첩 대괄호 1단계까지 허용)
-      src = src.replace(/\^\[((?:[^\[\]]|\[\[[^\]]*\]\])*)\]/g, function (_, body) {
-        notes.push(body);
-        var n = notes.length;
-        return '\u0000SN' + n + '\u0000';
-      });
-
-      var lines = src.split('\n');
-      var out = [], inCode = false, listType = null;
-
-      function closeList() {
-        if (listType) { out.push('</' + listType + '>'); listType = null; }
-      }
-
-      lines.forEach(function (raw) {
-        var line = raw;
-
-        if (/^```/.test(line)) {
-          closeList();
-          out.push(inCode ? '</code></pre>' : '<pre><code>');
-          inCode = !inCode;
-          return;
-        }
-        if (inCode) { out.push(esc(line)); return; }
-
-        if (/^\s*$/.test(line)) { closeList(); return; }
-
-        var h = line.match(/^(#{1,3})\s+(.*)$/);
-        if (h) {
-          closeList();
-          var lvl = h[1].length;
-          out.push('<h' + lvl + '>' + inline(esc(h[2])) + '</h' + lvl + '>');
-          return;
-        }
-
-        if (/^>\s?/.test(line)) {
-          closeList();
-          out.push('<blockquote>' + inline(esc(line.replace(/^>\s?/, ''))) + '</blockquote>');
-          return;
-        }
-
-        var ul = line.match(/^[-*]\s+(.*)$/);
-        var ol = line.match(/^\d+\.\s+(.*)$/);
-        if (ul || ol) {
-          var want = ul ? 'ul' : 'ol';
-          if (listType !== want) { closeList(); out.push('<' + want + '>'); listType = want; }
-          out.push('<li>' + inline(esc((ul || ol)[1])) + '</li>');
-          return;
-        }
-
-        closeList();
-        out.push('<p>' + inline(esc(line)) + '</p>');
-      });
-      closeList();
-      if (inCode) out.push('</code></pre>');
-
-      var html = out.join('\n');
-
-      // 자리표시자를 참조 번호로 바꾸고, 각 주석 블록을 뒤에 덧붙입니다
-      html = html.replace(/\u0000SN(\d+)\u0000/g, function (_, n) {
-        return '<span class="sidenote-ref" data-sn="' + n + '">' + n + '</span>';
-      });
-
-      var noteHtml = notes.map(function (body, i) {
-        return '<div class="sidenote-inline" data-sn="' + (i + 1) + '">' +
-               '<span class="sn-num">주 ' + (i + 1) + '</span>' + inline(esc(body)) + '</div>';
-      }).join('\n');
-
-      return { html: html, notes: noteHtml, count: notes.length };
-    }
-
-    function update() {
-      var r = render(ed.value);
-      preview.innerHTML = r.html + (r.notes ? '<hr style="border:none;border-top:1px solid var(--surface-line);margin:28px 0">' + r.notes : '');
-      status.textContent = '글자 ' + ed.value.length + '자 · 여백주석 ' + r.count + '개';
-    }
-
-    ed.addEventListener('input', update);
-    update();
-
-    /* ---------- 툴바 ---------- */
-    function surround(before, after) {
-      var s = ed.selectionStart, e = ed.selectionEnd;
-      var sel = ed.value.slice(s, e);
-      ed.value = ed.value.slice(0, s) + before + sel + after + ed.value.slice(e);
-      ed.focus();
-      ed.selectionStart = s + before.length;
-      ed.selectionEnd = s + before.length + sel.length;
-      update();
-    }
-
-    function prefixLine(prefix) {
-      var s = ed.selectionStart;
-      var lineStart = ed.value.lastIndexOf('\n', s - 1) + 1;
-      ed.value = ed.value.slice(0, lineStart) + prefix + ed.value.slice(lineStart);
-      ed.focus();
-      ed.selectionStart = ed.selectionEnd = s + prefix.length;
-      update();
-    }
-
-    document.querySelectorAll('.tool[data-wrap]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var parts = b.dataset.wrap.split('|');
-        surround(parts[0], parts[1]);
-      });
-    });
-    document.querySelectorAll('.tool[data-line]').forEach(function (b) {
-      b.addEventListener('click', function () { prefixLine(b.dataset.line); });
-    });
-    document.getElementById('btn-sidenote').addEventListener('click', function () { surround('^[', ']'); });
-    document.getElementById('btn-wikilink').addEventListener('click', function () { surround('[[', ']]'); });
-
-    /* ---------- 내보내기 ---------- */
-    function download(filename, text, mime) {
-      var blob = new Blob([text], { type: (mime || 'text/plain') + ';charset=utf-8' });
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href);
-    }
-
-    function slugify(s) {
-      return (s || 'untitled').trim().replace(/\s+/g, '-').replace(/[\/\\?%*:|"'<>]/g, '');
-    }
-
-    function frontmatter() {
-      var tags = mTags.value.split(',').map(function (t) { return t.trim(); }).filter(Boolean);
-      return '---\n' +
-             'title: ' + (mTitle.value || '제목 없음') + '\n' +
-             'category: ' + mCat.value + '\n' +
-             'date: ' + mDate.value + '\n' +
-             'tags: [' + tags.join(', ') + ']\n' +
-             '---\n\n';
-    }
-
-    document.getElementById('btn-export').addEventListener('click', function () {
-      var name = mDate.value + '-' + slugify(mTitle.value) + '.md';
-      download(name, frontmatter() + ed.value, 'text/markdown');
-    });
-
-    /* 완성된 글 페이지를 통째로 HTML 파일로 내보냅니다 */
-    document.getElementById('btn-html').addEventListener('click', function () {
-      var r = render(ed.value);
-      var catName = { math: '수학', algo: '알고리즘', essay: '에세이' }[mCat.value];
-      var tags = mTags.value.split(',').map(function (t) { return t.trim(); }).filter(Boolean);
-      var tagHtml = tags.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join('');
-
-      var page =
-'<!doctype html>\n<html lang="ko">\n<head>\n' +
-'  <meta charset="UTF-8">\n' +
-'  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-'  <title>' + (mTitle.value || '제목 없음') + ' — 이름</title>\n' +
-'  <link rel="preconnect" href="https://fonts.googleapis.com">\n' +
-'  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
-'  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">\n' +
-'  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n' +
-'  <div class="layout">\n    <div id="nav-mount"></div>\n    <main>\n' +
-'      <div class="page-head">\n' +
-'        <p class="eyebrow">글 · ' + catName + '</p>\n' +
-'        <h1>' + (mTitle.value || '제목 없음') + '</h1>\n' +
-'        <p class="post-meta">' + mDate.value + ' · ' + catName + '</p>\n' +
-'        <p>' + tagHtml + '</p>\n' +
-'      </div>\n\n' +
-'      <div class="post-wrap">\n        <article class="post-body">\n' +
-r.html + '\n' + r.notes + '\n' +
-'        </article>\n        <aside class="sidenote-col" id="sidenoteCol"></aside>\n      </div>\n' +
-'    </main>\n  </div>\n  <footer><p>&copy; 2026</p></footer>\n' +
-'  <script src="nav.js"><\/script>\n' +
-'  <script src="sidenotes.js"><\/script>\n' +
-'</body>\n</html>\n';
-
-      download(mDate.value + '-' + slugify(mTitle.value) + '.html', page, 'text/html');
-    });
-  })();
-  </script>
+  <script>window.ROOT='.'</script>
+  <script src="./assets/js/nav.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="./assets/js/write.js"></script>
 </body>
 </html>

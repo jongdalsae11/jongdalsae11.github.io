@@ -4,42 +4,71 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>문제 아카이브 — 이름</title>
+  <link rel="icon" href="./assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <link rel="stylesheet" href="./assets/css/layout.css">
+  <link rel="stylesheet" href="./assets/css/components.css">
 </head>
-<body>
-  <div class="layout">
-    <div id="nav-mount"></div>
-    <main>
+<body data-crumb="~ / <b>문제 아카이브</b>">
+  <main>
+    <div class="page">
       <div class="page-head">
-        <p class="eyebrow">문제 아카이브</p>
+        <p class="eyebrow">PROBLEM SETTING</p>
         <h1>문제 아카이브</h1>
-        <p class="lede">직접 만든 경쟁 프로그래밍 문제들입니다.</p>
+        <p class="lede">직접 만든 CP 문제들. 문제 하나하나를 독립된 작품처럼 전시합니다.</p>
       </div>
 
-      <div class="filters">
-        <button class="filter-btn active">전체</button>
-        <button class="filter-btn">쉬움</button>
-        <button class="filter-btn">보통</button>
-        <button class="filter-btn">어려움</button>
+      <div class="chips" id="diff-chips">
+        <button class="chip on" data-diff="all">전체</button>
+        <button class="chip" data-diff="easy">쉬움</button>
+        <button class="chip" data-diff="mid">보통</button>
+        <button class="chip" data-diff="hard">어려움</button>
       </div>
 
-      <table>
-        <thead><tr><th>제목</th><th>난이도</th><th>태그</th><th>풀이</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>문제 제목</td>
-            <td>보통</td>
-            <td><span class="tag">그래프</span></td>
-            <td><a href="#">보기</a></td>
-          </tr>
-        </tbody>
-      </table>
-    </main>
-  </div>
+      <ul class="prob-list">
+        <li class="prob" data-diff="hard">
+          <div class="prob-head">
+            <h3 class="prob-title"><a href="#">문제 제목을 여기에</a></h3>
+            <div class="prob-meta">
+              <span class="tag">세그먼트 트리</span>
+              <span class="tag tag--dim">어려움</span>
+            </div>
+          </div>
+          <p class="prob-note">이 문제에 얽힌 짧은 코멘트를 남겨보세요 — "지하철에서 떠오른 아이디어로 만들었다"처럼.</p>
+        </li>
+        <li class="prob" data-diff="mid">
+          <div class="prob-head">
+            <h3 class="prob-title"><a href="#">두 번째 문제 제목</a></h3>
+            <div class="prob-meta">
+              <span class="tag">그래프</span>
+              <span class="tag tag--dim">보통</span>
+            </div>
+          </div>
+          <p class="prob-note">조건을 비틀며 며칠을 고민했던 과정을 한 줄로.</p>
+        </li>
+      </ul>
+    </div>
+  </main>
   <footer><p>&copy; 2026</p></footer>
-  <script src="nav.js"></script>
+  <script>window.ROOT='.'</script>
+  <script src="./assets/js/nav.js"></script>
+  <script src="./assets/js/progress.js"></script>
+  <script>
+    /* 난이도 필터 */
+    document.querySelectorAll('#diff-chips .chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        document.querySelectorAll('#diff-chips .chip').forEach(function (c) { c.classList.remove('on'); });
+        chip.classList.add('on');
+        var d = chip.getAttribute('data-diff');
+        document.querySelectorAll('.prob').forEach(function (p) {
+          p.style.display = (d === 'all' || p.getAttribute('data-diff') === d) ? '' : 'none';
+        });
+      });
+    });
+  </script>
 </body>
 </html>

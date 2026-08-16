@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — 이름</title>
+  <link rel="icon" href="/assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <link rel="stylesheet" href="/assets/css/layout.css">
+  <link rel="stylesheet" href="/assets/css/components.css">
+  <style>
+    /* 404는 사이드바 없이 단독 화면 */
+    main { margin-left: 0; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="err-wrap">
+      <div class="err-box">
+        <div><span class="e-dim">$</span> resolve <span class="e-dim" id="err-path">/requested/page</span></div>
+        <div><span class="e-red">error:</span> page not found <span class="e-dim">(exit code 404)</span></div>
+        <div class="e-dim">&nbsp;&nbsp;요청하신 경로는 이 아카이브에 존재하지 않습니다.</div>
+        <div><span class="e-dim">note:</span> <a class="e-cy" href="/index.html">cd ~ 로 돌아가기</a></div>
+      </div>
+    </div>
+  </main>
+  <footer style="margin-left:0"><p>&copy; 2026</p></footer>
+  <script>
+    document.getElementById('err-path').textContent = location.pathname;
+  </script>
+</body>
+</html>

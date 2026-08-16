@@ -1,0 +1,228 @@
+/* ============================================================
+   layout.css — 상단 얇은 헤더 · 사이드바 트리 · 본문 그리드 ·
+   우측 진행 레일 · 푸터 · 모바일 대응
+   ============================================================ */
+
+/* ── 얇은 상단 헤더 (브레드크럼) ───────────────────── */
+.topbar {
+  position: fixed;
+  top: 0; left: var(--sidebar-w); right: 0;
+  height: var(--topbar-h);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  background: rgba(10, 10, 20, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line-soft);
+  z-index: 50;
+}
+.topbar .crumb {
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  color: var(--faint);
+  letter-spacing: 0.03em;
+}
+.topbar .crumb b { color: var(--soft); font-weight: 500; }
+
+/* ── 사이드바 트리 ────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--surface);
+  border-right: 1px solid var(--line-soft);
+  padding: 26px 18px 26px 22px;
+  overflow-y: auto;
+  z-index: 60;
+}
+
+.site-id { margin-bottom: 26px; }
+.site-id .site-name {
+  display: block;
+  font-weight: 800;
+  font-size: 1.02rem;
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+.site-id .site-sub {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--faint);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tree { list-style: none; margin: 0; padding: 0; }
+.tree ul { list-style: none; margin: 0; padding: 0 0 0 14px; }
+
+.tree a, .tree button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 7px;
+  padding: 7px 10px;
+  margin: 1px 0;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: 0 6px 6px 0;
+  background: none;
+  font: inherit;
+  font-size: 0.88rem;
+  color: var(--soft);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.tree a:hover, .tree button:hover {
+  background: rgba(180, 214, 240, 0.05);
+  color: var(--text);
+}
+.tree a.active {
+  border-left-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(56, 189, 248, 0.06);
+}
+
+/* 토글(아코디언) */
+.tree .caret {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--faint);
+  transition: transform 0.25s ease;
+  display: inline-block;
+  width: 0.9em;
+}
+.tree button[aria-expanded="true"] .caret { transform: rotate(90deg); }
+.tree .branch {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* ── 본문 영역 ────────────────────────────────────── */
+main {
+  margin-left: var(--sidebar-w);
+  padding: calc(var(--topbar-h) + 44px) 34px 90px;
+  min-height: 80vh;
+}
+.page { max-width: var(--content-w); margin: 0 auto; }
+
+/* 글 읽기 페이지: 본문 + 우측 여백주석 2단 */
+.page--post {
+  max-width: 1060px;
+  display: grid;
+  grid-template-columns: minmax(0, 700px) 270px;
+  gap: 52px;
+  align-items: start;
+}
+.margin-col { position: relative; min-height: 100%; }
+
+.page-head { margin-bottom: 2.6em; }
+.page-head .eyebrow {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--purple);
+  letter-spacing: 0.14em;
+  margin: 0 0 10px;
+}
+.page-head .lede { color: var(--soft); max-width: 56ch; }
+
+/* ── 우측 세로 진행 레일 ──────────────────────────────
+   회색 트랙 + 시작/끝점 + 보라 그라데이션 + 보라 원형 썸  */
+.rail {
+  position: fixed;
+  right: 13px;
+  top: 12vh;
+  height: 76vh;
+  width: 8px;
+  z-index: 40;
+  cursor: pointer;
+}
+.rail-track {
+  position: absolute; inset: 0;
+  background: var(--line-soft);
+  border-radius: 4px;
+}
+.rail-cap {
+  position: absolute; left: 2px;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--line);
+}
+.rail-cap--top { top: 2px; }
+.rail-cap--bot { bottom: 2px; }
+.rail-fill {
+  position: absolute;
+  top: 0; left: 3px;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(168, 85, 247, 0.05), var(--purple));
+  border-radius: 1px;
+  pointer-events: none;
+}
+.rail-dot {
+  position: absolute; left: 1px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--purple);
+  box-shadow: 0 0 8px rgba(168, 85, 247, 0.55);
+  pointer-events: none;
+}
+
+/* ── 푸터: 극단적 미니멀 ──────────────────────────── */
+footer {
+  margin-left: var(--sidebar-w);
+  padding: 0 34px 26px;
+  text-align: right;
+}
+footer p {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--line);
+  margin: 0;
+}
+
+/* ── 모바일 메뉴 버튼 + 백드롭 ────────────────────── */
+.nav-fab {
+  display: none;
+  position: fixed;
+  left: 18px; bottom: 20px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(20, 20, 35, 0.8);
+  backdrop-filter: blur(8px);
+  color: var(--soft);
+  font-size: 1.1rem;
+  cursor: pointer;
+  z-index: 70;
+}
+.nav-backdrop {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(10, 10, 20, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 55;
+}
+
+/* ── 반응형 ───────────────────────────────────────── */
+@media (max-width: 1180px) {
+  .page--post { grid-template-columns: minmax(0, 1fr); }
+  .margin-col { display: none; }
+}
+
+@media (max-width: 920px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.33, 1, 0.68, 1);
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.4);
+  }
+  body.nav-open .sidebar { transform: none; }
+  body.nav-open .nav-backdrop { display: block; }
+  .nav-fab { display: block; }
+  .topbar { left: 0; }
+  main, footer { margin-left: 0; }
+  main { padding: calc(var(--topbar-h) + 28px) 20px 70px; }
+  .rail { display: none; }
+}

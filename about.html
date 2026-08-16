@@ -4,43 +4,55 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>이력 — 이름</title>
+  <link rel="icon" href="./assets/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <link rel="stylesheet" href="./assets/css/layout.css">
+  <link rel="stylesheet" href="./assets/css/components.css">
 </head>
-<body>
-  <div class="layout">
-    <div id="nav-mount"></div>
-    <main>
+<body data-crumb="~ / <b>이력</b>">
+  <main>
+    <div class="page">
       <div class="page-head">
-        <p class="eyebrow">이력</p>
-        <h1>이름</h1>
-        <p class="lede">소개 문단을 여기에 적으세요. 무엇에 관심이 있고, 무엇을 하고 있는지.</p>
+        <p class="eyebrow">PROFILE</p>
+        <h1>이력</h1>
+        <p class="lede">간단한 자기소개를 두세 문장으로 적어보세요.</p>
       </div>
-
-      <h2>관심 분야</h2>
-      <p><span class="tag">알고리즘</span><span class="tag">조합론</span><span class="tag">문제 설계</span></p>
-
-      <h2>활동</h2>
-      <table>
-        <thead><tr><th>기간</th><th>내용</th></tr></thead>
-        <tbody>
-          <tr><td>2026</td><td>활동 내용을 적으세요</td></tr>
-          <tr><td>2025</td><td>활동 내용을 적으세요</td></tr>
-        </tbody>
-      </table>
 
       <h2>수상</h2>
       <table>
-        <thead><tr><th>연도</th><th>대회</th><th>결과</th></tr></thead>
+        <thead><tr><th>연도</th><th>대회 / 활동</th><th>결과</th></tr></thead>
         <tbody>
-          <tr><td>2026</td><td>대회 이름</td><td>결과</td></tr>
+          <tr><td class="mono meta">2026</td><td>대회 이름</td><td>수상 내역</td></tr>
+          <tr><td class="mono meta">2025</td><td>대회 이름</td><td>수상 내역</td></tr>
         </tbody>
       </table>
-    </main>
-  </div>
+
+      <h2>활동</h2>
+      <table>
+        <thead><tr><th>기간</th><th>활동</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td class="mono meta">2026 —</td><td>활동 내용</td><td>설명</td></tr>
+          <tr><td class="mono meta">2025</td><td>활동 내용</td><td>설명</td></tr>
+        </tbody>
+      </table>
+
+      <h2>온라인 저지</h2>
+      <table>
+        <thead><tr><th>플랫폼</th><th>핸들</th><th>레이팅</th></tr></thead>
+        <tbody>
+          <tr><td>Baekjoon OJ</td><td class="mono">handle</td><td>—</td></tr>
+          <tr><td>Codeforces</td><td class="mono">handle</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
   <footer><p>&copy; 2026</p></footer>
-  <script src="nav.js"></script>
+  <script>window.ROOT='.'</script>
+  <script src="./assets/js/nav.js"></script>
+  <script src="./assets/js/progress.js"></script>
 </body>
 </html>

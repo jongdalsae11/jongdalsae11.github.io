@@ -1,0 +1,129 @@
+/* ============================================================
+   post.css — 글 읽기 페이지 전용:
+   본문 타이포 · 여백주석(Sidenote) · 백링크 · 인용 그래프 · 수식
+   ============================================================ */
+
+/* ── 글 머리 ──────────────────────────────────────── */
+.post-head { margin-bottom: 2.8em; }
+.post-head h1 { font-size: 1.75rem; margin-bottom: 0.4em; }
+.post-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.post-date { font-family: var(--mono); font-size: 0.76rem; color: var(--faint); }
+
+/* ── 본문 타이포그래피 ────────────────────────────── */
+.post-body { font-size: 0.98rem; line-height: 1.9; }
+.post-body h2 {
+  font-size: 1.22rem;
+  padding-bottom: 0.35em;
+  border-bottom: 1px solid var(--line-soft);
+}
+.post-body ul, .post-body ol { padding-left: 1.4em; }
+.post-body li { margin-bottom: 0.35em; }
+
+/* 핵심 결론 강조 — 주황 1% (아껴서 사용) */
+.key {
+  border-left: 2px solid var(--orange);
+  background: rgba(249, 115, 22, 0.05);
+  padding: 10px 16px;
+  border-radius: 0 8px 8px 0;
+  margin: 1.5em 0;
+}
+
+/* ── 수식 (Computer Modern via KaTeX) ─────────────── */
+.katex { font-size: 1.06em; }
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0;
+  margin: 1.4em 0;
+}
+/* 수식 전후 서술을 CMR 느낌으로 쓰고 싶을 때 */
+.mathtext { font-family: var(--math); }
+
+/* ── 여백주석 (Sidenote) ──────────────────────────────
+   본문 안: <span class="sidenote">내용</span>
+   post.js 가 번호를 붙이고 넓은 화면에선 우측 여백으로 이동  */
+.sn-ref {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--purple);
+  vertical-align: super;
+  line-height: 0;
+  margin: 0 1px;
+  cursor: default;
+}
+
+/* 좁은 화면: 본문 흐름 안의 커스텀 박스 */
+.sidenote {
+  display: block;
+  margin: 0.9em 0;
+  padding: 8px 14px;
+  border-left: 2px solid rgba(168, 85, 247, 0.5);
+  background: rgba(168, 85, 247, 0.045);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--soft);
+}
+.sidenote .sn-no {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--purple);
+  margin-right: 6px;
+}
+
+/* 넓은 화면: 우측 여백 컬럼으로 이동한 상태 */
+.margin-col .sidenote {
+  position: absolute;
+  left: 0; right: 0;
+  margin: 0;
+  border-left-color: rgba(168, 85, 247, 0.35);
+  background: none;
+  padding: 0 0 0 12px;
+  font-size: 0.76rem;
+  color: var(--faint);
+  transition: color 0.2s ease;
+}
+.margin-col .sidenote:hover { color: var(--soft); }
+
+/* ── 백링크 ───────────────────────────────────────── */
+.backlinks { margin-top: 4em; }
+.backlinks h2 {
+  font-size: 0.8rem;
+  font-family: var(--mono);
+  font-weight: 500;
+  color: var(--faint);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 0;
+}
+.bl-list { list-style: none; margin: 0 0 1.8em; padding: 0; }
+.bl-list li {
+  padding: 8px 4px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 0.88rem;
+}
+.bl-list .bl-why {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--faint);
+  font-style: italic;
+}
+
+/* ── 인용 관계 미니 그래프 ────────────────────────── */
+.cite-graph {
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  background: var(--surface);
+  margin: 1em 0 2em;
+}
+.cite-graph svg { display: block; width: 100%; height: auto; }
+.cg-edge { stroke: var(--line); stroke-width: 1; }
+.cg-node { fill: var(--surface-2); stroke: var(--line); stroke-width: 1; }
+.cg-node--me { stroke: var(--cyan); stroke-width: 1.5; fill: rgba(56, 189, 248, 0.08); }
+.cg-label { fill: var(--soft); font-family: var(--mono); font-size: 10px; }
+.cg-label--me { fill: var(--cyan); }
