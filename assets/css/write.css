@@ -42,8 +42,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 150px);
-  min-height: 420px;
+  height: calc(100vh - 126px);
+  min-height: 540px;
 }
 .w-panel-head {
   display: flex;
@@ -56,21 +56,45 @@
   padding: 10px 16px;
   border-bottom: 1px solid var(--line-soft);
 }
+.w-head-right { display: flex; align-items: center; gap: 8px; }
 .w-saved { color: var(--line); transition: color 0.3s ease; }
 .w-saved.flash { color: var(--cyan); }
+
+/* 정보 / 도구 접기 토글 */
+.w-tg {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--faint);
+  background: var(--bg);
+  border: 1px solid var(--line-soft);
+  border-radius: 5px;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.w-tg:hover { color: var(--soft); border-color: var(--line); }
+.w-tg[aria-expanded="true"] { color: var(--cyan); border-color: rgba(56,189,248,.35); }
+.w-tg i { font-style: normal; display: inline-block; transition: transform 0.2s ease; }
+.w-tg[aria-expanded="false"] i { transform: rotate(-90deg); }
+.w-tg[hidden] { display: none; }
 
 /* 글 정보 입력 */
 .w-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 7px 10px;
-  padding: 11px 14px;
+  align-content: start;
+  gap: 8px 10px;
+  padding: 13px 14px;
   border-bottom: 1px solid var(--line-soft);
-  flex: 0 0 auto;
-  max-height: 38vh;
   overflow-y: auto;
 }
 .w-fields[hidden] { display: none; }
+/* 글 모드: 본문을 넓게 쓰도록 정보칸은 최대 30vh, 접을 수 있음 */
+body.mode-post .w-fields { flex: 0 0 auto; max-height: 30vh; }
+/* 그 외 모드: 본문칸이 없으므로 패널을 끝까지 채움 (버튼과 겹치지 않음) */
+body.mode-other .w-fields { flex: 1 1 auto; max-height: none; }
+.w-fields.collapsed { display: none; }
+.w-toolbar.collapsed { display: none; }
 .w-field-row {
   grid-column: 1 / -1;
   display: flex;
@@ -190,9 +214,9 @@
 }
 
 #editor {
-  flex: 1;
+  flex: 1 1 auto;
   width: 100%;
-  min-height: 200px;
+  min-height: 280px;
   resize: none;
   border: 0;
   outline: none;
@@ -200,9 +224,10 @@
   color: var(--text);
   font-family: var(--mono);
   font-size: 0.85rem;
-  line-height: 1.75;
-  padding: 16px 18px;
+  line-height: 1.8;
+  padding: 18px 18px 26px;
 }
+#editor::placeholder { color: var(--line); }
 
 .w-actions {
   display: flex;
@@ -325,8 +350,9 @@ button.mini.ok { color: var(--cyan); }
 
 @media (max-width: 1100px) {
   .write-grid { grid-template-columns: 1fr; }
-  .w-panel { height: auto; min-height: 420px; }
-  #editor { min-height: 320px; }
+  .w-panel { height: auto; min-height: 480px; }
+  #editor { min-height: 340px; }
+  body.mode-post .w-fields { max-height: none; }
   .w-fields { grid-template-columns: 1fr; }
 }
 

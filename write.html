@@ -33,7 +33,11 @@
         <section class="w-panel">
           <div class="w-panel-head">
             <span id="w-mode-label">글 작성</span>
-            <span class="w-saved" id="w-saved">자동 저장됨</span>
+            <span class="w-head-right">
+              <button class="w-tg" id="tg-fields" aria-expanded="true">정보 <i>▾</i></button>
+              <button class="w-tg" id="tg-toolbar" aria-expanded="true" data-for="post">도구 <i>▾</i></button>
+              <span class="w-saved" id="w-saved">자동 저장됨</span>
+            </span>
           </div>
 
           <!-- ── 글 ── -->
@@ -154,10 +158,7 @@
               <ul id="picker-list"></ul>
             </div>
 
-            <textarea id="editor" spellcheck="false" placeholder="본문을 여기에 씁니다.
-
-· 문단은 빈 줄로 나눕니다.
-· 위 버튼을 누르면 문법이 자동으로 들어갑니다."></textarea>
+            <textarea id="editor" spellcheck="false" placeholder="본문을 여기에 씁니다. 문단은 빈 줄로 나눕니다."></textarea>
           </div>
 
           <div class="w-actions">

@@ -95,7 +95,14 @@ main a[href^="http"]:not(.plain)::after {
   vertical-align: super;
 }
 
-/* ── 네이티브 스크롤바 (얇고 어둡게) ───────────────── */
+/* ── 페이지 스크롤바는 숨김 ─────────────────────────
+   오른쪽 진행 레일이 그 역할을 하므로 시스템 바와 겹치지 않게 함.
+   (코드블록·사이드바 등 내부 스크롤 영역의 바는 그대로 유지)      */
+html, body { scrollbar-width: none; -ms-overflow-style: none; }
+html::-webkit-scrollbar,
+body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* ── 내부 영역 스크롤바 (얇고 어둡게) ─────────────── */
 ::-webkit-scrollbar { width: 9px; height: 9px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {

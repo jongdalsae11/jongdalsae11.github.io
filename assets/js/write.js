@@ -285,6 +285,23 @@
       if (f === 'other') el.hidden = (m === 'post');
       else el.hidden = (f !== m && ['post', 'library', 'problem', 'research'].indexOf(f) >= 0);
     });
+    document.body.classList.toggle('mode-post', m === 'post');
+    document.body.classList.toggle('mode-other', m !== 'post');
+    /* 접기 토글은 글 모드에서만 — 다른 모드는 입력칸이 곧 내용이므로 항상 펼침 */
+    G('tg-toolbar').hidden = (m !== 'post');
+    G('tg-fields').hidden = (m !== 'post');
+    if (m !== 'post') {
+      document.querySelectorAll('.w-fields').forEach(function (el) {
+        el.classList.remove('collapsed');
+      });
+    } else {
+      var open = true;
+      try { open = localStorage.getItem('w-open-fields') !== '0'; } catch (e) {}
+      document.querySelectorAll('.w-fields').forEach(function (el) {
+        el.classList.toggle('collapsed', !open);
+      });
+      G('tg-fields').setAttribute('aria-expanded', open);
+    }
     $('#w-mode-label').textContent = MODE_LABEL[m];
     document.body.setAttribute('data-crumb', '~ / <b>' + MODE_LABEL[m] + '</b>');
     var cr = document.querySelector('.topbar .crumb');
@@ -297,6 +314,26 @@
   $('#go-register').addEventListener('click', function () {
     document.querySelector('.w-tabs button[data-tab="register"]').click();
   });
+
+  /* ── 정보 / 도구 접기 (본문을 넓게 쓰기 위해) ───── */
+  function bindToggle(btnId, key, targetSel) {
+    var btn = G(btnId);
+    function apply(open) {
+      btn.setAttribute('aria-expanded', open);
+      document.querySelectorAll(targetSel).forEach(function (el) {
+        el.classList.toggle('collapsed', !open);
+      });
+      try { localStorage.setItem(key, open ? '1' : '0'); } catch (e) {}
+    }
+    var saved = '1';
+    try { saved = localStorage.getItem(key); } catch (e) {}
+    apply(saved !== '0');
+    btn.addEventListener('click', function () {
+      apply(btn.getAttribute('aria-expanded') !== 'true');
+    });
+  }
+  bindToggle('tg-fields', 'w-open-fields', '.w-fields');
+  bindToggle('tg-toolbar', 'w-open-toolbar', '.w-toolbar');
 
   /* 자료 분류 후보 + 연구의 '연결할 글' 목록 채우기 */
   var libCats = [];

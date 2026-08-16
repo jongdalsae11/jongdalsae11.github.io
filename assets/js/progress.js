@@ -34,11 +34,35 @@
     dot.style.top = y + 'px';
   }
 
-  rail.addEventListener('click', function (e) {
+  /* 클릭 이동 + 끌어서 이동 (드래그) */
+  function seek(clientY) {
     var r = rail.getBoundingClientRect();
-    var p = (e.clientY - r.top) / r.height;
+    var p = (clientY - r.top) / r.height;
+    p = Math.min(1, Math.max(0, p));
     window.scrollTo(0, p * docHeight());
+  }
+
+  var dragging = false;
+  rail.addEventListener('pointerdown', function (e) {
+    dragging = true;
+    rail.setPointerCapture(e.pointerId);
+    rail.classList.add('dragging');
+    document.body.classList.add('rail-dragging');
+    seek(e.clientY);
+    e.preventDefault();
   });
+  rail.addEventListener('pointermove', function (e) {
+    if (dragging) seek(e.clientY);
+  });
+  function endDrag(e) {
+    if (!dragging) return;
+    dragging = false;
+    try { rail.releasePointerCapture(e.pointerId); } catch (err) {}
+    rail.classList.remove('dragging');
+    document.body.classList.remove('rail-dragging');
+  }
+  rail.addEventListener('pointerup', endDrag);
+  rail.addEventListener('pointercancel', endDrag);
 
   window.addEventListener('scroll', update, { passive: true });
   window.addEventListener('resize', update);

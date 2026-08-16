@@ -144,7 +144,16 @@ main {
   height: 76vh;
   width: 8px;
   z-index: 40;
-  cursor: pointer;
+  cursor: grab;
+  touch-action: none;
+}
+.rail.dragging { cursor: grabbing; }
+/* 끄는 중에는 본문 텍스트가 선택되지 않도록 */
+body.rail-dragging { user-select: none; -webkit-user-select: none; }
+/* 끄는 중에는 썸을 조금 키워 손에 잡히는 느낌 */
+.rail .rail-dot { transition: width 0.12s ease, height 0.12s ease, left 0.12s ease; }
+.rail:hover .rail-dot, .rail.dragging .rail-dot {
+  width: 9px; height: 9px; left: -0.5px;
 }
 .rail-track {
   position: absolute; inset: 0;
