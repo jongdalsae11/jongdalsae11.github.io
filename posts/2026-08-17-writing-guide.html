@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="../assets/css/components.css">
   <link rel="stylesheet" href="../assets/css/post.css">
 </head>
-<body data-cat="essay" data-crumb="글 / 에세이 / <b>이 사이트에 글 쓰는 법</b>">
+<body data-cat="essay/guide" data-crumb="글 / 에세이 / 기록·사용법 / <b>이 사이트에 글 쓰는 법 — 기능 전부 설명</b>">
   <main id="main">
     <div class="page page--post">
       <article>
@@ -143,25 +143,35 @@ git push</code></pre></div>
       summary: '홈 카드에 보일 한 줄 요약' }
 ]</code></pre></div>
 
-          <h2>2. 분류(카테고리)를 새로 만드는 법</h2>
+          <h2>2. 분류 — 상위와 하위</h2>
           <p>
-            따로 만드는 절차가 없다. <code>category</code> 에 새 이름을 쓰기만 하면 된다.
-            예를 들어 <code>category: 'physics'</code> 라고 쓴 글을 하나 등록하면,
-            왼쪽 트리의 <strong>글</strong> 아래에 항목이 자동으로 생기고
-            <code>posts.html#physics</code> 인덱스도 자동으로 만들어진다.
+            분류는 <strong>슬래시로 계층</strong>을 만든다. <code>'algo/graph'</code> 라고 쓰면
+            알고리즘 아래에 그래프가 생긴다. 깊이 제한은 없어서
+            <code>'algo/graph/flow'</code> 처럼 더 내려갈 수도 있다.
+          </p>
+          <div class="codeblock"><pre><code class="language-javascript">category: 'algo/graph'      // 알고리즘 › 그래프
+category: 'math/analysis'   // 수학 › 해석학</code></pre></div>
+          <p>
+            만드는 절차는 따로 없다. 값을 쓰는 순간 왼쪽 트리에 계층이 생기고,
+            <code>posts.html#algo/graph</code> 인덱스와 색이 자동으로 만들어진다.<span class="sidenote">상위
+            분류를 고르면 그 아래 모든 하위 글이 함께 보인다. 예를 들어 트리에서
+            '알고리즘'을 누르면 그래프·자료구조 글이 모두 나오고, 목록 위 칩으로
+            더 좁혀 갈 수 있다.</span>
           </p>
           <p>
-            한글 이름표를 붙이려면 같은 파일 맨 위 <code>labels</code> 에 한 줄 추가한다.
-            생략하면 <code>physics</code> 라는 영문 id가 그대로 표시된다.<span class="sidenote">자료정리집도
-            똑같은 방식으로 동작한다. 실제로 지금 자료정리집에는 이 방식으로 추가된
-            '물리' 카테고리가 들어가 있다.</span>
+            한글 이름표는 <code>labels</code> 에 상위·하위를 각각 적는다.
+            빠뜨리면 영문 id가 그대로 보이고 콘솔이 알려 준다.
           </p>
           <div class="codeblock"><pre><code class="language-javascript">labels: {
-    math: '수학',
     algo: '알고리즘',
-    essay: '에세이',
-    physics: '물리'      // ← 이렇게 한 줄
+    'algo/graph': '그래프',        // ← 하위는 전체 경로로
+    'algo/data-structure': '자료구조'
 }</code></pre></div>
+          <div class="key">
+            색은 <strong>최상위 분류 단위</strong>로 배정된다. 알고리즘 아래 하위 분류들은
+            모두 같은 색을 공유하므로, 분류가 수십 개로 늘어나도 화면이 알록달록해지지 않는다.
+            특정 분류만 다른 색을 주려면 <code>colors</code> 에 한 줄 적으면 된다.
+          </div>
 
           <h2>3. 본문 문법 — 전부</h2>
 

@@ -50,16 +50,16 @@
 
           <!-- ── 글 ── -->
           <div class="w-fields" data-for="post">
-            <label class="w-field w-field--wide"><span>제목</span>
+            <label class="w-field w-field--full"><span>제목</span>
               <input id="f-title" type="text" placeholder="예: 세그먼트 트리로 LIS 구하기"></label>
-            <label class="w-field"><span>분류</span>
-              <input id="f-cat" list="cat-list" placeholder="essay">
+            <label class="w-field w-field--wide"><span>분류 <em>슬래시로 하위 분류</em></span>
+              <input id="f-cat" list="cat-list" placeholder="algo/data-structure">
               <datalist id="cat-list"></datalist></label>
             <label class="w-field"><span>날짜</span>
               <input id="f-date" type="date"></label>
-            <label class="w-field w-field--wide"><span>태그 <em>쉼표로 구분</em></span>
+            <label class="w-field"><span>태그 <em>쉼표</em></span>
               <input id="f-tags" type="text" placeholder="세그먼트 트리, C++"></label>
-            <label class="w-field w-field--wide"><span>한 줄 요약</span>
+            <label class="w-field w-field--full"><span>한 줄 요약</span>
               <input id="f-summary" type="text" placeholder="홈 카드에 표시될 한 문장"></label>
             <div class="w-field-row">
               <label class="w-check"><input id="f-pinned" type="checkbox"><span>홈에 고정</span></label>
@@ -76,7 +76,7 @@
             <label class="w-field"><span>연도</span>
               <input id="l-year" type="number" placeholder="2024"></label>
             <label class="w-field"><span>분류</span>
-              <input id="l-cat" list="lib-cat-list" placeholder="math">
+              <input id="l-cat" list="lib-cat-list" placeholder="math/number-theory">
               <datalist id="lib-cat-list"></datalist></label>
             <label class="w-field"><span>형식</span>
               <input id="l-fmt" list="fmt-list" placeholder="PDF">

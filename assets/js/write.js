@@ -19,15 +19,19 @@
     tags: $('#f-tags'), summary: $('#f-summary'), pinned: $('#f-pinned')
   };
 
-  /* 분류 후보를 기존 데이터에서 채움 */
-  var known = [];
-  (S.posts || []).forEach(function (p) {
-    if (p.category && known.indexOf(p.category) < 0) known.push(p.category);
-  });
-  $('#cat-list').innerHTML = known.map(function (c) {
-    var l = (S.labels || {})[c];
-    return '<option value="' + c + '">' + (l ? c + ' — ' + l : c) + '</option>';
-  }).join('');
+  /* 분류 후보 — 상위·하위 경로를 모두 제안 */
+  function catOptions(items) {
+    var seen = [];
+    (items || []).forEach(function (it) {
+      (window.U.catChain(it.category) || []).forEach(function (c) {
+        if (c && seen.indexOf(c) < 0) seen.push(c);
+      });
+    });
+    return seen.sort().map(function (c) {
+      return '<option value="' + c + '">' + window.U.catPath(c, ' › ') + '</option>';
+    }).join('');
+  }
+  $('#cat-list').innerHTML = catOptions(S.posts);
 
   /* ── 유틸 (공통 함수는 util.js) ──────────────────── */
   var U = window.U;
@@ -323,14 +327,7 @@
   bindToggle('tg-toolbar', 'w-open-toolbar', '.w-toolbar');
 
   /* 자료 분류 후보 + 연구의 '연결할 글' 목록 채우기 */
-  var libCats = [];
-  (S.library || []).forEach(function (r) {
-    if (r.category && libCats.indexOf(r.category) < 0) libCats.push(r.category);
-  });
-  $('#lib-cat-list').innerHTML = libCats.map(function (c) {
-    var l = (S.labels || {})[c];
-    return '<option value="' + c + '">' + (l ? c + ' — ' + l : c) + '</option>';
-  }).join('');
+  $('#lib-cat-list').innerHTML = catOptions(S.library);
   G('r-post').innerHTML = '<option value="">— 없음 —</option>' +
     (S.posts || []).map(function (p) {
       return '<option value="' + p.file + '">' + esc(p.title) + '</option>';

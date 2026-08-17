@@ -548,12 +548,11 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: -1;          /* 본문 아래, 배경 위 — 다른 요소의 배치에 영향 없음 */
   pointer-events: none;
   opacity: 0.5;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
 }
-main, .sidebar, .topbar, footer { position: relative; z-index: 1; }
 
 /* ── 페이지 머리에 은은한 빛 ──────────────────────── */
 .page-head {
@@ -765,3 +764,118 @@ a.stat:hover {
   opacity: 0.8;
 }
 .stat--misc .stat-n { color: var(--faint); }
+
+
+/* ============================================================
+   계층 트리 — 상위/하위 분류
+   ============================================================ */
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border-left: 2px solid transparent;
+  border-radius: 0 6px 6px 0;
+  margin: 1px 0;
+  transition: background 0.2s ease;
+}
+.tree-row:hover { background: rgba(180, 214, 240, 0.045); }
+.tree-row:has(.tree-link.active) {
+  border-left-color: var(--cat, var(--cyan));
+  background: color-mix(in srgb, var(--cat, var(--cyan)) 8%, transparent);
+}
+
+.caret-btn {
+  flex: 0 0 auto;
+  width: 18px; height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--faint);
+  font-size: 0.6rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.22s ease, color 0.15s ease;
+}
+.caret-btn:hover { color: var(--soft); }
+.caret-btn[aria-expanded="true"] { transform: rotate(90deg); }
+.caret-sp { flex: 0 0 auto; width: 18px; }
+
+.tree-link {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex: 1;
+  min-width: 0;
+  padding: 6px 4px;
+  font-size: 0.86rem;
+  color: var(--soft);
+  transition: color 0.2s ease;
+}
+.tree-link:hover { color: var(--text); }
+.tree-link.active { color: var(--cat, var(--cyan)); }
+.tree-row .count {
+  flex: 0 0 auto;
+  padding-right: 8px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--faint);
+}
+.tree-row--top .tree-link { font-size: 0.88rem; }
+.tree-row--top .caret-btn { color: var(--soft); }
+
+/* 하위 단계는 들여쓰고 안내선을 둠 */
+.tree .branch {
+  margin-left: 9px;
+  padding-left: 8px;
+  border-left: 1px solid var(--line-soft);
+}
+.tree .branch .branch { margin-left: 9px; }
+
+/* ── 하위 분류 칩 (글 목록 위) ────────────────────── */
+.subcats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 1.2em;
+}
+.subcats:empty { display: none; }
+.subcats .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  text-decoration: none;
+}
+.subcats .chip:hover {
+  color: var(--cat, var(--cyan));
+  border-color: color-mix(in srgb, var(--cat, var(--cyan)) 55%, transparent);
+}
+
+/* ── 자료정리집 계층 제목 ─────────────────────────── */
+.cat-head--d1 { font-size: 1.05rem; }
+.cat-head--d2 { font-size: 0.95rem; }
+
+/* ── 홈 현황 카드: 하위 분류 포함 ─────────────────── */
+.stat-head { display: block; }
+.stat-subs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin-top: 9px;
+}
+.stat-sub {
+  font-size: 0.66rem;
+  color: var(--faint);
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  padding: 0 6px;
+  white-space: nowrap;
+}
+.stat-sub b {
+  font-family: var(--mono);
+  font-weight: 400;
+  color: var(--cat, var(--soft));
+  margin-left: 4px;
+  opacity: 0.85;
+}
+.stat-more { color: var(--line); }
+.stat-row { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }

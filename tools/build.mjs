@@ -147,6 +147,14 @@ for (const p of S.posts) {
   else
     src = src.replace(/data-cat="[^"]*"/, `data-cat="${p.category}"`);
 
+  /* 브레드크럼도 분류 계층에 맞춰 갱신 — 글 / 알고리즘 / 자료구조 / 제목 */
+  const chain = p.category.split('/').reduce((acc, part) => {
+    acc.push(acc.length ? acc[acc.length - 1] + '/' + part : part);
+    return acc;
+  }, []);
+  const crumb = ['글', ...chain.map(label), `<b>${xesc(p.title)}</b>`].join(' / ');
+  if (/data-crumb="/.test(src)) src = src.replace(/data-crumb="[^"]*"/, `data-crumb="${crumb}"`);
+
   if (w(f, src)) changed.push(f);
 }
 

@@ -21,7 +21,7 @@
       return '<li' + U.catVar(p.category) + '><a class="row plain" href="' + postHref(p) + '">' +
         '<span class="row-date">' + dot(p.date) + '</span>' +
         '<span class="row-title">' + esc(p.title) + '</span>' +
-        '<span class="row-cat">' + label(p.category) + '</span>' +
+        '<span class="row-cat">' + U.catPath(p.category, ' › ') + '</span>' +
         '<span class="row-tags">' + tags(p.tags) + '</span></a></li>';
     }).join('');
   }
@@ -32,35 +32,46 @@
       el.innerHTML = esc(S.now || '') + '<span class="cursor"></span>';
     },
 
-    /* ── 홈: 분류별 현황 막대 ── */
+    /* ── 홈: 분류별 현황 ──────────────────────────────
+       최상위 분류만 카드로 보여주고 하위는 그 안에 작게 —
+       분류가 많아져도 화면이 터지지 않습니다.               */
     stats: function (el) {
-      var posts = S.posts || [];
-      var counts = {}, order = [];
-      posts.forEach(function (p) {
-        if (!(p.category in counts)) { counts[p.category] = 0; order.push(p.category); }
-        counts[p.category]++;
-      });
-      var max = Math.max.apply(null, order.map(function (c) { return counts[c]; }).concat([1]));
+      var tree = U.catTree(S.posts || []);
+      var total = (S.posts || []).length;
+      var MAX_SUB = 4;   /* 하위는 상위 4개까지만, 나머지는 +n */
+
+      var cards = tree.map(function (top) {
+        var subs = top.children.slice().sort(function (a, b) { return b.count - a.count; });
+        var shown = subs.slice(0, MAX_SUB);
+        var restN = subs.length - shown.length;
+        return '<a class="stat plain" href="' + ROOT + '/posts.html#' +
+            encodeURIComponent(top.id) + '"' + U.catVar(top.id) + '>' +
+          '<span class="stat-head">' +
+            '<span class="stat-n">' + top.count + '</span>' +
+            '<span class="stat-l">' + esc(top.label) + '</span>' +
+          '</span>' +
+          '<span class="stat-bar"><i style="width:' +
+            Math.round(top.count / Math.max(total, 1) * 100) + '%"></i></span>' +
+          (subs.length
+            ? '<span class="stat-subs">' +
+                shown.map(function (c) {
+                  return '<span class="stat-sub">' + esc(c.label) +
+                         '<b>' + c.count + '</b></span>';
+                }).join('') +
+                (restN > 0 ? '<span class="stat-sub stat-more">+' + restN + '</span>' : '') +
+              '</span>'
+            : '') +
+        '</a>';
+      }).join('');
 
       el.innerHTML =
-        '<div class="stat-row">' +
-          order.map(function (c) {
-            return '<a class="stat plain" href="' + ROOT + '/posts.html#' + c + '"' +
-              U.catVar(c) + '>' +
-              '<span class="stat-n">' + counts[c] + '</span>' +
-              '<span class="stat-l">' + label(c) + '</span>' +
-              '<span class="stat-bar"><i style="width:' +
-                Math.round(counts[c] / max * 100) + '%"></i></span>' +
-            '</a>';
-          }).join('') +
+        '<div class="stat-row">' + cards +
           '<div class="stat stat--misc">' +
-            '<span class="stat-n">' + (S.problems || []).length + '</span>' +
-            '<span class="stat-l">문제</span>' +
-          '</div>' +
+            '<span class="stat-head"><span class="stat-n">' + (S.problems || []).length +
+            '</span><span class="stat-l">문제</span></span></div>' +
           '<div class="stat stat--misc">' +
-            '<span class="stat-n">' + (S.library || []).length + '</span>' +
-            '<span class="stat-l">자료</span>' +
-          '</div>' +
+            '<span class="stat-head"><span class="stat-n">' + (S.library || []).length +
+            '</span><span class="stat-l">자료</span></span></div>' +
         '</div>';
     },
 
@@ -99,13 +110,38 @@
         var name = isTag ? '#' + tag : (cat ? label(cat) : '전체 글');
         if (titleEl) {
           titleEl.innerHTML = esc(name) +
-            (isTag ? ' <a class="clear-filter plain" href="#">전체 보기 ✕</a>' : '');
+            ((isTag || cat) ? ' <a class="clear-filter plain" href="#">전체 보기 ✕</a>' : '');
           if (cat) titleEl.style.setProperty('--cat', U.catColor(cat));
           else titleEl.style.removeProperty('--cat');
         }
         if (subEl) subEl.textContent = list.length + '편';
         var crumb = document.querySelector('.topbar .crumb');
-        if (crumb) crumb.innerHTML = '글 / <b>' + esc(name) + '</b>';
+        if (crumb) {
+          crumb.innerHTML = '글 / <b>' +
+            (isTag ? esc(name) : (cat ? esc(U.catPath(cat)) : '전체')) + '</b>';
+        }
+
+        /* 상위 분류를 보고 있으면 하위 분류로 좁혀 갈 수 있는 칩 */
+        var sub = document.querySelector('[data-subcats]');
+        if (sub) {
+          var node = null;
+          (function find(nodes) {
+            (nodes || []).forEach(function (n) {
+              if (n.id === cat) node = n;
+              else find(n.children);
+            });
+          })(U.catTree(S.posts));
+          var kids = cat && node ? node.children : (cat ? [] : U.catTree(S.posts));
+          sub.innerHTML = kids.length
+            ? (cat ? '<a class="chip plain" href="#' + encodeURIComponent(cat) +
+                     '">전체 ' + node.count + '</a>' : '') +
+              kids.map(function (k) {
+                return '<a class="chip plain" href="#' + encodeURIComponent(k.id) + '"' +
+                  U.catVar(k.id) + '><span class="cat-dot"></span>' + esc(k.label) +
+                  '<span class="tg-n">' + k.count + '</span></a>';
+              }).join('')
+            : '';
+        }
 
         /* 분류를 보고 있을 땐 그 분류의 태그 모음을 위에 노출 */
         var bar = document.querySelector('[data-tagbar]');
@@ -147,34 +183,39 @@
         '</li>';
       }
       function draw() {
-        var h = (location.hash || '').slice(1);
+        var h = decodeURIComponent((location.hash || '').slice(1));
         var all = S.library || [];
         var hit = all.filter(function (r) { return r.ref === h; })[0];
         var cat = hit ? hit.category : h;
-        var groups = [];
-        if (cat) {
-          groups = [{ id: cat, items: all.filter(function (r) { return r.category === cat; }) }];
-        } else {
-          var seen = [];
-          all.forEach(function (r) {
-            if (seen.indexOf(r.category) < 0) { seen.push(r.category); }
-          });
-          groups = seen.map(function (c) {
-            return { id: c, items: all.filter(function (r) { return r.category === c; }) };
-          });
-        }
-        el.innerHTML = groups.map(function (g) {
-          return '<h2 id="' + g.id + '"' + U.catVar(g.id) + ' class="cat-head">' + label(g.id) +
-            ' <span class="h-count">' + g.items.length + '</span></h2>' +
-            '<ul class="ref-list">' +
-            (g.items.length ? g.items.map(item).join('') : '<li class="empty">항목 없음</li>') +
-            '</ul>';
-        }).join('');
+
+        /* 보여 줄 분류들 — 상위를 고르면 하위까지 순서대로 */
+        var chosen = all.filter(function (r) { return U.catMatches(r.category, cat); });
+        var seen = [], groups = [];
+        chosen.forEach(function (r) {
+          if (seen.indexOf(r.category) < 0) {
+            seen.push(r.category);
+            groups.push({ id: r.category,
+              items: chosen.filter(function (x) { return x.category === r.category; }) });
+          }
+        });
+
+        el.innerHTML = groups.length
+          ? groups.map(function (g) {
+              return '<h2 id="' + g.id.replace(/\//g, '-') + '"' + U.catVar(g.id) +
+                ' class="cat-head cat-head--d' + Math.min(U.catDepth(g.id), 2) + '">' +
+                esc(U.catPath(g.id, ' › ')) +
+                ' <span class="h-count">' + g.items.length + '</span></h2>' +
+                '<ul class="ref-list">' + g.items.map(item).join('') + '</ul>';
+            }).join('')
+          : '<p class="empty">항목 없음</p>';
+
         var crumb = document.querySelector('.topbar .crumb');
-        if (crumb) crumb.innerHTML = '자료정리집 / <b>' + (cat ? label(cat) : '전체') + '</b>';
+        if (crumb) {
+          crumb.innerHTML = '자료정리집 / <b>' +
+            (cat ? esc(U.catPath(cat)) : '전체') + '</b>';
+        }
         bindCopy();
 
-        /* 특정 자료로 들어온 경우 그 항목을 강조하고 스크롤 */
         if (hit) {
           var node = document.getElementById(hit.ref);
           if (node) {

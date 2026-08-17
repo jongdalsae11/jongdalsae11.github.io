@@ -66,7 +66,8 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 |---|---|
 | 글·자료·문제·연구 추가 | `assets/data/content.js` |
 | 새 분류 만들기 | `category` 에 새 값 입력 (트리·인덱스·색 자동 생성) |
-| 분류 한글 이름 | `content.js` 의 `labels` |
+| 하위 분류 만들기 | `category: 'algo/graph'` — 슬래시로 계층, 깊이 제한 없음 |
+| 분류 한글 이름 | `content.js` 의 `labels` (하위는 `'algo/graph'` 전체 경로로) |
 | 분류 강조색 바꾸기 | `content.js` 의 `colors: { math: '#34d399' }` |
 | 글끼리 연결(백링크) | `content.js` 의 `links: ['파일명.html']` — 양방향 자동 |
 | 이름 바꾸기 | `assets/js/nav.js` 의 `SITE_NAME` |
@@ -80,7 +81,11 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 
 ## 기능
 
-**탐색** — 트리 사이드바(펼침 상태 유지, 분류색 점, 현재 글 위치 표시) ·
+**분류** — 슬래시 계층(`math/number-theory`) · 상위 선택 시 하위 포함 ·
+색은 최상위 단위로 배정되어 분류가 늘어나도 산만해지지 않음 ·
+홈 현황 카드는 최상위만 표시하고 하위는 카드 안에 요약
+
+**탐색** — 트리 사이드바(계층 펼침, 상태 유지, 분류색 점, 현재 글 위치 표시) ·
 `Ctrl+K` 검색(↑↓ Enter) · 태그 클릭 필터 · 얇은 브레드크럼 헤더(스크롤 시 숨김) ·
 우측 세로 진행 레일(클릭·드래그)
 

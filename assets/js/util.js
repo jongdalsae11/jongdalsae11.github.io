@@ -66,10 +66,60 @@ window.U = (function () {
     return (S().library || []).filter(function (r) { return r.ref === id; })[0] || null;
   }
 
-  /* 날짜순으로 정렬된 글 목록 (같은 분류만 걸러낼 수도 있음) */
+  /* ── 계층 분류 ───────────────────────────────────────
+     분류는 슬래시로 계층을 만듭니다.  예) 'math/number-theory'
+       labels: { math: '수학', 'math/number-theory': '정수론' }
+     상위 분류를 고르면 그 아래 모든 하위 분류가 함께 보입니다.     */
+
+  function catTop(id) { return String(id || '').split('/')[0]; }
+  function catDepth(id) { return String(id || '').split('/').length - 1; }
+  /* 'a/b/c' → ['a', 'a/b', 'a/b/c'] */
+  function catChain(id) {
+    var parts = String(id || '').split('/'), acc = '', out = [];
+    parts.forEach(function (p) { acc = acc ? acc + '/' + p : p; out.push(acc); });
+    return out;
+  }
+  /* id 가 filter 자신이거나 그 하위인가 */
+  function catMatches(id, filter) {
+    if (!filter) return true;
+    return id === filter || String(id || '').indexOf(filter + '/') === 0;
+  }
+  /* 전체 경로 이름표 — '수학 / 정수론' */
+  function catPath(id, sep) {
+    return catChain(id).map(label).join(sep || ' / ');
+  }
+
+  /* 항목 목록에서 분류 트리를 만듭니다.
+     [{ id, label, count, children: [...] }]  (count 는 하위 포함) */
+  function catTree(items) {
+    var root = { kids: {}, order: [] };
+    (items || []).forEach(function (it) {
+      if (!it.category) return;
+      var node = root;
+      catChain(it.category).forEach(function (path) {
+        if (!node.kids[path]) {
+          node.kids[path] = { id: path, kids: {}, order: [], count: 0 };
+          node.order.push(path);
+        }
+        node = node.kids[path];
+        node.count++;
+      });
+    });
+    function toArr(n) {
+      return n.order.map(function (k) {
+        var c = n.kids[k];
+        return { id: c.id, label: label(c.id), count: c.count, children: toArr(c) };
+      });
+    }
+    return toArr(root);
+  }
+
+  /* 날짜순으로 정렬된 글 목록 (분류를 주면 하위까지 포함) */
   function sortedPosts(category) {
     var list = (S().posts || []).slice().sort(byDateDesc);
-    return category ? list.filter(function (p) { return p.category === category; }) : list;
+    return category
+      ? list.filter(function (p) { return catMatches(p.category, category); })
+      : list;
   }
 
   /* ── 분류별 색 ───────────────────────────────────────
@@ -91,16 +141,20 @@ window.U = (function () {
   function buildCatMap() {
     catMap = {};
     var s = S(), seen = [], i = 0;
+    /* 최상위 분류에만 색을 배정하고 하위는 그 색을 물려받습니다 */
     (s.posts || []).concat(s.library || []).forEach(function (it) {
-      if (it.category && seen.indexOf(it.category) < 0) seen.push(it.category);
+      var top = catTop(it.category);
+      if (top && seen.indexOf(top) < 0) seen.push(top);
     });
     seen.forEach(function (c) {
       catMap[c] = (s.colors || {})[c] || PALETTE[i++ % PALETTE.length];
     });
+    /* 특정 하위 분류만 다른 색으로 지정한 경우도 반영 */
+    Object.keys(s.colors || {}).forEach(function (k) { catMap[k] = s.colors[k]; });
   }
   function catColor(id) {
     if (!catMap) buildCatMap();
-    return catMap[id] || '#38bdf8';
+    return catMap[id] || catMap[catTop(id)] || '#38bdf8';
   }
   /* 요소에 붙일 인라인 변수 — style="--cat:#38bdf8" */
   function catVar(id) { return ' style="--cat:' + catColor(id) + '"'; }
@@ -110,7 +164,7 @@ window.U = (function () {
     if (!catMap) buildCatMap();
     var lines = [];
     Object.keys(catMap).forEach(function (c) {
-      lines.push('--cat-' + c + ':' + catMap[c]);
+      lines.push('--cat-' + c.replace(/\//g, '-') + ':' + catMap[c]);
     });
     var st = document.createElement('style');
     st.textContent = ':root{' + lines.join(';') + '}';
@@ -132,6 +186,9 @@ window.U = (function () {
       if (!/^\d{4}-\d{2}-\d{2}$/.test(p.date || ''))
         warn.push('글 "' + p.title + '" 의 날짜 형식이 2026-08-17 형태가 아닙니다: ' + p.date);
       if (!p.summary) warn.push('글 "' + p.title + '" 에 summary 가 없습니다 (홈 카드가 비어 보입니다).');
+      catChain(p.category).forEach(function (c) {
+        if (!(S().labels || {})[c]) warn.push('분류 "' + c + '" 의 한글 이름표가 labels 에 없습니다.');
+      });
       (p.links || []).forEach(function (f) {
         if (!postByFile(f)) warn.push('글 "' + p.title + '" 이 없는 글을 연결합니다: ' + f);
       });
@@ -162,6 +219,8 @@ window.U = (function () {
     tags: tags, real: real, linkify: linkify, byDateDesc: byDateDesc,
     postByFile: postByFile, refById: refById, sortedPosts: sortedPosts,
     catColor: catColor, catVar: catVar, applyTheme: applyTheme,
+    catTop: catTop, catDepth: catDepth, catChain: catChain,
+    catMatches: catMatches, catPath: catPath, catTree: catTree,
     validate: validate
   };
 })();

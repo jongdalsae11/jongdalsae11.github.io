@@ -42,8 +42,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 126px);
-  min-height: 540px;
+  height: calc(100vh - 108px);
+  min-height: 600px;
 }
 .w-panel-head {
   display: flex;
@@ -84,15 +84,21 @@
   grid-template-columns: 1fr 1fr;
   align-content: start;
   gap: 8px 10px;
-  padding: 13px 14px;
+  padding: 12px 14px;
   border-bottom: 1px solid var(--line-soft);
-  overflow-y: auto;
 }
 .w-fields[hidden] { display: none; }
-/* 글 모드: 본문을 넓게 쓰도록 정보칸은 최대 30vh, 접을 수 있음 */
-body.mode-post .w-fields { flex: 0 0 auto; max-height: 30vh; }
+/* 글 모드: 입력칸을 4열로 눕혀 스크롤 없이 한눈에 — 남는 공간은 전부 본문 */
+body.mode-post .w-fields {
+  flex: 0 0 auto;
+  grid-template-columns: repeat(4, 1fr);
+  overflow: visible;
+}
+body.mode-post .w-field--wide { grid-column: span 2; }
+body.mode-post .w-field--full { grid-column: 1 / -1; }
+body.mode-post .w-field-row { grid-column: 1 / -1; }
 /* 그 외 모드: 본문칸이 없으므로 패널을 끝까지 채움 (버튼과 겹치지 않음) */
-body.mode-other .w-fields { flex: 1 1 auto; max-height: none; }
+body.mode-other .w-fields { flex: 1 1 auto; overflow-y: auto; }
 .w-fields.collapsed { display: none; }
 .w-toolbar.collapsed { display: none; }
 .w-field-row {
@@ -216,7 +222,7 @@ body.mode-other .w-fields { flex: 1 1 auto; max-height: none; }
 #editor {
   flex: 1 1 auto;
   width: 100%;
-  min-height: 280px;
+  min-height: 340px;
   resize: none;
   border: 0;
   outline: none;
@@ -348,6 +354,10 @@ button.mini.ok { color: var(--cyan); }
 .w-help-table td:first-child { width: 44%; }
 .w-help-table code { white-space: nowrap; }
 
+@media (max-width: 1240px) {
+  body.mode-post .w-fields { grid-template-columns: repeat(2, 1fr); }
+  body.mode-post .w-field--wide { grid-column: 1 / -1; }
+}
 @media (max-width: 1100px) {
   .write-grid { grid-template-columns: 1fr; }
   .w-panel { height: auto; min-height: 480px; }
