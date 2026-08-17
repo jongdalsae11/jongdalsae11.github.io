@@ -315,3 +315,18 @@ a.pn-item:hover .pn-title { color: var(--cyan); }
 /* 글 제목 영역도 분류색 적용 */
 .post-head .post-date { color: var(--faint); }
 .post-body h2 { border-bottom-color: color-mix(in srgb, var(--cat, var(--cyan)) 18%, var(--line-soft)); }
+
+/* ── 모바일: 글 읽기 ──────────────────────────────── */
+@media (max-width: 920px) {
+  .post-head h1 { font-size: 1.45rem; }
+  .post-body { font-size: 1rem; line-height: 1.85; }
+  .post-meta { gap: 8px; }
+  .toc { padding: 10px 14px; margin-bottom: 1.8em; }
+  .toc a { padding: 7px 8px; }        /* 터치 영역 */
+  .toc li.lv-h3 { padding-left: 12px; }
+  .cite-graph { overflow-x: auto; }
+  .cite-graph svg { min-width: 460px; }
+  .backlinks { margin-top: 3em; }
+  /* 시트를 조금 더 크게 */
+  .sheet-panel { max-height: 62vh; padding-bottom: max(30px, env(safe-area-inset-bottom)); }
+}

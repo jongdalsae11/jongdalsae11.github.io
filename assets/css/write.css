@@ -373,3 +373,23 @@ button.mini.ok { color: var(--cyan); }
   color: var(--faint);
   margin: 0 0 14px;
 }
+
+/* ── 모바일: 작성 도구 ────────────────────────────── */
+@media (max-width: 920px) {
+  .w-panel { height: auto; min-height: 0; }
+  .w-modes { gap: 5px; }
+  .w-modes button { padding: 7px 14px; font-size: 0.82rem; }
+  body.mode-post .w-fields { grid-template-columns: 1fr; }
+  body.mode-post .w-field--wide,
+  body.mode-post .w-field--full { grid-column: 1 / -1; }
+  .w-field-row { flex-wrap: wrap; gap: 6px; }
+  #editor { min-height: 46vh; }
+  .w-toolbar { gap: 6px; padding: 8px 10px; }
+  .w-toolbar button { padding: 7px 11px; }
+  .w-actions { flex-wrap: wrap; }
+  .w-actions button { flex: 1 1 auto; }
+  .w-tabbody { max-height: none; }
+  #preview { padding: 18px 16px; }
+  .w-guide { padding: 16px 16px; }
+  .w-copybox pre { font-size: 0.7rem; }
+}

@@ -41,7 +41,10 @@ body.hide-topbar .topbar { transform: translateY(-100%); }
   border-right: 1px solid var(--line-soft);
   padding: 26px 18px 26px 22px;
   overflow-y: auto;
-  z-index: 60;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  /* 백드롭(90)·메뉴버튼(95) 보다 위 — 드로어가 블러에 묻히지 않도록 */
+  z-index: 100;
 }
 
 .site-id { margin-bottom: 26px; }
@@ -168,24 +171,26 @@ footer p {
 .nav-fab {
   display: none;
   position: fixed;
-  left: 18px; bottom: 20px;
-  width: 44px; height: 44px;
+  left: max(18px, env(safe-area-inset-left));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  width: 48px; height: 48px;
   border-radius: 50%;
   border: 1px solid var(--line);
   background: rgba(20, 20, 35, 0.8);
   backdrop-filter: blur(8px);
   color: var(--soft);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: pointer;
-  z-index: 70;
+  z-index: 95;
 }
+body.nav-open .nav-fab { color: var(--cyan); border-color: var(--cyan); }
 .nav-backdrop {
   display: none;
   position: fixed; inset: 0;
-  background: rgba(10, 10, 20, 0.35);
+  background: rgba(10, 10, 20, 0.45);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  z-index: 55;
+  z-index: 90;
 }
 
 /* ── 반응형 ───────────────────────────────────────── */
@@ -196,15 +201,48 @@ footer p {
 
 @media (max-width: 920px) {
   .sidebar {
+    width: min(86vw, 320px);
     transform: translateX(-100%);
-    transition: transform 0.28s cubic-bezier(0.33, 1, 0.68, 1);
-    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.4);
+    /* 닫힐 때는 미끄러진 뒤에 숨기고, 열릴 때는 즉시 보이게 */
+    transition: transform 0.28s cubic-bezier(0.33, 1, 0.68, 1),
+                visibility 0s linear 0.28s;
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.5);
+    will-change: transform;
+    visibility: hidden;
   }
-  body.nav-open .sidebar { transform: none; }
+  body.nav-open .sidebar {
+    transform: none;
+    visibility: visible;
+    transition: transform 0.28s cubic-bezier(0.33, 1, 0.68, 1), visibility 0s;
+  }
   body.nav-open .nav-backdrop { display: block; }
-  .nav-fab { display: block; }
-  .topbar { left: 0; }
+  /* 드로어가 열리면 뒤 본문은 스크롤되지 않게 */
+  body.nav-open { overflow: hidden; }
+
+  .nav-fab { display: grid; place-items: center; }
+  .topbar { left: 0; padding: 0 16px; }
+  .topbar .crumb {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   main, footer { margin-left: 0; }
-  main { padding: calc(var(--topbar-h) + 28px) 20px 70px; }
+  main { padding: calc(var(--topbar-h) + 24px) 20px 84px; }
+  footer { padding-bottom: max(26px, env(safe-area-inset-bottom)); }
   .rail { display: none; }
+
+  /* 터치로 누르기 편한 크기 확보 */
+  .tree-link { padding: 9px 4px; font-size: 0.92rem; }
+  .caret-btn { width: 30px; height: 34px; font-size: 0.7rem; }
+  .caret-sp { width: 30px; }
+  .tree-row .count { font-size: 0.66rem; }
+  .nav-search, .nav-new { padding: 10px 12px; font-size: 0.88rem; }
+}
+
+/* 아주 좁은 화면 */
+@media (max-width: 480px) {
+  h1 { font-size: 1.55rem; }
+  h2 { font-size: 1.12rem; }
+  main { padding: calc(var(--topbar-h) + 18px) 16px 84px; }
+  .page-head { margin-bottom: 1.8em; }
 }

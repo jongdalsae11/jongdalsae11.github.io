@@ -72,8 +72,9 @@ const allHtml = [
 for (const f of allHtml) {
   const src = r(f).replace(/<code[\s\S]*?<\/code>/g, '');
   for (const m of src.matchAll(/(?:src|href)="(\.{1,2}\/[^"#]+)"/g)) {
-    const target = path.resolve(path.dirname(path.join(ROOT, f)), m[1]);
-    if (!fs.existsSync(target)) errors.push(`깨진 링크: ${f} → ${m[1]}`);
+    const clean = m[1].split('?')[0];            /* ?v= 캐시 버전은 떼고 검사 */
+    const target = path.resolve(path.dirname(path.join(ROOT, f)), clean);
+    if (!fs.existsSync(target)) errors.push(`깨진 링크: ${f} → ${clean}`);
   }
 }
 
@@ -156,6 +157,37 @@ for (const p of S.posts) {
   if (/data-crumb="/.test(src)) src = src.replace(/data-crumb="[^"]*"/, `data-crumb="${crumb}"`);
 
   if (w(f, src)) changed.push(f);
+}
+
+/* ── 5. 캐시 무효화 ──────────────────────────────────
+   CSS/JS 를 고쳐도 브라우저가 옛 파일을 계속 쓰는 문제를 막습니다.
+   파일 내용이 바뀌면 ?v= 뒤 숫자가 바뀌어 자동으로 새로 받습니다.  */
+import crypto from 'node:crypto';
+
+const stamp = (rel) => {
+  const full = path.join(ROOT, rel);
+  if (!fs.existsSync(full)) return null;
+  return crypto.createHash('sha1').update(fs.readFileSync(full)).digest('hex').slice(0, 8);
+};
+
+const assetVer = {};
+for (const dir of ['assets/css', 'assets/js', 'assets/data']) {
+  for (const f of fs.readdirSync(path.join(ROOT, dir))) {
+    if (/\.(css|js)$/.test(f)) assetVer[`${dir}/${f}`] = stamp(`${dir}/${f}`);
+  }
+}
+
+for (const f of allHtml) {
+  let src = r(f);
+  const before = src;
+  src = src.replace(
+    /((?:href|src)=")((?:\.\.?\/)?assets\/(?:css|js|data)\/[\w.-]+\.(?:css|js))(?:\?v=[0-9a-f]+)?(")/g,
+    (m, pre, p, post) => {
+      const key = p.replace(/^\.\.?\//, '');
+      const v = assetVer[key];
+      return v ? `${pre}${p}?v=${v}${post}` : m;
+    });
+  if (src !== before && w(f, src)) changed.push(f);
 }
 
 /* ── 결과 ────────────────────────────────────────── */

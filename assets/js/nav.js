@@ -193,13 +193,45 @@ var SITE_SUB  = 'archive';
     });
   });
 
-  /* 모바일 드로어 */
+  /* ── 모바일 드로어 ─────────────────────────────────
+     열림/닫힘을 한 곳에서 관리하고, 열릴 때 접힌 가지의
+     높이를 다시 재서 내용이 잘리지 않게 합니다.          */
   var fab = document.querySelector('.nav-fab');
   var backdrop = document.querySelector('.nav-backdrop');
-  fab.addEventListener('click', function () { document.body.classList.toggle('nav-open'); });
-  backdrop.addEventListener('click', function () { document.body.classList.remove('nav-open'); });
+
+  function setDrawer(open) {
+    document.body.classList.toggle('nav-open', open);
+    fab.setAttribute('aria-expanded', open);
+    if (open) {
+      /* 화면 밖에 있는 동안 계산된 높이가 어긋났을 수 있으므로 갱신 */
+      refreshHeights();
+      var first = sidebar.querySelector('.tree-link');
+      if (first) first.focus({ preventScroll: true });
+    }
+  }
+  fab.setAttribute('aria-expanded', 'false');
+  fab.setAttribute('aria-controls', 'site-nav');
+  sidebar.querySelector('nav').id = 'site-nav';
+
+  fab.addEventListener('click', function () {
+    setDrawer(!document.body.classList.contains('nav-open'));
+  });
+  backdrop.addEventListener('click', function () { setDrawer(false); });
   sidebar.addEventListener('click', function (e) {
-    if (e.target.closest('a')) document.body.classList.remove('nav-open');
+    if (e.target.closest('a')) setDrawer(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && document.body.classList.contains('nav-open')) setDrawer(false);
+  });
+  /* 왼쪽으로 쓸어 넘기면 닫기 */
+  var tx = null;
+  sidebar.addEventListener('touchstart', function (e) { tx = e.touches[0].clientX; }, { passive: true });
+  sidebar.addEventListener('touchmove', function (e) {
+    if (tx !== null && tx - e.touches[0].clientX > 55) { setDrawer(false); tx = null; }
+  }, { passive: true });
+  /* 화면이 넓어지면 드로어 상태 해제 */
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 920) setDrawer(false);
   });
 
   /* 스크롤하면 상단 헤더 숨김 (모바일 개방감) */
@@ -209,6 +241,15 @@ var SITE_SUB  = 'archive';
     document.body.classList.toggle('hide-topbar', y > 80 && y > lastY);
     lastY = y;
   }, { passive: true });
+
+  /* 표가 좁은 화면에서 화면을 밀어내지 않도록 스크롤 래퍼로 감쌈 */
+  document.querySelectorAll('main table').forEach(function (t) {
+    if (t.parentNode.classList.contains('table-scroll')) return;
+    var wrap = document.createElement('div');
+    wrap.className = 'table-scroll';
+    t.parentNode.insertBefore(wrap, t);
+    wrap.appendChild(t);
+  });
 
   /* 분류별 색 변수 주입 + content.js 실수 점검 */
   if (window.U) {

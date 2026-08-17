@@ -543,16 +543,6 @@ figcaption .fig-no {
    각 요소의 --cat 값(분류색)이 없으면 기본 하늘색으로 떨어집니다.
    ============================================================ */
 
-/* ── 아주 미세한 노이즈 (평평한 단색 느낌 제거) ───── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;          /* 본문 아래, 배경 위 — 다른 요소의 배치에 영향 없음 */
-  pointer-events: none;
-  opacity: 0.5;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-}
 
 /* ── 페이지 머리에 은은한 빛 ──────────────────────── */
 .page-head {
@@ -875,3 +865,64 @@ a.stat:hover {
 }
 .stat-more { color: var(--line); }
 .stat-row { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+/* ============================================================
+   모바일 — 목록 · 카드 · 코드 · 검색
+   ============================================================ */
+@media (max-width: 920px) {
+  /* 글 목록: 한 줄 가로 배치 → 위아래로 쌓기 */
+  .row {
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    padding: 14px 8px;
+  }
+  .row-date { flex: 0 0 auto; order: 1; }
+  .row-cat { order: 2; }
+  .row-title { flex: 1 0 100%; order: 0; font-size: 1rem; line-height: 1.5; }
+  .row-tags { order: 3; flex: 1 0 100%; margin-top: 2px; }
+
+  /* 카드는 한 줄에 하나 */
+  .cards { grid-template-columns: 1fr; }
+
+  /* 현황 카드 — 좁은 화면에서 2열 */
+  .stat-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat { padding: 11px 12px 10px; }
+  .stat-n { font-size: 1.3rem; }
+
+  /* 자료 항목: 형식·인용태그를 아래로 */
+  .ref { flex-wrap: wrap; gap: 6px 10px; }
+  .ref-body { flex: 1 0 100%; }
+  .ref-fmt, .ref-id { font-size: 0.7rem; }
+
+  /* 문제 목록 */
+  .prob { padding: 24px 4px; }
+  .prob-head { gap: 8px; }
+  .prob-meta { margin-left: 0; flex: 1 0 100%; }
+
+  /* 코드블록: 여백 줄이고 가로 스크롤 */
+  .codeblock { font-size: 0.78rem; border-radius: 8px; }
+  .codeblock .cb-gutter { padding-left: 10px; }
+  .codeblock pre { padding: 12px 12px; }
+  .codeblock .cb-scroll { max-height: 60vh; }
+  .cb-copy { opacity: 1; }        /* 터치에는 hover 가 없음 */
+  .cb-lang { right: 64px; }
+
+  /* 태그·칩 터치 영역 */
+  .tag--link, .chip { padding: 5px 12px; font-size: 0.72rem; }
+  .subcats .chip { padding: 6px 12px; }
+
+  /* 검색 모달 */
+  .search-modal { padding-top: 8vh; align-items: stretch; }
+  .search-box { width: 94vw; }
+  .search-results { max-height: 60vh; }
+  .sr-s { display: none; }
+
+  /* 잔디: 좌우 여백 안에서 스크롤 */
+  .heat-wrap { --cell: 13px; }
+}
+
+@media (max-width: 480px) {
+  .stat-row { grid-template-columns: 1fr 1fr; }
+  .stat-subs { display: none; }   /* 아주 좁으면 하위 요약은 생략 */
+  .heat-wrap { --cell: 12px; }
+}
