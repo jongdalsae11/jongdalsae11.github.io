@@ -475,6 +475,14 @@
   var picker = $('#picker'), pq = $('#picker-q'), plist = $('#picker-list');
   var pmode = null, pdata = [];
 
+  function placePicker() {
+    var tb = document.querySelector('.w-toolbar');
+    var body = document.querySelector('.w-body');
+    if (!tb || !body) return;
+    /* 툴바 바로 아래에 뜨도록 (편집칸을 밀지 않음) */
+    picker.style.top = (tb.offsetTop + tb.offsetHeight + 8) + 'px';
+  }
+
   function openPicker(mode) {
     if (pmode === mode && !picker.hidden) { picker.hidden = true; pmode = null; return; }
     pmode = mode;
@@ -490,11 +498,26 @@
                    ins: '{{' + r.ref + '}}' };
         });
     picker.hidden = false;
+    placePicker();
     pq.value = '';
     pq.placeholder = mode === 'wiki' ? '연결할 글 검색…' : '인용할 자료 검색…';
     drawPicker('');
     pq.focus();
   }
+  function closePicker() { picker.hidden = true; pmode = null; }
+
+  /* 바깥을 누르거나 Esc 로 닫기 */
+  document.addEventListener('mousedown', function (e) {
+    if (picker.hidden) return;
+    var t = e.target;
+    if (!t || t.nodeType !== 1) { closePicker(); return; }
+    if (picker.contains(t) || t.closest('#btn-wiki, #btn-cite')) return;
+    closePicker();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !picker.hidden) { closePicker(); ed.focus(); }
+  });
+  window.addEventListener('resize', function () { if (!picker.hidden) placePicker(); });
   function drawPicker(q) {
     var s = q.toLowerCase();
     var hits = pdata.filter(function (d) {
@@ -512,10 +535,54 @@
     var li = e.target.closest('li[data-i]');
     if (!li) return;
     insert(pdata[+li.getAttribute('data-i')].ins);
-    picker.hidden = true; pmode = null;
+    closePicker();
   });
   $('#btn-wiki').addEventListener('click', function () { openPicker('wiki'); });
   $('#btn-cite').addEventListener('click', function () { openPicker('cite'); });
+
+  /* ── 미리보기에서 문장을 고르면 편집칸에서도 같은 곳을 선택 ──
+     미리보기는 마크다운이 렌더된 결과라 글자가 완전히 같지 않을 수
+     있으므로, 공백을 무시한 비교로 가장 그럴듯한 위치를 찾습니다.  */
+  function syncFromPreview() {
+    var sel = document.getSelection();
+    if (!sel || sel.isCollapsed) return;
+    var pv = $('#preview');
+    var node = sel.anchorNode;
+    if (!node || !pv.contains(node.nodeType === 1 ? node : node.parentNode)) return;
+
+    var picked = sel.toString().replace(/\s+/g, ' ').trim();
+    if (picked.length < 2) return;
+
+    /* 편집칸 원문에서 공백을 지운 사본을 만들고, 위치를 되짚을 지도를 남김 */
+    var raw = ed.value, bare = '', map = [];
+    for (var i = 0; i < raw.length; i++) {
+      if (!/\s/.test(raw[i])) { bare += raw[i]; map.push(i); }
+    }
+    var needle = picked.replace(/\s+/g, '');
+    var at = bare.indexOf(needle);
+
+    /* 통째로 못 찾으면 앞부분만으로 다시 시도 */
+    if (at < 0 && needle.length > 10) {
+      var head = needle.slice(0, Math.max(10, Math.floor(needle.length / 2)));
+      at = bare.indexOf(head);
+      if (at >= 0) needle = head;
+    }
+    if (at < 0) return;
+
+    var from = map[at];
+    var to = map[Math.min(at + needle.length - 1, map.length - 1)] + 1;
+
+    ed.focus();
+    ed.setSelectionRange(from, to);
+    /* 선택한 줄이 보이도록 스크롤 */
+    var before = raw.slice(0, from).split('\n').length - 1;
+    var lineH = parseFloat(getComputedStyle(ed).lineHeight) || 22;
+    ed.scrollTop = Math.max(0, before * lineH - ed.clientHeight / 3);
+    ed.classList.add('flash-find');
+    setTimeout(function () { ed.classList.remove('flash-find'); }, 700);
+  }
+  $('#preview').addEventListener('mouseup', function () { setTimeout(syncFromPreview, 0); });
+  $('#preview').addEventListener('touchend', function () { setTimeout(syncFromPreview, 0); });
 
   /* ── 탭 ──────────────────────────────────────────── */
   document.querySelectorAll('.w-tabs button').forEach(function (b) {

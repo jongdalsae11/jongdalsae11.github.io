@@ -65,13 +65,14 @@
       }).join('');
 
       el.innerHTML =
-        '<div class="stat-row">' + cards +
-          '<div class="stat stat--misc">' +
+        '<div class="stat-row">' + cards + '</div>' +
+        '<div class="stat-row stat-row--meta">' +
+          '<a class="stat stat--misc plain" href="' + ROOT + '/archive.html">' +
             '<span class="stat-head"><span class="stat-n">' + (S.problems || []).length +
-            '</span><span class="stat-l">문제</span></span></div>' +
-          '<div class="stat stat--misc">' +
+            '</span><span class="stat-l">직접 만든 문제</span></span></a>' +
+          '<a class="stat stat--misc plain" href="' + ROOT + '/library.html">' +
             '<span class="stat-head"><span class="stat-n">' + (S.library || []).length +
-            '</span><span class="stat-l">자료</span></span></div>' +
+            '</span><span class="stat-l">보관 중인 자료</span></span></a>' +
         '</div>';
     },
 
@@ -79,8 +80,8 @@
     pins: function (el) {
       var pinned = (S.posts || []).filter(function (p) { return p.pinned; });
       el.innerHTML = pinned.map(function (p) {
-        return '<a class="pin plain" href="' + postHref(p) + '"' + U.catVar(p.category) + '>' +
-          '<span class="pin-label">PINNED · ' + label(p.category).toUpperCase() + '</span>' +
+        return '<a class="pin plain" href="' + postHref(p) + '">' +
+          '<span class="pin-label">PINNED · ' + esc(U.catPath(p.category, ' › ')) + '</span>' +
           '<p class="pin-title">' + esc(p.title) + '</p>' +
           '<p class="pin-desc">' + esc(p.summary || '') + '</p></a>';
       }).join('');

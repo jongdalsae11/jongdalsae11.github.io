@@ -42,8 +42,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 108px);
-  min-height: 600px;
+  /* 화면이 짧으면 페이지가 스크롤되고, 편집 공간은 항상 넉넉하게 */
+  height: max(calc(100vh - 108px), 900px);
 }
 .w-panel-head {
   display: flex;
@@ -108,7 +108,14 @@ body.mode-other .w-fields { flex: 1 1 auto; overflow-y: auto; }
   justify-content: space-between;
   gap: 10px;
 }
-.w-body { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+.w-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;      /* 편집칸 내용이 버튼 위로 삐져나오지 않게 */
+  position: relative;    /* 선택 목록을 이 안에 띄우기 위한 기준 */
+}
 .w-body[hidden] { display: none; }
 .w-field { display: flex; flex-direction: column; gap: 4px; }
 .w-field--wide { grid-column: 1 / -1; }
@@ -184,11 +191,20 @@ body.mode-other .w-fields { flex: 1 1 auto; overflow-y: auto; }
 }
 .w-toolbar button:hover { color: var(--cyan); border-color: rgba(56, 189, 248, 0.45); }
 
-/* 글 연결 / 자료 인용 선택 목록 */
+/* 글 연결 / 자료 인용 선택 목록 — 툴바 아래에 떠서 열립니다
+   (예전에는 흐름에 끼어들어 편집칸과 버튼을 밀어냈습니다)      */
 .w-picker {
-  border-bottom: 1px solid var(--line-soft);
-  background: var(--bg);
-  padding: 10px 14px;
+  position: absolute;
+  top: 0; left: 10px; right: 10px;
+  z-index: 12;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  padding: 10px 12px;
+  max-height: min(52vh, 420px);
+  display: flex;
+  flex-direction: column;
 }
 .w-picker[hidden] { display: none; }
 .w-picker input {
@@ -204,7 +220,12 @@ body.mode-other .w-fields { flex: 1 1 auto; overflow-y: auto; }
   margin-bottom: 8px;
 }
 .w-picker input:focus { border-color: var(--cyan); }
-.w-picker ul { list-style: none; margin: 0; padding: 0; max-height: 190px; overflow-y: auto; }
+.w-picker ul {
+  list-style: none; margin: 0; padding: 0;
+  flex: 1 1 auto; min-height: 0;
+  overflow-y: auto;
+}
+.w-picker li.pk-empty { color: var(--faint); cursor: default; text-align: center; padding: 14px; }
 .w-picker li {
   padding: 7px 10px;
   border-radius: 6px;
@@ -220,9 +241,11 @@ body.mode-other .w-fields { flex: 1 1 auto; overflow-y: auto; }
 }
 
 #editor {
-  flex: 1 1 auto;
+  /* basis 0 — 글이 많아져도 칸이 커지지 않고 내부에서 스크롤됩니다 */
+  flex: 1 1 0%;
   width: 100%;
-  min-height: 340px;
+  min-height: 0;
+  overflow-y: auto;
   resize: none;
   border: 0;
   outline: none;
@@ -286,6 +309,9 @@ body.mode-other .w-fields { flex: 1 1 auto; overflow-y: auto; }
 .w-tabbody { flex: 1; overflow-y: auto; background: var(--bg); }
 .w-tabbody[hidden] { display: none; }
 #preview { padding: 24px 28px; }
+#preview ::selection { background: rgba(56, 189, 248, 0.3); }
+/* 편집칸에서 되짚어 찾은 구간을 잠깐 반짝이게 */
+#editor.flash-find { box-shadow: inset 0 0 0 2px rgba(56, 189, 248, 0.5); }
 #preview .sidenote { display: block; }
 
 /* 등록 안내 */

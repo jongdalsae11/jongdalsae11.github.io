@@ -279,7 +279,7 @@
 }
 .search-modal[hidden] { display: none; }
 .search-box {
-  width: min(560px, 92vw);
+  width: min(920px, 92vw);
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -624,8 +624,14 @@ figcaption .fig-no {
   opacity: 0.6;
   pointer-events: none;
 }
-.pin { border-left-color: var(--cat, var(--orange)); }
-.pin-label { color: var(--cat, var(--orange)); }
+/* 고정 글은 분류색이 아니라 주황 포인트 — 1% 화룡점정 */
+.pin { border-left-color: var(--orange); }
+.pin-label { color: var(--orange); }
+.pin::after {
+  background: linear-gradient(90deg, transparent,
+    rgba(249, 115, 22, 0.5), transparent);
+}
+.pin:hover { border-left-color: #fb8b3c; background: rgba(249, 115, 22, 0.05); }
 .card-meta { color: var(--cat, var(--purple)); }
 
 /* ── 트리 분류 색 점 ──────────────────────────────── */
@@ -865,6 +871,16 @@ a.stat:hover {
 }
 .stat-more { color: var(--line); }
 .stat-row { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+/* 문제·자료 줄은 항상 좌우를 꽉 채움 */
+.stat-row--meta {
+  grid-template-columns: 1fr 1fr;
+  margin-top: -1.6em;
+}
+.stat-row--meta .stat { display: flex; align-items: baseline; gap: 10px; }
+.stat-row--meta .stat-head { display: flex; align-items: baseline; gap: 10px; }
+.stat-row--meta .stat-n { font-size: 1.15rem; }
+.stat-row--meta .stat-l { margin-top: 0; font-size: 0.78rem; }
+a.stat--misc:hover { border-color: var(--line); background: var(--surface-2); }
 
 /* ============================================================
    모바일 — 목록 · 카드 · 코드 · 검색
