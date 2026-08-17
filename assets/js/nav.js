@@ -153,18 +153,40 @@ var SITE_SUB  = 'archive';
     }
     return null;
   }
-  function refreshHeights() {
-    /* 깊은 것부터 위로 올라가며 높이 재계산 (부모가 자식 높이를 포함해야 함) */
-    var all = Array.prototype.slice.call(sidebar.querySelectorAll('.branch'));
-    all.sort(function (a, b) {
-      return b.querySelectorAll('.branch').length - a.querySelectorAll('.branch').length;
-    });
-    all.forEach(function (b) {
-      var btn = btnForKey(b.getAttribute('data-branch'));
-      var open = btn && btn.getAttribute('aria-expanded') === 'true';
-      b.style.maxHeight = open ? b.scrollHeight + 'px' : '0px';
-    });
+  function isOpen(b) {
+    var btn = btnForKey(b.getAttribute('data-branch'));
+    return !!btn && btn.getAttribute('aria-expanded') === 'true';
   }
+
+  /* 펼쳐진 가지는 max-height 를 none 으로 둡니다.
+     고정 px 로 두면 그 안의 하위를 펼쳤을 때 잘려서 아래 항목이
+     사라져 보이는 문제가 생깁니다.                              */
+  function settle(b) {
+    b.style.maxHeight = isOpen(b) ? 'none' : '0px';
+  }
+  function refreshHeights() {
+    Array.prototype.slice.call(sidebar.querySelectorAll('.branch')).forEach(settle);
+  }
+
+  /* 애니메이션을 곁들여 여닫기 (none ↔ 0 은 전환이 안 되므로
+     실제 높이를 한 번 거쳐 갑니다)                              */
+  function animate(b, open) {
+    if (open) {
+      b.style.maxHeight = b.scrollHeight + 'px';
+      var done = function (e) {
+        if (e && e.propertyName !== 'max-height') return;
+        b.removeEventListener('transitionend', done);
+        if (isOpen(b)) b.style.maxHeight = 'none';   /* 하위 확장 대비 */
+      };
+      b.addEventListener('transitionend', done);
+      setTimeout(done, 400);                          /* 전환 이벤트 누락 대비 */
+    } else {
+      b.style.maxHeight = b.scrollHeight + 'px';      /* none → 실제 높이 */
+      requestAnimationFrame(function () { b.style.maxHeight = '0px'; });
+    }
+    /* 조상들은 이미 none 이므로 잘리지 않습니다 */
+  }
+
   function saveOpen() {
     var keys = [];
     caretBtns.forEach(function (x) {
@@ -174,8 +196,13 @@ var SITE_SUB  = 'archive';
   }
   caretBtns.forEach(function (btn) {
     btn.addEventListener('click', function () {
-      btn.setAttribute('aria-expanded', btn.getAttribute('aria-expanded') !== 'true');
-      refreshHeights();
+      var open = btn.getAttribute('aria-expanded') !== 'true';
+      btn.setAttribute('aria-expanded', open);
+      var b = null;
+      sidebar.querySelectorAll('.branch').forEach(function (x) {
+        if (x.getAttribute('data-branch') === btn.getAttribute('data-key')) b = x;
+      });
+      if (b) animate(b, open);
       saveOpen();
     });
   });

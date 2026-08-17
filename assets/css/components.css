@@ -942,3 +942,106 @@ a.stat--misc:hover { border-color: var(--line); background: var(--surface-2); }
   .stat-subs { display: none; }   /* 아주 좁으면 하위 요약은 생략 */
   .heat-wrap { --cell: 12px; }
 }
+
+/* ============================================================
+   홈 하단 — 태그 클라우드 · 최근 자료/문제 · 무작위 글
+   ============================================================ */
+.cloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  margin: 1em 0 2.6em;
+}
+.cloud-tag {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  color: var(--soft);
+  line-height: 1.4;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+.cloud-tag:hover { color: var(--cyan); opacity: 1 !important; }
+.ct-n {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--faint);
+}
+
+/* 두 칸 나란히 */
+.home-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 2.4em;
+}
+.col-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-family: var(--mono);
+  font-weight: 500;
+  color: var(--faint);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 0.7em;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid var(--line-soft);
+}
+.col-more {
+  margin-left: auto;
+  font-size: 0.66rem;
+  color: var(--faint);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.col-more:hover { color: var(--cyan); }
+
+.minis { list-style: none; margin: 0; padding: 0; }
+.minis li { border-bottom: 1px solid var(--line-soft); }
+.minis li:last-child { border-bottom: 0; }
+.mini {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 10px;
+  padding: 9px 8px 9px 10px;
+  border-left: 2px solid transparent;
+  border-radius: 0 7px 7px 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.mini:hover {
+  border-left-color: var(--cat, var(--cyan));
+  background: color-mix(in srgb, var(--cat, var(--cyan)) 6%, transparent);
+}
+.mini-title { font-size: 0.86rem; color: var(--text); line-height: 1.45; }
+.mini-sub {
+  grid-column: 1;
+  font-size: 0.68rem;
+  color: var(--faint);
+}
+.mini-tag {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  align-self: center;
+  font-size: 0.62rem;
+  color: var(--cat, var(--purple));
+  white-space: nowrap;
+}
+
+.lucky-line {
+  font-size: 0.85rem;
+  color: var(--faint);
+  padding-top: 1.4em;
+  border-top: 1px solid var(--line-soft);
+}
+.lucky {
+  color: var(--cyan);
+  border-bottom: 1px dashed rgba(56, 189, 248, 0.4);
+}
+.lucky:hover { border-bottom-style: solid; }
+
+@media (max-width: 920px) {
+  .home-cols { grid-template-columns: 1fr; gap: 18px; }
+  .cloud { gap: 7px 10px; }
+}

@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/css/base.css?v=1e5ade7e">
   <link rel="stylesheet" href="./assets/css/layout.css?v=f211f0fa">
-  <link rel="stylesheet" href="./assets/css/components.css?v=e4603bdb">
+  <link rel="stylesheet" href="./assets/css/components.css?v=4c99188b">
 </head>
 <body data-crumb="~ / <b>홈</b>">
   <main id="main">
@@ -40,6 +40,27 @@
       <h2>활동</h2>
       <div class="heat-wrap" id="heat"></div>
       <p class="heat-note" id="heat-note"></p>
+
+      <h2>자주 쓰는 주제</h2>
+      <div class="cloud" data-render="tagcloud"></div>
+
+      <div class="home-cols">
+        <section>
+          <h3 class="col-head">최근 추가한 자료
+            <a class="col-more plain" href="./library.html">전체 →</a></h3>
+          <ul class="minis" data-render="recentLib"></ul>
+        </section>
+        <section>
+          <h3 class="col-head">최근 만든 문제
+            <a class="col-more plain" href="./archive.html">전체 →</a></h3>
+          <ul class="minis" data-render="recentProb"></ul>
+        </section>
+      </div>
+
+      <p class="lucky-line">
+        읽을 게 마땅치 않으면
+        <a class="lucky plain" href="#" data-render="lucky">아무 글이나 한 편 →</a>
+      </p>
     </div>
   </main>
   <footer><p>&copy; 2026</p></footer>
@@ -47,8 +68,8 @@
   <script>window.ROOT='.'</script>
   <script src="./assets/data/content.js?v=9c94f2d9"></script>
   <script src="./assets/js/util.js?v=9ac5ba88"></script>
-  <script src="./assets/js/nav.js?v=e0af9486"></script>
-  <script src="./assets/js/lists.js?v=9cc2c2d9"></script>
+  <script src="./assets/js/nav.js?v=cd4d2297"></script>
+  <script src="./assets/js/lists.js?v=8c73d7b0"></script>
   <script src="./assets/js/heatmap.js?v=12e71001"></script>
   <script src="./assets/js/progress.js?v=fb65c704"></script>
 </body>

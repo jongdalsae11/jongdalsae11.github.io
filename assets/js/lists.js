@@ -92,6 +92,67 @@
       el.innerHTML = rowsOf(U.sortedPosts().slice(0, 5));
     },
 
+    /* ── 홈: 자주 쓰는 태그 (빈도에 따라 크기가 달라짐) ── */
+    tagcloud: function (el) {
+      var pool = {};
+      (S.posts || []).forEach(function (p) {
+        (p.tags || []).forEach(function (t) { pool[t] = (pool[t] || 0) + 1; });
+      });
+      var keys = Object.keys(pool).sort(function (a, b) {
+        return pool[b] - pool[a] || a.localeCompare(b);
+      });
+      if (!keys.length) { el.innerHTML = '<p class="empty">아직 태그가 없습니다.</p>'; return; }
+      var max = pool[keys[0]];
+      el.innerHTML = keys.slice(0, 24).map(function (t) {
+        var w = pool[t] / max;                       /* 0~1 */
+        var size = (0.72 + w * 0.34).toFixed(2);     /* rem */
+        var op = (0.6 + w * 0.4).toFixed(2);
+        return '<a class="cloud-tag plain" href="' + ROOT + '/posts.html#tag=' +
+          encodeURIComponent(t) + '" style="font-size:' + size + 'rem;opacity:' + op +
+          '" title="글 ' + pool[t] + '편">' + esc(t) +
+          '<span class="ct-n">' + pool[t] + '</span></a>';
+      }).join('');
+    },
+
+    /* ── 홈: 최근 추가한 자료 ── */
+    recentLib: function (el) {
+      var list = (S.library || []).slice(-4).reverse();
+      if (!list.length) { el.innerHTML = '<li class="empty">자료가 없습니다.</li>'; return; }
+      el.innerHTML = list.map(function (r) {
+        return '<li' + U.catVar(r.category) + '><a class="mini plain" href="' + ROOT +
+          '/library.html#' + encodeURIComponent(r.ref) + '">' +
+          '<span class="mini-title">' + esc(r.title) + '</span>' +
+          '<span class="mini-sub">' + esc(U.catPath(r.category, ' › ')) +
+            (r.year ? ' · ' + r.year : '') + '</span>' +
+          '<span class="mini-tag mono">' + esc(r.ref) + '</span></a></li>';
+      }).join('');
+    },
+
+    /* ── 홈: 최근 만든 문제 ── */
+    recentProb: function (el) {
+      var diffLabel = { easy: '쉬움', mid: '보통', hard: '어려움' };
+      var list = (S.problems || []).slice().sort(byDateDesc).slice(0, 4);
+      if (!list.length) { el.innerHTML = '<li class="empty">문제가 없습니다.</li>'; return; }
+      el.innerHTML = list.map(function (p) {
+        return '<li><a class="mini plain" href="' + ROOT + '/archive.html">' +
+          '<span class="mini-title">' + esc(p.title) + '</span>' +
+          '<span class="mini-sub">' + dot(p.date) + ' · ' +
+            (diffLabel[p.diff] || p.diff) + '</span>' +
+          '<span class="mini-tag mono">' + esc((p.tags || [])[0] || '') + '</span></a></li>';
+      }).join('');
+    },
+
+    /* ── 홈: 아무 글이나 한 편 ── */
+    lucky: function (el) {
+      var all = S.posts || [];
+      if (!all.length) return;
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        var p = all[Math.floor(Math.random() * all.length)];
+        location.href = ROOT + '/posts/' + p.file;
+      });
+    },
+
     /* ── 글 목록 페이지 (해시 = 카테고리) ── */
     posts: function (el) {
       function draw() {
