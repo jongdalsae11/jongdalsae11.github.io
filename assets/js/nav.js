@@ -351,8 +351,18 @@ var SITE_SUB  = 'archive';
     }
   });
   modal.addEventListener('click', function (e) { if (e.target === modal) closeSearch(); });
+  /* 글을 쓰는 중에는 Ctrl+K 를 편집기(링크 삽입)에 양보합니다 */
+  function inEditor(el) {
+    return !!el && (el.tagName === 'TEXTAREA' ||
+                    (el.tagName === 'INPUT' && !/^(checkbox|radio|button)$/.test(el.type)) ||
+                    el.isContentEditable);
+  }
   document.addEventListener('keydown', function (e) {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openSearch(); }
-    if (e.key === 'Escape') closeSearch();
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      if (inEditor(document.activeElement) && document.activeElement !== input) return;
+      e.preventDefault();
+      openSearch();
+    }
+    if (e.key === 'Escape' && !modal.hidden) closeSearch();
   });
 })();
