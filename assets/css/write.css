@@ -604,3 +604,132 @@ body.focus-write .w-split { display: none; }
 
 /* 편집칸이 가운데 정렬돼도 양옆이 다른 색으로 갈라져 보이지 않게 */
 .w-body { background: var(--bg); }
+
+/* ============================================================
+   세로 공간 회수 — 모드탭을 헤더로, 전체화면, 힌트 접기
+   ============================================================ */
+.w-panel-head {
+  gap: 12px;
+  padding: 6px 12px;
+  flex-wrap: wrap;
+}
+.w-panel-head .w-modes {
+  margin: 0;
+  gap: 3px;
+  flex: 0 1 auto;
+}
+.w-panel-head .w-modes button {
+  font-size: 0.72rem;
+  padding: 3px 11px;
+  border-radius: 14px;
+}
+.w-head-right { flex-wrap: wrap; gap: 6px; }
+
+/* 전체화면 — 상단바·페이지 여백을 없애고 화면을 다 씁니다 */
+body.w-max .topbar,
+body.w-max .rail,
+body.w-max footer { display: none; }
+body.w-max main { padding: 0 !important; margin-left: 0 !important; }
+body.w-max .sidebar { transform: translateX(-100%); }
+body.w-max .w-panel {
+  height: 100dvh;
+  border-radius: 0;
+  border-top: 0; border-bottom: 0;
+}
+body.w-max .write-grid { gap: 0; }
+body.w-max #editor { padding-top: 26px; }
+
+/* 힌트 줄 숨기기 버튼 */
+.w-hint-x {
+  margin-left: 8px;
+  font-size: 0.9rem;
+  line-height: 1;
+  color: var(--line);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.w-hint-x:hover { color: var(--soft); }
+body.hint-off .w-hint { display: none; }
+
+/* 수정 중 표시줄 */
+.w-editing {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 7px 14px;
+  border-top: 1px solid rgba(249, 115, 22, 0.3);
+  background: rgba(249, 115, 22, 0.08);
+  font-size: 0.72rem;
+  color: var(--soft);
+}
+.w-editing[hidden] { display: none; }
+.w-editing b { color: var(--orange); font-weight: 600; }
+.w-editing code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  color: var(--text);
+}
+.w-editing button {
+  margin-left: auto;
+  font: inherit;
+  font-size: 0.7rem;
+  color: var(--faint);
+  background: none;
+  border: 1px solid var(--line-soft);
+  border-radius: 5px;
+  padding: 2px 9px;
+  cursor: pointer;
+}
+.w-editing button:hover { color: var(--text); border-color: var(--line); }
+
+/* 편집칸을 조금 더 — 아래 여백과 액션바 압축 */
+.w-actions { padding: 7px 13px; }
+#editor { padding-bottom: 40px; }
+.w-panel { height: max(calc(100dvh - var(--topbar-h) - 52px), 620px); }
+
+/* ── 태그 추천 (많이 쓴 순서) ─────────────────────── */
+.tag-sug {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: -2px;
+}
+.tag-sug:empty { display: none; }
+.tag-sug > b {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 400;
+  color: var(--line);
+  letter-spacing: 0.06em;
+  margin-right: 2px;
+}
+.tag-sug button {
+  font: inherit;
+  font-size: 0.7rem;
+  color: var(--faint);
+  background: var(--bg);
+  border: 1px solid var(--line-soft);
+  border-radius: 12px;
+  padding: 2px 9px;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+.tag-sug button:hover { color: var(--cyan); border-color: rgba(56,189,248,.45); }
+.tag-sug button.on {
+  color: var(--orange);
+  border-color: rgba(249,115,22,.5);
+  background: rgba(249,115,22,.1);
+}
+.tag-sug button i {
+  font-style: normal;
+  font-family: var(--mono);
+  font-size: 0.85em;
+  color: var(--line);
+  margin-left: 4px;
+}

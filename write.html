@@ -21,33 +21,33 @@
   <link rel="stylesheet" href="./assets/css/base.css?v=1e5ade7e">
   <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="./assets/css/components.css?v=a690207b">
-  <link rel="stylesheet" href="./assets/css/post.css?v=14684a9f">
-  <link rel="stylesheet" href="./assets/css/write.css?v=db76e8e8">
+  <link rel="stylesheet" href="./assets/css/post.css?v=b704ea53">
+  <link rel="stylesheet" href="./assets/css/write.css?v=0542cbe4">
 </head>
 <body class="page-write" data-crumb="~ / <b>새로 쓰기</b>">
   <main id="main">
     <div class="w-wrap">
 
-      <!-- 무엇을 만들지 고르기 -->
-      <div class="w-modes" id="w-modes">
-        <button class="on" data-mode="post">글</button>
-        <button data-mode="library">자료</button>
-        <button data-mode="problem">문제</button>
-        <button data-mode="research">연구·프로젝트</button>
-      </div>
-
       <div class="write-grid" id="write-grid">
         <!-- ══════════ 왼쪽 ══════════ -->
         <section class="w-panel">
           <div class="w-panel-head">
-            <span id="w-mode-label">글 작성</span>
+            <div class="w-modes" id="w-modes">
+              <button class="on" data-mode="post">글</button>
+              <button data-mode="library">자료</button>
+              <button data-mode="problem">문제</button>
+              <button data-mode="research">연구</button>
+            </div>
             <span class="w-head-right">
+              <button class="w-tg w-tg--plain" id="btn-edit" title="이미 올린 것을 불러와 고칩니다">수정</button>
               <button class="w-tg" id="tg-fields" aria-expanded="true">정보 <i>▾</i></button>
               <button class="w-tg" id="tg-toolbar" aria-expanded="true" data-for="post">도구 <i>▾</i></button>
               <button class="w-tg w-tg--plain" id="tg-focus" aria-pressed="false" data-for="post"
                       title="미리보기를 접고 넓게 씁니다">집중</button>
               <button class="w-tg w-tg--plain" id="tg-mono" aria-pressed="false" data-for="post"
                       title="코드 위주로 쓸 때 고정폭 글꼴">고정폭</button>
+              <button class="w-tg w-tg--plain" id="tg-max" aria-pressed="false"
+                      title="화면 전체를 편집에 씁니다 (F9 · 나가기는 Esc)">전체</button>
               <span class="w-saved" id="w-saved">자동 저장됨</span>
             </span>
           </div>
@@ -181,8 +181,14 @@
               <span>·</span> 드래그하면 서식 버튼
               <span>·</span> 목록에서 <b>Enter</b> 자동 이어쓰기
               <a class="w-hint-more plain" href="#" id="hint-more">도움말</a>
+              <button class="w-hint-x" id="hint-x" title="이 줄 숨기기" aria-label="힌트 줄 숨기기">×</button>
             </p>
           </div>
+
+          <p class="w-editing" id="w-editing" hidden>
+            <b>수정 중</b> <code id="w-editing-file"></code>
+            <button type="button" id="w-editing-off">새로 쓰기로 돌아가기</button>
+          </p>
 
           <div class="w-actions">
             <button class="ghost" id="btn-clear">비우기</button>
@@ -286,7 +292,8 @@
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
-  <script src="./assets/js/write.js?v=a6e265e8"></script>
+  <script src="./assets/js/write.js?v=a5c37b49"></script>
   <script src="./assets/js/editor.js?v=6831fcd5"></script>
+  <script src="./assets/js/compose.js?v=1711de29"></script>
 </body>
 </html>

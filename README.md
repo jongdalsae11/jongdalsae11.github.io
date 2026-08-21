@@ -52,7 +52,8 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 └── assets/
     ├── data/content.js   ★ 모든 콘텐츠 목록
     ├── css/  base · layout · components · post · write
-    ├── js/   util · nav · lists · heatmap · progress · code · post · write
+    ├── js/   util · nav · lists · heatmap · progress · code · post
+    │         write(작성) · editor(단축키·슬래시) · compose(태그추천·수정)
     ├── img/  글에 쓰는 이미지     files/  자료 PDF
     └── og.png  링크 공유 썸네일
 ```
@@ -73,6 +74,7 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 | 이름 바꾸기 | `assets/js/nav.js` 의 `SITE_NAME` |
 | 전체 색 바꾸기 | `assets/css/base.css` 의 `:root` |
 | 무언가 작성하기 | 사이드바 **+ 새로 쓰기** → 모드 선택 → 등록 코드 복사 |
+| 이미 올린 것 고치기 | 글 아래 **고치기** 링크, 또는 작성 도구의 **수정** 버튼 |
 
 **기본 팔레트** — bg `#0a0a14` · surface `#141423` · text `#e4e4ed` · line `#3a3a52`
 · cyan `#38bdf8`(상호작용) · purple `#a855f7`(보조) · orange `#f97316`(1% 강조)
@@ -94,6 +96,10 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 본문 인용 마크 → 자료정리집 연동 · 드래그 코멘트 → GitHub 이슈
 
 **코드·수식** — 줄번호 · 들여쓰기 가이드 · 언어 라벨 · 복사 · 긴 코드 접기 · KaTeX
+
+**작성 도구** — 슬래시 메뉴(`/`) · 단축키(`Ctrl+B/I/K/1/2/3/E`) · 목록 자동 이어쓰기 ·
+드래그하면 서식바 · 자주 쓴 태그 추천(빈도순) · 이미 올린 것 불러와 **수정** ·
+편집/미리보기 드래그 분할 · 트리 접기(`Ctrl+\`) · 전체화면(`F9`)
 
 **기타** — 인쇄 스타일 · 키보드 접근성 · `prefers-reduced-motion` 존중 ·
 RSS · OG 썸네일 · sitemap / robots

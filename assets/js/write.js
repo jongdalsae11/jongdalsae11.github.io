@@ -125,6 +125,10 @@
       var p = [];
       while (i < L.length && !/^\s*$/.test(L[i]) &&
              !/^(#|```|>|[-*]\s|\$\$|---|!!|<figure)/.test(L[i])) { p.push(L[i]); i++; }
+      /* 어떤 규칙에도 걸리지 않고 문단으로도 못 모으는 줄이 있으면
+         (예: 닫히지 않은 !! 나 줄 첫머리의 #include) 그 줄을 그냥 소비합니다.
+         이 안전장치가 없으면 i 가 멈춰 무한 루프에 빠집니다.        */
+      if (!p.length) { p.push(L[i]); i++; }
       out.push('<p>' + inline(esc(p.join(' '))) + '</p>');
     }
     return out.join('\n');
@@ -293,7 +297,9 @@
       });
       G('tg-fields').setAttribute('aria-expanded', open);
     }
-    $('#w-mode-label').textContent = MODE_LABEL[m];
+    /* 모드 이름표는 이제 헤더의 탭 자체가 대신합니다 (있을 때만 갱신) */
+    var lbl = $('#w-mode-label');
+    if (lbl) lbl.textContent = MODE_LABEL[m];
     document.body.setAttribute('data-crumb', '~ / <b>' + MODE_LABEL[m] + '</b>');
     var cr = document.querySelector('.topbar .crumb');
     if (cr) cr.innerHTML = '~ / <b>' + MODE_LABEL[m] + '</b>';
@@ -659,6 +665,9 @@
       '          </div>\n        </div>\n' +
       '        <div class="post-body">\n' + bodyHTML() + '\n        </div>\n' +
       '        <section class="backlinks"></section>\n' +
+      /* 원고 보존 — '수정' 기능이 이걸 읽어 그대로 되살립니다 (화면에는 안 보임) */
+      '        <script type="text/markdown" class="post-src">\n' +
+      ed.value.replace(/<\/(script)/gi, '<\\/$1') + '\n        <\/script>\n' +
       '      </article>\n      <div class="margin-col"></div>\n    </div>\n  </main>\n' +
       '  <footer><p>&copy; 2026</p></footer>\n' +
       '  <script>window.ROOT=\'..\'<\/script>\n' +
@@ -680,6 +689,13 @@
     document.querySelector('.w-tabs button[data-tab="register"]').click();
     document.querySelectorAll('.w-steps li').forEach(function (li) { li.classList.add('on'); });
   });
+
+  /* compose.js(태그 추천·수정 기능)가 쓰는 창구 */
+  window.WRITE = {
+    F: F, ed: ed, G: G, $: $, S: S,
+    setMode: setMode, refresh: refresh, fileBase: fileBase, tagArr: tagArr,
+    getMode: function () { return MODE; }
+  };
 
   restore();
   if (!G('p-date').value) G('p-date').value = todayStr();

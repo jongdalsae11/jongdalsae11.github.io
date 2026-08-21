@@ -52,6 +52,19 @@ document.addEventListener('DOMContentLoaded', function () {
     metaBar.appendChild(rt);
   }
 
+  /* 이 글을 작성 도구로 열어 고치는 링크 */
+  if (metaBar && !metaBar.querySelector('.edit-link')) {
+    var file = location.pathname.split('/').pop();
+    if (file) {
+      var el = document.createElement('a');
+      el.className = 'edit-link plain';
+      el.href = (window.ROOT || '.') + '/write.html?edit=' + encodeURIComponent(file);
+      el.textContent = '고치기';
+      el.title = '작성 도구에서 이 글을 불러옵니다';
+      metaBar.appendChild(el);
+    }
+  }
+
   /* ── 목차 — 소제목이 3개 이상일 때만 ────────────── */
   var heads = Array.prototype.slice.call(body.querySelectorAll('h2, h3'));
   if (heads.length >= 3) {

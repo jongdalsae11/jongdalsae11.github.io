@@ -330,3 +330,14 @@ a.pn-item:hover .pn-title { color: var(--cyan); }
   /* 시트를 조금 더 크게 */
   .sheet-panel { max-height: 62vh; padding-bottom: max(30px, env(safe-area-inset-bottom)); }
 }
+
+/* 글 메타줄의 '고치기' — 작성 도구로 이 글 불러오기 */
+.post-meta .edit-link {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--line);
+  border-bottom: 1px solid transparent;
+}
+.post-meta .edit-link:hover { color: var(--cyan); border-bottom-color: rgba(56,189,248,.5); }
+@media print { .post-meta .edit-link { display: none; } }
