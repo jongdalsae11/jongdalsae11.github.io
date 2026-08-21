@@ -135,7 +135,10 @@ var SITE_SUB  = 'archive';
 
   document.body.insertAdjacentHTML('afterbegin',
     '<a class="skip-link" href="#main">본문 바로가기</a>' +
-    '<header class="topbar"><span class="crumb">' + crumb + '</span></header>' +
+    '<header class="topbar">' +
+      '<button class="nav-toggle" type="button" aria-label="트리 접기/펴기" title="트리 접기 (Ctrl+\\)">' +
+        '<i></i><i></i><i></i></button>' +
+      '<span class="crumb">' + crumb + '</span></header>' +
     '<aside class="sidebar tree-noanim"><nav aria-label="사이트 메뉴">' + html + '</nav></aside>' +
     '<button class="nav-fab" type="button" aria-label="메뉴">≡</button>' +
     '<div class="nav-backdrop"></div>');
@@ -223,6 +226,33 @@ var SITE_SUB  = 'archive';
   /* ── 모바일 드로어 ─────────────────────────────────
      열림/닫힘을 한 곳에서 관리하고, 열릴 때 접힌 가지의
      높이를 다시 재서 내용이 잘리지 않게 합니다.          */
+  /* ── 트리 접기 (데스크톱) — 상태 기억, 글쓰기 페이지는 기본 접힘 ── */
+  (function () {
+    var btn = document.querySelector('.nav-toggle');
+    if (!btn) return;
+    var KEY = 'nav-off';
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (err) {}
+    var off = saved === null
+      ? document.body.classList.contains('page-write')   /* 글쓰기는 처음부터 넓게 */
+      : saved === '1';
+    function apply() {
+      document.body.classList.toggle('nav-off', off);
+      btn.setAttribute('aria-expanded', String(!off));
+      window.dispatchEvent(new Event('resize'));         /* 폭에 반응하는 것들 갱신 */
+    }
+    apply();
+    function flip() {
+      off = !off;
+      try { localStorage.setItem(KEY, off ? '1' : '0'); } catch (err) {}
+      apply();
+    }
+    btn.addEventListener('click', flip);
+    document.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key === '\\') { e.preventDefault(); flip(); }
+    });
+  }());
+
   var fab = document.querySelector('.nav-fab');
   var backdrop = document.querySelector('.nav-backdrop');
 

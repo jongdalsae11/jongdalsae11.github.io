@@ -246,3 +246,47 @@ body.nav-open .nav-fab { color: var(--cyan); border-color: var(--cyan); }
   main { padding: calc(var(--topbar-h) + 18px) 16px 84px; }
   .page-head { margin-bottom: 1.8em; }
 }
+
+/* ── 트리 접기 (Ctrl+\) ───────────────────────────── */
+.nav-toggle {
+  flex: 0 0 auto;
+  width: 26px; height: 26px;
+  margin-right: 12px;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center; gap: 3px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.nav-toggle:hover { border-color: var(--line-soft); }
+.nav-toggle i {
+  display: block;
+  width: 13px; height: 1.5px;
+  background: var(--faint);
+  border-radius: 1px;
+  transition: background 0.15s ease, width 0.2s ease;
+}
+.nav-toggle:hover i { background: var(--cyan); }
+.nav-toggle[aria-expanded="false"] i:nth-child(2) { width: 8px; }
+
+body.nav-off .sidebar { transform: translateX(-100%); }
+body.nav-off .topbar { left: 0; }
+body.nav-off main { margin-left: 0; }
+.sidebar { transition: transform 0.22s cubic-bezier(0.33, 1, 0.68, 1); }
+body.nav-off main, body.nav-off .topbar { transition: margin-left 0.22s ease, left 0.22s ease; }
+@media (prefers-reduced-motion: reduce) {
+  .sidebar, body.nav-off main, body.nav-off .topbar { transition: none; }
+}
+/* 모바일에선 드로어 방식이 따로 있으므로 접기 버튼을 숨깁니다 */
+@media (max-width: 920px) {
+  .nav-toggle { display: none; }
+  body.nav-off .sidebar { transform: none; }
+}
+
+/* ── 글쓰기 페이지: 화면을 최대한 편집에 씁니다 ────── */
+body.page-write main {
+  padding: calc(var(--topbar-h) + 10px) 22px 20px;
+}
+body.page-write .topbar { transform: none !important; }   /* 여기선 숨지 않게 */

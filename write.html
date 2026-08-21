@@ -19,12 +19,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <link rel="stylesheet" href="./assets/css/base.css?v=1e5ade7e">
-  <link rel="stylesheet" href="./assets/css/layout.css?v=f211f0fa">
+  <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="./assets/css/components.css?v=a690207b">
   <link rel="stylesheet" href="./assets/css/post.css?v=14684a9f">
-  <link rel="stylesheet" href="./assets/css/write.css?v=23ba3606">
+  <link rel="stylesheet" href="./assets/css/write.css?v=db76e8e8">
 </head>
-<body data-crumb="~ / <b>새로 쓰기</b>">
+<body class="page-write" data-crumb="~ / <b>새로 쓰기</b>">
   <main id="main">
     <div class="w-wrap">
 
@@ -36,7 +36,7 @@
         <button data-mode="research">연구·프로젝트</button>
       </div>
 
-      <div class="write-grid">
+      <div class="write-grid" id="write-grid">
         <!-- ══════════ 왼쪽 ══════════ -->
         <section class="w-panel">
           <div class="w-panel-head">
@@ -193,6 +193,9 @@
         </section>
 
         <!-- ══════════ 오른쪽 ══════════ -->
+        <div class="w-split" id="w-split" role="separator" aria-orientation="vertical"
+             tabindex="0" aria-label="편집칸과 미리보기 너비 조절"><i></i></div>
+
         <section class="w-panel w-panel--preview">
           <div class="w-tabs">
             <button class="on" data-tab="preview">미리보기</button>
@@ -279,11 +282,11 @@
   <script>window.ROOT='.'</script>
   <script src="./assets/data/content.js?v=9c94f2d9"></script>
   <script src="./assets/js/util.js?v=9ac5ba88"></script>
-  <script src="./assets/js/nav.js?v=b830513f"></script>
+  <script src="./assets/js/nav.js?v=91cd2314"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="./assets/js/write.js?v=a6e265e8"></script>
-  <script src="./assets/js/editor.js?v=e0100e36"></script>
+  <script src="./assets/js/editor.js?v=6831fcd5"></script>
 </body>
 </html>

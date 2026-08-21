@@ -534,3 +534,73 @@ body.focus-write #editor {
 .w-hint-more { margin-left: auto; color: var(--cyan); }
 .w-hint-more:hover { text-decoration: underline; }
 @media (max-width: 920px) { .w-hint { font-size: 0.64rem; padding: 6px 10px; } }
+
+/* ============================================================
+   넓게 쓰기 — 폭 제한 해제 · 드래그 분할선 · 세로 최대
+   ============================================================ */
+.w-wrap { max-width: none; }
+
+.write-grid {
+  /* 좌:분할선:우 — 비율은 드래그로 조절되며 인라인 스타일로 덮어씁니다 */
+  grid-template-columns: minmax(0, 1.55fr) 10px minmax(0, 1fr);
+  gap: 0;
+}
+
+.w-panel {
+  /* 화면 높이를 거의 그대로 — 페이지 스크롤 없이 편집칸 안에서만 스크롤 */
+  height: max(calc(100vh - var(--topbar-h) - 62px), 620px);
+}
+
+#editor {
+  /* 사방을 넉넉히 — 글자가 벽에 붙지 않게 */
+  padding: 34px clamp(24px, 4vw, 68px) 64px;
+  /* 아주 넓은 화면에서 한 줄이 지나치게 길어지는 것만 막습니다 */
+  max-width: 92ch;
+  margin: 0 auto;
+}
+body.focus-write #editor { max-width: 80ch; padding: 40px clamp(20px, 3vw, 40px) 72px; }
+
+/* 드래그 손잡이 */
+.w-split {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: col-resize;
+  background: none;
+  border: 0;
+  padding: 0;
+  touch-action: none;
+}
+.w-split i {
+  display: block;
+  width: 2px; height: 42px;
+  border-radius: 2px;
+  background: var(--line-soft);
+  transition: background 0.15s ease, height 0.15s ease;
+}
+.w-split:hover i, .w-split:focus-visible i, .w-split.dragging i {
+  background: var(--cyan);
+  height: 90px;
+}
+.w-split:focus-visible { outline: none; }
+body.split-drag { cursor: col-resize; user-select: none; }
+body.split-drag iframe, body.split-drag .w-prev { pointer-events: none; }
+
+body.focus-write .w-split { display: none; }
+@media (max-width: 1100px) { .w-split { display: none; } }
+
+/* 좁은 화면 — 위 규칙들보다 뒤에 와야 이깁니다 (세로 배치 복구) */
+@media (max-width: 1100px) {
+  .write-grid { grid-template-columns: 1fr !important; gap: 16px; }
+  .w-panel { height: auto; min-height: 460px; }
+  #editor { max-width: none; min-height: 52vh; padding: 22px 20px 40px; }
+  body.page-write main { padding: calc(var(--topbar-h) + 20px) 18px 40px; }
+}
+@media (max-width: 920px) {
+  .w-panel { height: auto; min-height: 0; }
+  #editor { max-width: none; padding: 18px 16px 32px; }
+}
+
+/* 편집칸이 가운데 정렬돼도 양옆이 다른 색으로 갈라져 보이지 않게 */
+.w-body { background: var(--bg); }

@@ -318,3 +318,68 @@
     });
   }
 })();
+
+/* ============================================================
+   split.js — 편집칸 / 미리보기 너비를 드래그로 조절 (비율 기억)
+   ============================================================ */
+(function () {
+  var grid = document.getElementById('write-grid');
+  var bar = document.getElementById('w-split');
+  if (!grid || !bar) return;
+
+  var KEY = 'w-split';
+  var MIN = 32, MAX = 82;          /* 편집칸이 차지할 수 있는 % 범위 */
+  var pct = 61;
+  try {
+    var v = parseFloat(localStorage.getItem(KEY));
+    if (v >= MIN && v <= MAX) pct = v;
+  } catch (e) {}
+
+  function apply() {
+    grid.style.gridTemplateColumns =
+      'minmax(0, ' + pct + 'fr) 10px minmax(0, ' + (100 - pct) + 'fr)';
+  }
+  function save() { try { localStorage.setItem(KEY, String(pct)); } catch (e) {} }
+  function set(next) { pct = Math.min(MAX, Math.max(MIN, next)); apply(); }
+
+  apply();
+
+  function fromX(clientX) {
+    var box = grid.getBoundingClientRect();
+    if (box.width < 40) return pct;
+    return ((clientX - box.left) / box.width) * 100;
+  }
+  function onMove(e) {
+    var x = e.touches ? e.touches[0].clientX : e.clientX;
+    set(fromX(x));
+  }
+  function onUp() {
+    document.body.classList.remove('split-drag');
+    bar.classList.remove('dragging');
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend', onUp);
+    save();
+  }
+  function start(e) {
+    if (window.innerWidth <= 1100) return;    /* 좁은 화면은 세로 배치 */
+    e.preventDefault();
+    document.body.classList.add('split-drag');
+    bar.classList.add('dragging');
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onUp);
+  }
+  bar.addEventListener('mousedown', start);
+  bar.addEventListener('touchstart', start, { passive: false });
+
+  /* 키보드 — ← → 로 2%씩, 더블클릭이면 기본값으로 */
+  bar.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') { e.preventDefault(); set(pct - 2); save(); }
+    if (e.key === 'ArrowRight') { e.preventDefault(); set(pct + 2); save(); }
+    if (e.key === 'Home') { e.preventDefault(); set(61); save(); }
+  });
+  bar.addEventListener('dblclick', function () { set(61); save(); });
+}());
