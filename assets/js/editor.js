@@ -303,4 +303,18 @@
   }
   bindToggle('tg-focus', 'focus-write', 'w-focus');
   bindToggle('tg-mono', 'mono-editor', 'w-mono');
+
+  /* 힌트 줄의 '도움말' → 오른쪽 도움말 탭 열기 */
+  var more = document.getElementById('hint-more');
+  if (more) {
+    more.addEventListener('click', function (e) {
+      e.preventDefault();
+      var tab = document.querySelector('.w-tabs button[data-tab="help"]');
+      if (tab) tab.click();
+      if (document.body.classList.contains('focus-write')) {
+        document.getElementById('tg-focus').click();   /* 집중 모드면 미리보기를 다시 펴 줌 */
+        if (tab) tab.click();
+      }
+    });
+  }
 })();

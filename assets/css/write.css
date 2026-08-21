@@ -506,3 +506,31 @@ body.focus-write #editor {
 
 /* 헤드의 보조 토글 */
 .w-tg--plain[aria-pressed="true"] { color: var(--cyan); border-color: rgba(56,189,248,.35); }
+
+/* 편집칸 아래 상시 힌트 — 기능이 있다는 걸 알 수 있게 */
+.w-hint {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 7px 14px;
+  border-top: 1px solid var(--line-soft);
+  background: var(--surface);
+  font-size: 0.68rem;
+  color: var(--faint);
+}
+.w-hint b {
+  font-family: var(--mono);
+  font-weight: 400;
+  color: var(--soft);
+  background: var(--bg);
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.w-hint span { color: var(--line); }
+.w-hint-more { margin-left: auto; color: var(--cyan); }
+.w-hint-more:hover { text-decoration: underline; }
+@media (max-width: 920px) { .w-hint { font-size: 0.64rem; padding: 6px 10px; } }

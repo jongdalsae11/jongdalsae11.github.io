@@ -20,9 +20,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <link rel="stylesheet" href="./assets/css/base.css?v=1e5ade7e">
   <link rel="stylesheet" href="./assets/css/layout.css?v=f211f0fa">
-  <link rel="stylesheet" href="./assets/css/components.css?v=4c99188b">
-  <link rel="stylesheet" href="./assets/css/post.css?v=d2521d84">
-  <link rel="stylesheet" href="./assets/css/write.css?v=96358a32">
+  <link rel="stylesheet" href="./assets/css/components.css?v=a690207b">
+  <link rel="stylesheet" href="./assets/css/post.css?v=14684a9f">
+  <link rel="stylesheet" href="./assets/css/write.css?v=23ba3606">
 </head>
 <body data-crumb="~ / <b>새로 쓰기</b>">
   <main id="main">
@@ -174,6 +174,14 @@
               placeholder="본문을 여기에 씁니다.  /  를 치면 블록 메뉴가 열립니다."></textarea>
             <div class="sel-bar" id="sel-bar" hidden></div>
             <div class="slash" id="slash" hidden></div>
+            <p class="w-hint">
+              <b>/</b> 블록 넣기
+              <span>·</span> <b>Ctrl B</b> 굵게
+              <span>·</span> <b>Ctrl K</b> 링크
+              <span>·</span> 드래그하면 서식 버튼
+              <span>·</span> 목록에서 <b>Enter</b> 자동 이어쓰기
+              <a class="w-hint-more plain" href="#" id="hint-more">도움말</a>
+            </p>
           </div>
 
           <div class="w-actions">
@@ -276,5 +284,6 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="./assets/js/write.js?v=a6e265e8"></script>
+  <script src="./assets/js/editor.js?v=e0100e36"></script>
 </body>
 </html>

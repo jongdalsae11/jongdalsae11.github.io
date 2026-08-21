@@ -271,7 +271,8 @@
   background: rgba(10, 10, 20, 0.6);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  z-index: 90;
+  /* 사이드바(100)·드로어보다 위 — 트리에 가리지 않게 */
+  z-index: 150;
   display: flex;
   justify-content: center;
   align-items: flex-start;
