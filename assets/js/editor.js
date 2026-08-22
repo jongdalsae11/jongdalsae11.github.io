@@ -16,13 +16,24 @@
 
   var slash = document.getElementById('slash');
   var selBar = document.getElementById('sel-bar');
-  var wrapEl = ed.parentNode;                 /* .w-body (position: relative) */
+
+  /* 편집칸(.w-body)은 overflow: hidden 이라 그 안에 두면 아래쪽에서 잘립니다.
+     최상위(body)로 옮기고 화면 기준으로 띄웁니다. */
+  document.body.appendChild(slash);
+  document.body.appendChild(selBar);
 
   function fire() { ed.dispatchEvent(new Event('input', { bubbles: true })); }
 
+  /* 되돌리기(Ctrl+Z)를 살려 두는 삽입 — write.js 의 것을 함께 씁니다 */
+  function applyEdit(from, to, text) {
+    var W = window.WRITE;
+    if (W && W.applyEdit) return W.applyEdit(from, to, text);
+    ed.setRangeText(text, from, to, 'end');
+  }
+
   /* ── 선택 영역 조작 ─────────────────────────────── */
   function setRange(from, to, text, selFrom, selTo) {
-    ed.setRangeText(text, from, to, 'end');
+    applyEdit(from, to, text);
     if (selFrom != null) ed.setSelectionRange(selFrom, selTo == null ? selFrom : selTo);
     fire();
   }
@@ -165,15 +176,29 @@
     document.body.removeChild(d);
     return xy;
   }
-  /* .w-body 기준 좌표로 변환 */
+  /* 화면(뷰포트) 기준 좌표 — 메뉴는 body 최상위에 떠 있으므로
+     편집칸의 overflow 에 잘리지 않고, 화면 밖으로도 나가지 않습니다. */
   function anchorTo(el, pos, place) {
     var xy = caretXY(pos);
-    var edBox = ed.getBoundingClientRect();
-    var wrapBox = wrapEl.getBoundingClientRect();
-    var x = edBox.left - wrapBox.left + xy.x;
-    var y = edBox.top - wrapBox.top + xy.y - ed.scrollTop;
-    el.style.left = Math.max(8, x) + 'px';
-    el.style.top = (place === 'above' ? y - 6 : y + xy.h + 6) + 'px';
+    var box = ed.getBoundingClientRect();
+    var x = box.left + xy.x - ed.scrollLeft;
+    var y = box.top + xy.y - ed.scrollTop;
+
+    el.style.left = '0px';                 /* 크기를 재기 전에 위치를 초기화 */
+    el.style.top = '0px';
+    var w = el.offsetWidth || 220, h = el.offsetHeight || 200;
+    var vw = window.innerWidth, vh = window.innerHeight;
+
+    var top;
+    if (place === 'above') {
+      top = y - h - 6;
+      if (top < 8) top = y + xy.h + 6;                 /* 위가 좁으면 아래로 */
+    } else {
+      top = y + xy.h + 6;
+      if (top + h > vh - 8) top = Math.max(8, y - h - 6);  /* 아래가 좁으면 위로 */
+    }
+    el.style.left = Math.min(Math.max(8, x), vw - w - 8) + 'px';
+    el.style.top = Math.min(Math.max(8, top), vh - h - 8) + 'px';
   }
 
   /* ── 슬래시 명령 ────────────────────────────────── */
@@ -292,6 +317,32 @@
   });
   ed.addEventListener('blur', function () { setTimeout(hideBar, 120); });
   ed.addEventListener('scroll', function () { hideBar(); closeSlash(); });
+
+  /* ── 타자기 스크롤 ──────────────────────────────
+     고정 높이 상자 안에서 쓰면 커서가 자꾸 아래 모서리에 붙어 답답합니다.
+     커서가 위아래 가장자리로 가면 편집칸을 굴려 커서를 화면 중간쯤에 둡니다.
+     (가운데 근처에 있을 땐 건드리지 않아 화면이 덜컥거리지 않습니다)     */
+  var TYPEWRITER = 0.40;          /* 목표 위치 — 편집칸 높이의 40% 지점 */
+  var scrolling = false;
+
+  function keepCaretVisible() {
+    if (scrolling) return;
+    var h = ed.clientHeight;
+    if (!h) return;
+    var y = caretXY(ed.selectionStart).y;          /* 글 전체 기준 커서 높이 */
+    var rel = y - ed.scrollTop;                    /* 편집칸 안에서의 위치 */
+    if (rel > h * 0.68 || rel < h * 0.18) {
+      scrolling = true;
+      ed.scrollTop = Math.max(0, y - h * TYPEWRITER);
+      requestAnimationFrame(function () { scrolling = false; });
+    }
+  }
+  ed.addEventListener('input', keepCaretVisible);
+  ed.addEventListener('keyup', function (e) {
+    if (e.key.indexOf('Arrow') === 0 || e.key === 'PageUp' || e.key === 'PageDown') {
+      keepCaretVisible();
+    }
+  });
 
   /* ── 똑똑한 붙여넣기 ───────────────────────────── */
   ed.addEventListener('paste', function (e) {

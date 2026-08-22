@@ -686,9 +686,8 @@ body.hint-off .w-hint { display: none; }
 }
 .w-editing button:hover { color: var(--text); border-color: var(--line); }
 
-/* 편집칸을 조금 더 — 아래 여백과 액션바 압축 */
+/* 편집칸을 조금 더 — 액션바 압축 (아래 여백은 타자기 스크롤 항목에서) */
 .w-actions { padding: 7px 13px; }
-#editor { padding-bottom: 40px; }
 .w-panel { height: max(calc(100dvh - var(--topbar-h) - 52px), 620px); }
 
 /* ── 태그 추천 (많이 쓴 순서) ─────────────────────── */
@@ -733,3 +732,27 @@ body.hint-off .w-hint { display: none; }
   color: var(--line);
   margin-left: 4px;
 }
+
+/* ============================================================
+   숨통 트기 — 메뉴는 최상위로, 편집칸은 끝까지 굴러가게
+   ============================================================ */
+
+/* 슬래시 메뉴·서식바는 body 최상위에 화면 기준으로 뜹니다
+   (예전엔 편집칸 안에 있어서 아래쪽에서 잘렸습니다)          */
+.slash, .sel-bar {
+  position: fixed;
+  z-index: 200;
+}
+
+/* 마지막 줄도 화면 가운데까지 올라올 수 있도록 아래를 크게 비웁니다.
+   타자기 스크롤이 이 여백을 써서 커서를 중간에 붙잡아 둡니다.     */
+#editor { padding-bottom: min(48vh, 460px); }
+body.focus-write #editor { padding-bottom: min(52vh, 520px); }
+@media (max-width: 1100px) { #editor { padding-bottom: 30vh; } }
+
+/* 집중 모드는 정말로 글만 남깁니다 */
+body.focus-write .w-hint,
+body.focus-write .w-toolbar { display: none; }
+body.focus-write .w-panel-head { opacity: 0.35; transition: opacity 0.2s ease; }
+body.focus-write .w-panel-head:hover { opacity: 1; }
+body.focus-write .w-fields { display: none; }

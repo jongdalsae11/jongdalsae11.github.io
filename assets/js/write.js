@@ -439,20 +439,35 @@
   }
 
   /* ── 툴바 ────────────────────────────────────────── */
+
+  /* 모든 자동 삽입은 이 함수를 거칩니다.
+     ed.value 를 직접 바꾸거나 setRangeText 를 쓰면 브라우저의 되돌리기 기록이
+     통째로 지워져 Ctrl+Z 가 먹지 않습니다. execCommand 로 넣으면 사용자가
+     직접 타이핑한 것과 똑같이 취급되어 Ctrl+Z / Ctrl+Shift+Z 가 살아 있습니다. */
+  function applyEdit(from, to, text) {
+    ed.focus();
+    ed.setSelectionRange(from, to);
+    var ok = false;
+    try {
+      ok = (text === '')
+        ? document.execCommand('delete')
+        : document.execCommand('insertText', false, text);
+    } catch (err) { ok = false; }
+    if (!ok) ed.setRangeText(text, from, to, 'end');   /* 지원하지 않는 환경 대비 */
+    return ok;
+  }
+
   function wrap(before, after, placeholder) {
     var s = ed.selectionStart, e = ed.selectionEnd;
     var sel = ed.value.slice(s, e) || placeholder || '';
-    ed.value = ed.value.slice(0, s) + before + sel + after + ed.value.slice(e);
-    ed.focus();
-    ed.selectionStart = s + before.length;
-    ed.selectionEnd = s + before.length + sel.length;
+    applyEdit(s, e, before + sel + after);
+    ed.setSelectionRange(s + before.length, s + before.length + sel.length);
     queue();
   }
   function insert(text) {
-    var s = ed.selectionStart;
-    ed.value = ed.value.slice(0, s) + text + ed.value.slice(ed.selectionEnd);
-    ed.focus();
-    ed.selectionStart = ed.selectionEnd = s + text.length;
+    var s = ed.selectionStart, e = ed.selectionEnd;
+    applyEdit(s, e, text);
+    ed.setSelectionRange(s + text.length, s + text.length);
     queue();
   }
   var INS = {
@@ -702,7 +717,7 @@
 
   /* compose.js(태그 추천·수정 기능)가 쓰는 창구 */
   window.WRITE = {
-    F: F, ed: ed, G: G, $: $, S: S,
+    F: F, ed: ed, G: G, $: $, S: S, applyEdit: applyEdit,
     setMode: setMode, refresh: refresh, fileBase: fileBase, tagArr: tagArr,
     getMode: function () { return MODE; }
   };
