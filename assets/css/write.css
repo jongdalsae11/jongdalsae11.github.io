@@ -766,3 +766,12 @@ body.stack #preview { padding: 20px clamp(18px, 2vw, 40px); }
   body.stack .write-grid { height: auto; grid-template-rows: none; }
   body.stack .w-panel { height: auto; }
 }
+
+/* 수식 라이브러리 로드 실패 알림 */
+.pv-warn {
+  color: var(--orange);
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  background: rgba(249, 115, 22, 0.08);
+  border-radius: 8px;
+  padding: 8px 12px;
+}

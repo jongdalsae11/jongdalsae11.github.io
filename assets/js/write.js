@@ -732,8 +732,22 @@
   window.WRITE = {
     F: F, ed: ed, G: G, $: $, S: S, applyEdit: applyEdit,
     setMode: setMode, refresh: refresh, fileBase: fileBase, tagArr: tagArr,
-    getMode: function () { return MODE; }
+    getMode: function () { return MODE; },
+    /* 수식 라이브러리를 못 받아왔을 때 조용히 원문만 보여 주지 않고 알려 줍니다 */
+    mathFailed: function () {
+      var pv = $('#preview');
+      if (!pv || document.getElementById('math-warn')) return;
+      var p = document.createElement('p');
+      p.id = 'math-warn';
+      p.className = 'pv-note pv-warn';
+      p.textContent = '수식 라이브러리(KaTeX)를 불러오지 못해 $…$ 가 그대로 보입니다. ' +
+                      '네트워크를 확인하고 새로고침해 주세요.';
+      pv.insertBefore(p, pv.firstChild);
+    }
   };
+
+  /* 늦게 도착하는 CDN 스크립트를 놓치지 않도록 한 번 더 */
+  window.addEventListener('load', function () { refresh(); });
 
   restore();
   if (!G('p-date').value) G('p-date').value = todayStr();

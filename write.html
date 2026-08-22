@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="./assets/css/components.css?v=a690207b">
   <link rel="stylesheet" href="./assets/css/post.css?v=b704ea53">
-  <link rel="stylesheet" href="./assets/css/write.css?v=9c580864">
+  <link rel="stylesheet" href="./assets/css/write.css?v=a3c50672">
 </head>
 <body class="page-write" data-crumb="~ / <b>새로 쓰기</b>">
   <main id="main">
@@ -290,10 +290,15 @@
   <script src="./assets/data/content.js?v=9c94f2d9"></script>
   <script src="./assets/js/util.js?v=9ac5ba88"></script>
   <script src="./assets/js/nav.js?v=91cd2314"></script>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <!-- defer 라서 write.js 보다 늦게 도착합니다. 도착하는 즉시 미리보기를 다시 그리게
+       onload 훅을 겁니다. (이게 없어서 수식이 첫 화면에 렌더되지 않았습니다) -->
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+    onload="window.WRITE && window.WRITE.refresh()"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
-  <script src="./assets/js/write.js?v=635bfb01"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="window.WRITE && window.WRITE.refresh()"
+    onerror="window.WRITE && window.WRITE.mathFailed()"></script>
+  <script src="./assets/js/write.js?v=982d7334"></script>
   <script src="./assets/js/editor.js?v=a33fa23f"></script>
   <script src="./assets/js/compose.js?v=3fb43d1c"></script>
 </body>
