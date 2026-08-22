@@ -58,6 +58,16 @@
     });
   }
   function inline(s) {
+    /* 수식은 마크다운 규칙에서 통째로 빼 두었다가 마지막에 되돌려 놓습니다.
+       LaTeX 는 ^[ * [[ {{ ` 같은 기호를 일상적으로 쓰는데, 이것들이 각각
+       여백주석·기울임·글연결·자료인용·인라인코드로 잘못 해석되어 수식이
+       깨지고 있었습니다. (예: $x^{[n]}$ 의 ^[ 가 여백주석으로 먹혔음) */
+    var math = [];
+    s = s.replace(/\$\$[\s\S]+?\$\$|\$[^$\n]+?\$/g, function (m) {
+      math.push(m);
+      return '\u0003' + (math.length - 1) + '\u0004';
+    });
+
     s = s.replace(/\^\[((?:[^\[\]]|\[\[[^\]]*\]\]|\{\{[^}]*\}\})*)\]/g, function (_, b) {
       return '\u0001' + inlineLinks(b) + '\u0002';
     });
@@ -67,7 +77,10 @@
     s = s.replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>');
     s = s.replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,
       '<a href="$2" target="_blank" rel="noopener">$1</a>');
-    return s.replace(/\u0001/g, '<span class="sidenote">').replace(/\u0002/g, '</span>');
+    s = s.replace(/\u0001/g, '<span class="sidenote">').replace(/\u0002/g, '</span>');
+
+    /* 빼 두었던 수식을 원문 그대로 되돌립니다 */
+    return s.replace(/\u0003(\d+)\u0004/g, function (_, i) { return math[+i]; });
   }
 
   function parse(src) {
