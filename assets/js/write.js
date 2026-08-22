@@ -91,6 +91,16 @@
         out.push('<p>$$' + esc(m.join('\n')) + '$$</p>');
         continue;
       }
+      /* "!!" 한 줄 단독 — 다음 "!!" 줄까지 통째로 강조 박스.
+         안의 내용은 그대로 다시 파싱하므로 수식블록·코드블록·문단이 섞여도 됩니다. */
+      if (/^!!\s*$/.test(ln.trim())) {
+        var blk = []; i++;
+        while (i < L.length && L[i].trim() !== '!!') { blk.push(L[i]); i++; }
+        i++;
+        out.push('<div class="key">' + parse(blk.join('\n')) + '</div>');
+        continue;
+      }
+      /* 짧은 한 줄 강조 — !! 텍스트 !! */
       if (/^!!/.test(ln) && /!!\s*$/.test(ln)) {
         out.push('<div class="key">' + inline(esc(ln.replace(/^!!|!!\s*$/g, ''))) + '</div>');
         i++; continue;

@@ -68,6 +68,23 @@
     3: function () { prefixLine('> '); }
   };
 
+  /* 선택한 내용을 줄 단위로 통째로 강조 박스(!!)에 넣습니다.
+     수식블록·코드블록처럼 여러 줄짜리를 골라도 안쪽 내용은 그대로 유지됩니다. */
+  function blockWrap() {
+    var s = ed.selectionStart, e = ed.selectionEnd;
+    var from = lineBounds(s).from, to = lineBounds(e).to;
+    var body = ed.value.slice(from, to);
+    var already = /^!!\s*\n[\s\S]*\n!!\s*$/.test(body);
+    if (already) {                       /* 이미 강조되어 있으면 벗겨 냄 (토글) */
+      var inner = body.replace(/^!!\s*\n/, '').replace(/\n!!\s*$/, '');
+      setRange(from, to, inner, from, from + inner.length);
+      return;
+    }
+    if (!body.trim()) body = '핵심 결론';
+    var ins = '!!\n' + body + '\n!!';
+    setRange(from, to, ins, from + 3, from + 3 + body.length);
+  }
+
   /* Esc 를 누른 직후의 Tab 은 포커스 이동용으로 넘겨 줍니다 (접근성) */
   var escaped = false;
 
@@ -169,7 +186,7 @@
     { k: '수식블록',  hint: '$$',   run: function () { surround('\n$$\n', '\n$$\n', 'f(x) = x^2'); } },
     { k: '인라인 수식', hint: '$',  run: function () { surround('$', '$', 'x'); } },
     { k: '여백주석',  hint: '^[]',  run: function () { surround('^[', ']', '여백에 들어갈 설명'); } },
-    { k: '결론 강조', hint: '!!',   run: function () { surround('\n!!', '!!\n', '핵심 결론'); } },
+    { k: '결론 강조', hint: '!!',   run: blockWrap },
     { k: '구분선',    hint: '---',  run: function () { setRange(ed.selectionStart, ed.selectionEnd, '\n---\n'); } },
     { k: '링크',      hint: '[]()', run: function () { SHORTCUT.k(); } },
     { k: '이미지',    hint: 'img',  run: function () { var b = document.getElementById('btn-img'); if (b) b.click(); } },
@@ -247,7 +264,8 @@
     '<button data-a="3">인용</button>' +
     '<span class="sb-sep"></span>' +
     '<button data-a="k">링크</button>' +
-    '<button data-a="sn">여백주석</button>';
+    '<button data-a="sn">여백주석</button>' +
+    '<button data-a="key" title="선택한 부분을 통째로 강조 박스에 — 수식블록·코드블록도 그대로 됩니다">강조</button>';
 
   selBar.addEventListener('mousedown', function (e) {
     var b = e.target.closest('button');
@@ -255,6 +273,7 @@
     e.preventDefault();                       /* 선택을 잃지 않도록 */
     var a = b.getAttribute('data-a');
     if (a === 'sn') surround('^[', ']', '설명');
+    else if (a === 'key') blockWrap();
     else if (SHORTCUT[a]) SHORTCUT[a]();
     hideBar();
   });

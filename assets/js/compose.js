@@ -173,32 +173,44 @@
       return s;
     }
 
-    Array.prototype.forEach.call(body.children, function (el) {
-      var t = el.tagName.toLowerCase();
-      var one = function (x) { return x.replace(/\s+/g, ' ').trim(); };
-      if (t === 'h2') out.push('## ' + one(inline(el)));
-      else if (t === 'h3') out.push('### ' + one(inline(el)));
-      else if (t === 'blockquote') out.push('> ' + one(inline(el)));
-      else if (t === 'ul' || t === 'ol') {
-        Array.prototype.forEach.call(el.children, function (li, i) {
-          out.push((t === 'ol' ? (i + 1) + '. ' : '- ') + one(inline(li)));
-        });
-      } else if (el.classList.contains('key')) {
-        out.push('!!' + one(inline(el)) + '!!');
-      } else if (el.classList.contains('codeblock') || t === 'pre') {
-        var code = el.querySelector('code');
-        var lang = ((code && code.className) || '').replace(/.*language-/, '').split(/\s/)[0];
-        out.push('```' + (lang || '') + '\n' + (code ? code.textContent : '') + '\n```');
-      } else if (t === 'figure') {
-        var img = el.querySelector('img'), cap = el.querySelector('figcaption');
-        out.push('![' + (cap ? cap.textContent.replace(/^Fig \d+\./, '').trim() : '') +
-                 '](' + ((img && img.getAttribute('src')) || '') + ')');
-      } else if (t === 'hr') out.push('---');
-      else if (t === 'table') out.push('<!-- 표는 자동 변환하지 않습니다 -->\n' + el.outerHTML);
-      else out.push(one(inline(el)));
-    });
+    var one = function (x) { return x.replace(/\s+/g, ' ').trim(); };
 
-    return out.join('\n\n').replace(/\n{3,}/g, '\n\n').trim();
+    /* 컨테이너 하나(글 전체 또는 강조 박스 안)를 줄들의 배열로 변환합니다.
+       강조 박스 안에 문단·수식블록·코드블록이 여러 개 있어도 재귀로 처리됩니다. */
+    function children(container) {
+      var lines = [];
+      Array.prototype.forEach.call(container.children, function (el) {
+        var t = el.tagName.toLowerCase();
+        if (t === 'h2') lines.push('## ' + one(inline(el)));
+        else if (t === 'h3') lines.push('### ' + one(inline(el)));
+        else if (t === 'blockquote') lines.push('> ' + one(inline(el)));
+        else if (t === 'ul' || t === 'ol') {
+          Array.prototype.forEach.call(el.children, function (li, i) {
+            lines.push((t === 'ol' ? (i + 1) + '. ' : '- ') + one(inline(li)));
+          });
+        } else if (el.classList.contains('key')) {
+          /* 안이 문단 하나뿐이면 짧은 한 줄 강조, 여러 블록이면 통째로 강조 */
+          var inner = children(el);
+          lines.push(inner.length <= 1 ? '!!' + (inner[0] || '') + '!!'
+                                        : '!!\n' + inner.join('\n\n') + '\n!!');
+        } else if (el.classList.contains('codeblock') || t === 'pre') {
+          var code = el.querySelector('code');
+          var lang = ((code && code.className) || '').replace(/.*language-/, '').split(/\s/)[0];
+          lines.push('```' + (lang || '') + '\n' + (code ? code.textContent : '') + '\n```');
+        } else if (t === 'figure') {
+          var img = el.querySelector('img'), cap = el.querySelector('figcaption');
+          lines.push('![' + (cap ? cap.textContent.replace(/^Fig \d+\./, '').trim() : '') +
+                     '](' + ((img && img.getAttribute('src')) || '') + ')');
+        } else if (t === 'hr') lines.push('---');
+        else if (t === 'table') lines.push('<!-- 표는 자동 변환하지 않습니다 -->\n' + el.outerHTML);
+        else if (t === 'p' && /^\$\$[\s\S]*\$\$$/.test(el.textContent.trim())) {
+          lines.push(el.textContent.trim());   /* 수식블록은 그대로 (역이스케이프됨) */
+        } else lines.push(one(inline(el)));
+      });
+      return lines;
+    }
+
+    return children(body).join('\n\n').replace(/\n{3,}/g, '\n\n').trim();
   }
 
   function loadPost(file) {
