@@ -775,3 +775,24 @@ body.stack #preview { padding: 20px clamp(18px, 2vw, 40px); }
   border-radius: 8px;
   padding: 8px 12px;
 }
+
+/* ── 양방향 이동: 도착한 블록을 1초 강조 ──────────── */
+#preview [data-src] { scroll-margin: 40px; }
+.sync-hit {
+  animation: syncHit 1s ease-out;
+  border-radius: 6px;
+}
+@keyframes syncHit {
+  0%   { background: rgba(56, 189, 248, 0.28); box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.28); }
+  70%  { background: rgba(56, 189, 248, 0.16); box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.16); }
+  100% { background: transparent; box-shadow: 0 0 0 6px transparent; }
+}
+/* Ctrl 을 누르고 있으면 어디를 누를지 보이게 */
+body.sync-ready #preview [data-src]:hover {
+  outline: 1px dashed rgba(56, 189, 248, 0.5);
+  outline-offset: 4px;
+  cursor: alias;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sync-hit { animation: none; background: rgba(56, 189, 248, 0.18); }
+}

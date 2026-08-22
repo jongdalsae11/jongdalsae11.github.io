@@ -83,25 +83,31 @@
     return s.replace(/\u0003(\d+)\u0004/g, function (_, i) { return math[+i]; });
   }
 
-  function parse(src) {
+  /* 블록 첫 태그에 원문 줄번호를 새깁니다 (SyncTeX 식 양방향 이동에 씀) */
+  function at(line, html) {
+    return html.replace(/^<([a-z0-9]+)/i, '<$1 data-src="' + line + '"');
+  }
+
+  function parse(src, base) {
+    base = base || 0;
     var out = [], L = src.split('\n'), i = 0;
     while (i < L.length) {
-      var ln = L[i];
+      var ln = L[i], at0 = base + i;
 
       if (/^```/.test(ln)) {
         var lang = ln.slice(3).trim(), buf = [];
         i++;
         while (i < L.length && !/^```/.test(L[i])) { buf.push(L[i]); i++; }
         i++;
-        out.push('<div class="codeblock"><pre><code class="language-' +
-                 (lang || 'plaintext') + '">' + esc(buf.join('\n')) + '</code></pre></div>');
+        out.push(at(at0, '<div class="codeblock"><pre><code class="language-' +
+                 (lang || 'plaintext') + '">' + esc(buf.join('\n')) + '</code></pre></div>'));
         continue;
       }
       if (/^\$\$\s*$/.test(ln)) {
         var m = []; i++;
         while (i < L.length && !/^\$\$\s*$/.test(L[i])) { m.push(L[i]); i++; }
         i++;
-        out.push('<p>$$' + esc(m.join('\n')) + '$$</p>');
+        out.push(at(at0, '<p>$$' + esc(m.join('\n')) + '$$</p>'));
         continue;
       }
       /* "!!" 한 줄 단독 — 다음 "!!" 줄까지 통째로 강조 박스.
@@ -110,39 +116,39 @@
         var blk = []; i++;
         while (i < L.length && L[i].trim() !== '!!') { blk.push(L[i]); i++; }
         i++;
-        out.push('<div class="key">' + parse(blk.join('\n')) + '</div>');
+        out.push(at(at0, '<div class="key">' + parse(blk.join('\n'), at0 + 1) + '</div>'));
         continue;
       }
       /* 짧은 한 줄 강조 — !! 텍스트 !! */
       if (/^!!/.test(ln) && /!!\s*$/.test(ln)) {
-        out.push('<div class="key">' + inline(esc(ln.replace(/^!!|!!\s*$/g, ''))) + '</div>');
+        out.push(at(at0, '<div class="key">' + inline(esc(ln.replace(/^!!|!!\s*$/g, ''))) + '</div>'));
         i++; continue;
       }
-      if (/^###\s/.test(ln)) { out.push('<h3>' + inline(esc(ln.slice(4))) + '</h3>'); i++; continue; }
-      if (/^##\s/.test(ln))  { out.push('<h2>' + inline(esc(ln.slice(3))) + '</h2>'); i++; continue; }
-      if (/^#\s/.test(ln))   { out.push('<h2>' + inline(esc(ln.slice(2))) + '</h2>'); i++; continue; }
+      if (/^###\s/.test(ln)) { out.push(at(at0, '<h3>' + inline(esc(ln.slice(4))) + '</h3>')); i++; continue; }
+      if (/^##\s/.test(ln))  { out.push(at(at0, '<h2>' + inline(esc(ln.slice(3))) + '</h2>')); i++; continue; }
+      if (/^#\s/.test(ln))   { out.push(at(at0, '<h2>' + inline(esc(ln.slice(2))) + '</h2>')); i++; continue; }
       if (/^<figure/.test(ln)) {                       /* 이미지 블록은 그대로 통과 */
         var fg = [];
         while (i < L.length && !/<\/figure>/.test(L[i])) { fg.push(L[i]); i++; }
         fg.push(L[i] || ''); i++;
-        out.push(fg.join('\n'));
+        out.push(at(at0, fg.join('\n')));
         continue;
       }
       if (/^>\s?/.test(ln)) {
         var q = [];
         while (i < L.length && /^>\s?/.test(L[i])) { q.push(L[i].replace(/^>\s?/, '')); i++; }
-        out.push('<blockquote><p>' + inline(esc(q.join(' '))) + '</p></blockquote>');
+        out.push(at(at0, '<blockquote><p>' + inline(esc(q.join(' '))) + '</p></blockquote>'));
         continue;
       }
       if (/^[-*]\s/.test(ln)) {
         var it = [];
         while (i < L.length && /^[-*]\s/.test(L[i])) { it.push(L[i].slice(2)); i++; }
-        out.push('<ul>' + it.map(function (t) {
+        out.push(at(at0, '<ul>' + it.map(function (t) {
           return '<li>' + inline(esc(t)) + '</li>';
-        }).join('') + '</ul>');
+        }).join('') + '</ul>'));
         continue;
       }
-      if (/^---\s*$/.test(ln)) { out.push('<hr>'); i++; continue; }
+      if (/^---\s*$/.test(ln)) { out.push(at(at0, '<hr>')); i++; continue; }
       if (/^\s*$/.test(ln)) { i++; continue; }
 
       var p = [];
@@ -152,13 +158,15 @@
          (예: 닫히지 않은 !! 나 줄 첫머리의 #include) 그 줄을 그냥 소비합니다.
          이 안전장치가 없으면 i 가 멈춰 무한 루프에 빠집니다.        */
       if (!p.length) { p.push(L[i]); i++; }
-      out.push('<p>' + inline(esc(p.join(' '))) + '</p>');
+      out.push(at(at0, '<p>' + inline(esc(p.join(' '))) + '</p>'));
     }
     return out.join('\n');
   }
 
   /* ── 미리보기 ────────────────────────────────────── */
   function bodyHTML() { return parse(ed.value); }
+  /* 내보내는 글 파일에는 편집용 줄번호를 남기지 않습니다 */
+  function bodyHTMLClean() { return parse(ed.value).replace(/ data-src="\d+"/g, ''); }
 
   function refresh() {
     var pv = $('#preview');
@@ -588,6 +596,8 @@
      미리보기는 마크다운이 렌더된 결과라 글자가 완전히 같지 않을 수
      있으므로, 공백을 무시한 비교로 가장 그럴듯한 위치를 찾습니다.  */
   function syncFromPreview() {
+    /* Ctrl+클릭은 sync.js 가 정확한 줄로 보내므로 여기선 손대지 않습니다 */
+    if (window.WRITE && window.WRITE.syncGuard && window.WRITE.syncGuard()) return;
     var sel = document.getSelection();
     if (!sel || sel.isCollapsed) return;
     var pv = $('#preview');
@@ -701,7 +711,7 @@
       F.date.value.replace(/-/g, '.') + '</span>\n' +
       (tagHTML ? '            ' + tagHTML + '\n' : '') +
       '          </div>\n        </div>\n' +
-      '        <div class="post-body">\n' + bodyHTML() + '\n        </div>\n' +
+      '        <div class="post-body">\n' + bodyHTMLClean() + '\n        </div>\n' +
       '        <section class="backlinks"></section>\n' +
       /* 원고 보존 — '수정' 기능이 이걸 읽어 그대로 되살립니다 (화면에는 안 보임) */
       '        <script type="text/markdown" class="post-src">\n' +
