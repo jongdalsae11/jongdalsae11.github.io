@@ -433,14 +433,6 @@ button.mini.ok { color: var(--cyan); }
    ============================================================ */
 
 /* 집중 모드: 미리보기를 접고 한 칸으로 넓게 */
-body.focus-write .write-grid { grid-template-columns: 1fr; }
-body.focus-write .w-panel--preview { display: none; }
-body.focus-write #editor {
-  /* 한 줄이 너무 길면 읽기 힘들므로 적당한 폭으로 가운데 정렬 */
-  max-width: 78ch;
-  margin: 0 auto;
-  padding: 26px 8px 48px;
-}
 
 /* 선택하면 그 자리에 뜨는 서식바 */
 .sel-bar {
@@ -552,13 +544,11 @@ body.focus-write #editor {
 }
 
 #editor {
-  /* 사방을 넉넉히 — 글자가 벽에 붙지 않게 */
-  padding: 34px clamp(24px, 4vw, 68px) 64px;
-  /* 아주 넓은 화면에서 한 줄이 지나치게 길어지는 것만 막습니다 */
-  max-width: 92ch;
-  margin: 0 auto;
+  /* 폭 상한 없음 — 패널이 주는 만큼 전부 씁니다.
+     (예전의 max-width: 92ch 가 넓은 화면에서 글칸을 좁히는 주범이었습니다) */
+  padding: 30px clamp(18px, 2vw, 40px) 64px;
+  max-width: none;
 }
-body.focus-write #editor { max-width: 80ch; padding: 40px clamp(20px, 3vw, 40px) 72px; }
 
 /* 드래그 손잡이 */
 .w-split {
@@ -587,7 +577,6 @@ body.focus-write #editor { max-width: 80ch; padding: 40px clamp(20px, 3vw, 40px)
 body.split-drag { cursor: col-resize; user-select: none; }
 body.split-drag iframe, body.split-drag .w-prev { pointer-events: none; }
 
-body.focus-write .w-split { display: none; }
 @media (max-width: 1100px) { .w-split { display: none; } }
 
 /* 좁은 화면 — 위 규칙들보다 뒤에 와야 이깁니다 (세로 배치 복구) */
@@ -747,12 +736,33 @@ body.hint-off .w-hint { display: none; }
 /* 마지막 줄도 화면 가운데까지 올라올 수 있도록 아래를 크게 비웁니다.
    타자기 스크롤이 이 여백을 써서 커서를 중간에 붙잡아 둡니다.     */
 #editor { padding-bottom: min(48vh, 460px); }
-body.focus-write #editor { padding-bottom: min(52vh, 520px); }
 @media (max-width: 1100px) { #editor { padding-bottom: 30vh; } }
 
-/* 집중 모드는 정말로 글만 남깁니다 */
-body.focus-write .w-hint,
-body.focus-write .w-toolbar { display: none; }
-body.focus-write .w-panel-head { opacity: 0.35; transition: opacity 0.2s ease; }
-body.focus-write .w-panel-head:hover { opacity: 1; }
-body.focus-write .w-fields { display: none; }
+
+/* ============================================================
+   배치 — 좌우(기본) / 위아래(글칸을 화면 전체 폭으로)
+   ============================================================ */
+body.stack .write-grid {
+  height: max(calc(100dvh - var(--topbar-h) - 62px), 620px);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 62fr) 10px minmax(0, 38fr);
+  align-items: stretch;
+}
+body.stack .w-panel { height: 100%; min-height: 0; }
+body.w-max.stack .write-grid { height: 100dvh; }
+
+/* 같은 손잡이를 가로로 눕힙니다 */
+body.stack .w-split { cursor: row-resize; justify-self: stretch; }
+body.stack .w-split i { width: 60px; height: 2px; }
+body.stack .w-split:hover i,
+body.stack .w-split:focus-visible i,
+body.stack .w-split.dragging i { width: 120px; height: 2px; }
+body.split-drag-y { cursor: row-resize; user-select: none; }
+
+/* 위아래 배치에선 미리보기가 낮아지므로 안쪽 여백을 줄입니다 */
+body.stack #preview { padding: 20px clamp(18px, 2vw, 40px); }
+
+@media (max-width: 1100px) {
+  body.stack .write-grid { height: auto; grid-template-rows: none; }
+  body.stack .w-panel { height: auto; }
+}

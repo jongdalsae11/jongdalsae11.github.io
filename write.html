@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="./assets/css/components.css?v=a690207b">
   <link rel="stylesheet" href="./assets/css/post.css?v=b704ea53">
-  <link rel="stylesheet" href="./assets/css/write.css?v=d1639f31">
+  <link rel="stylesheet" href="./assets/css/write.css?v=9c580864">
 </head>
 <body class="page-write" data-crumb="~ / <b>새로 쓰기</b>">
   <main id="main">
@@ -42,8 +42,8 @@
               <button class="w-tg w-tg--plain" id="btn-edit" title="이미 올린 것을 불러와 고칩니다">수정</button>
               <button class="w-tg" id="tg-fields" aria-expanded="true">정보 <i>▾</i></button>
               <button class="w-tg" id="tg-toolbar" aria-expanded="true" data-for="post">도구 <i>▾</i></button>
-              <button class="w-tg w-tg--plain" id="tg-focus" aria-pressed="false" data-for="post"
-                      title="미리보기를 접고 넓게 씁니다">집중</button>
+              <button class="w-tg w-tg--plain" id="tg-stack" aria-pressed="false" data-for="post"
+                      title="미리보기를 아래로 내려 글칸을 화면 전체 폭으로 (F8)">위아래</button>
               <button class="w-tg w-tg--plain" id="tg-mono" aria-pressed="false" data-for="post"
                       title="코드 위주로 쓸 때 고정폭 글꼴">고정폭</button>
               <button class="w-tg w-tg--plain" id="tg-max" aria-pressed="false"
@@ -180,6 +180,7 @@
               <span>·</span> <b>Ctrl K</b> 링크
               <span>·</span> 드래그 후 <b>강조</b>로 블록 통째 강조
               <span>·</span> <b>Ctrl Z</b> 되돌리기
+              <span>·</span> <b>F8</b> 위아래 배치
               <a class="w-hint-more plain" href="#" id="hint-more">도움말</a>
               <button class="w-hint-x" id="hint-x" title="이 줄 숨기기" aria-label="힌트 줄 숨기기">×</button>
             </p>
@@ -293,7 +294,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="./assets/js/write.js?v=991ee638"></script>
-  <script src="./assets/js/editor.js?v=a9a18652"></script>
+  <script src="./assets/js/editor.js?v=a33fa23f"></script>
   <script src="./assets/js/compose.js?v=3fb43d1c"></script>
 </body>
 </html>

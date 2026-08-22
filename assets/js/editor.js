@@ -371,7 +371,6 @@
       apply(btn.getAttribute('aria-pressed') !== 'true');
     });
   }
-  bindToggle('tg-focus', 'focus-write', 'w-focus');
   bindToggle('tg-mono', 'mono-editor', 'w-mono');
 
   /* 힌트 줄의 '도움말' → 오른쪽 도움말 탭 열기 */
@@ -381,50 +380,90 @@
       e.preventDefault();
       var tab = document.querySelector('.w-tabs button[data-tab="help"]');
       if (tab) tab.click();
-      if (document.body.classList.contains('focus-write')) {
-        document.getElementById('tg-focus').click();   /* 집중 모드면 미리보기를 다시 펴 줌 */
-        if (tab) tab.click();
-      }
     });
   }
 })();
 
 /* ============================================================
-   split.js — 편집칸 / 미리보기 너비를 드래그로 조절 (비율 기억)
+   split.js — 편집칸 / 미리보기 비율을 드래그로 조절
+   좌우 배치는 너비, 위아래 배치는 높이 — 비율은 각각 따로 기억합니다.
    ============================================================ */
 (function () {
   var grid = document.getElementById('write-grid');
   var bar = document.getElementById('w-split');
+  var tg = document.getElementById('tg-stack');
   if (!grid || !bar) return;
 
-  var KEY = 'w-split';
-  var MIN = 32, MAX = 82;          /* 편집칸이 차지할 수 있는 % 범위 */
-  var pct = 61;
-  try {
-    var v = parseFloat(localStorage.getItem(KEY));
-    if (v >= MIN && v <= MAX) pct = v;
-  } catch (e) {}
+  var MIN = 30, MAX = 85;
+  var pct = { row: 66, col: 62 };     /* row = 좌우 배치, col = 위아래 배치 */
+
+  function stacked() { return document.body.classList.contains('stack'); }
+  function key() { return stacked() ? 'w-split-y' : 'w-split'; }
+  function cur() { return stacked() ? pct.col : pct.row; }
+  function setCur(v) { if (stacked()) pct.col = v; else pct.row = v; }
+
+  ['w-split', 'w-split-y'].forEach(function (k) {
+    try {
+      var v = parseFloat(localStorage.getItem(k));
+      if (v >= MIN && v <= MAX) { if (k === 'w-split') pct.row = v; else pct.col = v; }
+    } catch (e) {}
+  });
 
   function apply() {
-    grid.style.gridTemplateColumns =
-      'minmax(0, ' + pct + 'fr) 10px minmax(0, ' + (100 - pct) + 'fr)';
+    var v = cur(), rest = 100 - v;
+    if (stacked()) {
+      grid.style.gridTemplateColumns = '';
+      grid.style.gridTemplateRows =
+        'minmax(0, ' + v + 'fr) 10px minmax(0, ' + rest + 'fr)';
+      bar.setAttribute('aria-orientation', 'horizontal');
+    } else {
+      grid.style.gridTemplateRows = '';
+      grid.style.gridTemplateColumns =
+        'minmax(0, ' + v + 'fr) 10px minmax(0, ' + rest + 'fr)';
+      bar.setAttribute('aria-orientation', 'vertical');
+    }
   }
-  function save() { try { localStorage.setItem(KEY, String(pct)); } catch (e) {} }
-  function set(next) { pct = Math.min(MAX, Math.max(MIN, next)); apply(); }
+  function save() { try { localStorage.setItem(key(), String(cur())); } catch (e) {} }
+  function set(next) { setCur(Math.min(MAX, Math.max(MIN, next))); apply(); }
 
-  apply();
+  /* ── 배치 전환 (F8) ─────────────────────────────── */
+  function setStack(on) {
+    document.body.classList.toggle('stack', on);
+    if (tg) {
+      tg.setAttribute('aria-pressed', String(on));
+      tg.textContent = on ? '좌우' : '위아래';
+      tg.title = on ? '미리보기를 옆으로 되돌립니다 (F8)'
+                    : '미리보기를 아래로 내려 글칸을 화면 전체 폭으로 (F8)';
+    }
+    try { localStorage.setItem('w-stack', on ? '1' : '0'); } catch (e) {}
+    apply();
+    window.dispatchEvent(new Event('resize'));
+  }
+  var wantStack = false;
+  try { wantStack = localStorage.getItem('w-stack') === '1'; } catch (e) {}
+  setStack(wantStack);
 
-  function fromX(clientX) {
+  if (tg) tg.addEventListener('click', function () { setStack(!stacked()); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'F8') { e.preventDefault(); setStack(!stacked()); }
+  });
+
+  /* ── 드래그 ─────────────────────────────────────── */
+  function fromPoint(x, y) {
     var box = grid.getBoundingClientRect();
-    if (box.width < 40) return pct;
-    return ((clientX - box.left) / box.width) * 100;
+    if (stacked()) {
+      if (box.height < 40) return cur();
+      return ((y - box.top) / box.height) * 100;
+    }
+    if (box.width < 40) return cur();
+    return ((x - box.left) / box.width) * 100;
   }
   function onMove(e) {
-    var x = e.touches ? e.touches[0].clientX : e.clientX;
-    set(fromX(x));
+    var t = e.touches ? e.touches[0] : e;
+    set(fromPoint(t.clientX, t.clientY));
   }
   function onUp() {
-    document.body.classList.remove('split-drag');
+    document.body.classList.remove('split-drag', 'split-drag-y');
     bar.classList.remove('dragging');
     document.removeEventListener('mousemove', onMove);
     document.removeEventListener('mouseup', onUp);
@@ -433,9 +472,9 @@
     save();
   }
   function start(e) {
-    if (window.innerWidth <= 1100) return;    /* 좁은 화면은 세로 배치 */
+    if (window.innerWidth <= 1100) return;    /* 좁은 화면은 그냥 세로로 쌓입니다 */
     e.preventDefault();
-    document.body.classList.add('split-drag');
+    document.body.classList.add(stacked() ? 'split-drag-y' : 'split-drag');
     bar.classList.add('dragging');
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseup', onUp);
@@ -445,11 +484,13 @@
   bar.addEventListener('mousedown', start);
   bar.addEventListener('touchstart', start, { passive: false });
 
-  /* 키보드 — ← → 로 2%씩, 더블클릭이면 기본값으로 */
+  /* 키보드 — 화살표로 2%씩, Home 이면 기본값 */
   bar.addEventListener('keydown', function (e) {
-    if (e.key === 'ArrowLeft') { e.preventDefault(); set(pct - 2); save(); }
-    if (e.key === 'ArrowRight') { e.preventDefault(); set(pct + 2); save(); }
-    if (e.key === 'Home') { e.preventDefault(); set(61); save(); }
+    var dec = stacked() ? 'ArrowUp' : 'ArrowLeft';
+    var inc = stacked() ? 'ArrowDown' : 'ArrowRight';
+    if (e.key === dec) { e.preventDefault(); set(cur() - 2); save(); }
+    if (e.key === inc) { e.preventDefault(); set(cur() + 2); save(); }
+    if (e.key === 'Home') { e.preventDefault(); set(stacked() ? 62 : 66); save(); }
   });
-  bar.addEventListener('dblclick', function () { set(61); save(); });
+  bar.addEventListener('dblclick', function () { set(stacked() ? 62 : 66); save(); });
 }());
