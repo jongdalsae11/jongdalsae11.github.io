@@ -787,6 +787,23 @@ body.stack #preview { padding: 20px clamp(18px, 2vw, 40px); }
   70%  { background: rgba(56, 189, 248, 0.16); box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.16); }
   100% { background: transparent; box-shadow: 0 0 0 6px transparent; }
 }
+/* 낱말 단위 강조 — DOM 을 건드리지 않고 위에 덧그립니다 */
+.sync-mark {
+  position: fixed;
+  z-index: 210;
+  pointer-events: none;
+  border-radius: 3px;
+  background: rgba(56, 189, 248, 0.32);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.32);
+  animation: syncMark 1s ease-out forwards;
+}
+@keyframes syncMark {
+  0%   { opacity: 1; }
+  65%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .sync-mark { animation: none; } }
+
 /* Ctrl 을 누르고 있으면 어디를 누를지 보이게 */
 body.sync-ready #preview [data-src]:hover {
   outline: 1px dashed rgba(56, 189, 248, 0.5);
