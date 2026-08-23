@@ -64,11 +64,12 @@ window.SITE = {
 
   posts: [
     { title: '코시 열',
-      file: '2026-08-24-cauchy-sequence.html',
+      file: '2026-08-23-cauchy-sequence.html',
       category: 'math/analysis',
-      date: '2026-08-24',
+      date: '2026-08-23',
       tags: ['수열', '극한'],
       summary: '항들 사이의 거리를 이용한 수열의 수렴성' },
+
 
     { title: '세그먼트 트리를 활용한 LIS O(N log N) 구현',
       file: '2026-08-17-segment-tree-using-lis-o-n-log-n-implementation.html',
