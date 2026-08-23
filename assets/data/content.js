@@ -55,6 +55,13 @@ window.SITE = {
   },
 
   posts: [
+    { title: '세그먼트 트리를 활용한 LIS O(N log N) 구현',
+      file: '2026-08-17-segment-tree-using-lis-o-n-log-n-implementation.html',
+      category: 'algo/data-structure',
+      date: '2026-08-17',
+      tags: ['세그먼트 트리', 'C++'],
+      summary: '값 좌표압축 위에 max 세그먼트 트리를 얹는 표준 구성.' },
+
     { title: '수열의 극한',
       file: '2026-08-23-sequence-limit.html',
       category: 'math/analysis',
@@ -67,12 +74,6 @@ window.SITE = {
       date: '2026-08-17', tags: ['가이드', '사용법'], pinned: true,
       links: ['2026-08-17-lis-segment-tree.html', '2026-08-10-euler-phi.html'],
       summary: '코드블록·수식·이미지·여백주석·인용까지, 이 사이트의 모든 기능을 예제와 함께 정리한 글.' },
-
-    { title: '세그먼트 트리를 활용한 LIS O(N log N) 구현',
-      file: '2026-08-17-lis-segment-tree.html', category: 'algo/data-structure',
-      date: '2026-08-17', tags: ['세그먼트 트리', 'C++'], pinned: true,
-      links: [],
-      summary: '값 좌표압축 위에 max 세그먼트 트리를 얹는 표준 구성.' },
 
     { title: '느리게 갱신되는 구간 트리 노트',
       file: '2026-08-12-lazy-propagation.html', category: 'algo/data-structure',

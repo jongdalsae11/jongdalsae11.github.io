@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="값 좌표압축 위에 max 세그먼트 트리를 얹는 표준 구성.">
+  <title>세그먼트 트리를 활용한 LIS O(N log N) 구현 — 이름</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="세그먼트 트리를 활용한 LIS O(N log N) 구현">
+  <meta property="og:description" content="값 좌표압축 위에 max 세그먼트 트리를 얹는 표준 구성.">
+  <meta property="og:image" content="https://jongdalsae11.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/post.css">
+</head>
+<body data-crumb="글 / 자료구조 / <b>세그먼트 트리를 활용한 LIS O(N log N) 구현</b>">
+  <main id="main">
+    <div class="page page--post">
+      <article>
+        <div class="post-head">
+          <h1>세그먼트 트리를 활용한 LIS O(N log N) 구현</h1>
+          <div class="post-meta">
+            <span class="post-date">2026.08.17</span>
+            <span class="tag">세그먼트 트리</span>
+            <span class="tag">C++</span>
+          </div>
+        </div>
+        <div class="post-body">
+<p>최장 증가 부분 수열(LIS)은 이분 탐색으로 $O(N \log N)$에 풀 수 있지만, 세그먼트 트리를 쓰면 같은 복잡도로 더 많은 변형 문제에 대응할 수 있다.<span class="sidenote">예를 들어 "각 원소가 LIS에 포함될 수 있는가" 같은 질의는 이분 탐색 풀이로는 바로 답하기 어렵다.</span> 이 글은 <a class="wikilink" href="value-coordinate-compression.html">값 좌표압축</a> 위에 max 세그먼트 트리를 얹는 표준 구성을 정리한다.</p>
+<h2>아이디어</h2>
+<p>수열 $a_1, \dots, a_N$에 대해 $f(i)$를 $a_i$로 끝나는 LIS의 길이라 하면 다음 점화식이 성립한다.<span class="sidenote"><a class="wikilink" href="dp-sangtae-definition-practice.html">DP 상태 정의 연습</a>에서 다룬 논증과 같은 구조다 — 끝점을 고정해 부분 문제로 쪼갠다.</span></p>
+<p>$$f(i) = 1 + \max_{j &lt; i,\; a_j &lt; a_i} f(j)$$</p>
+<p>$\max$ 부분을 "값이 $a_i$보다 작은 구간의 최댓값 질의"로 바꾸면, 값을 인덱스로 쓰는 세그먼트 트리로 각 $i$를 $O(\log N)$에 처리할 수 있다.</p>
+<div class="key">prefix maximum</div>
+<h2>구현</h2>
+<div class="codeblock"><pre><code class="language-cpp">#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+struct SegTree {
+    int n; vector&lt;int&gt; t;
+    SegTree(int n) : n(n), t(2 * n, 0) {}
+    void update(int i, int v) {
+        for (t[i += n] = max(t[i + n], v); i &gt; 1; i &gt;&gt;= 1)
+            t[i &gt;&gt; 1] = max(t[i], t[i ^ 1]);
+    }
+    int query(int l, int r) {          // [l, r)
+        int res = 0;
+        for (l += n, r += n; l &lt; r; l &gt;&gt;= 1, r &gt;&gt;= 1) {
+            if (l &amp; 1) res = max(res, t[l++]);
+            if (r &amp; 1) res = max(res, t[--r]);
+        }
+        return res;
+    }
+};
+
+int main() {
+    cin.tie(nullptr)-&gt;sync_with_stdio(false);
+    int n; cin &gt;&gt; n;
+    vector&lt;int&gt; a(n), s(a);
+    for (auto &amp;x : a) cin &gt;&gt; x;
+    s = a;
+    sort(s.begin(), s.end());
+    s.erase(unique(s.begin(), s.end()), s.end());
+
+    SegTree st(s.size());
+    int ans = 0;
+    for (int i = 0; i &lt; n; i++) {
+        int v = lower_bound(s.begin(), s.end(), a[i]) - s.begin();
+        int f = st.query(0, v) + 1;    // a[i]보다 작은 값들 중 최대 f
+        st.update(v, f);
+        ans = max(ans, f);
+    }
+    cout &lt;&lt; ans &lt;&lt; '\n';
+}</code></pre></div>
+<p>핵심은 <code>query(0, v)</code>가 점화식의 $\max$를 정확히 담당한다는 것.<span class="sidenote">같은 값이 여러 번 나올 때 <code>query(0, v)</code>처럼 반열린 구간을 쓰면 "strictly increasing" 조건이 자동으로 지켜진다.</span> 좌표압축은 <a href="https://codeforces.com/" target="_blank" rel="noopener">Codeforces</a> 기출에서도 자주 쓰이는 기본기다.</p>
+<p>![값 축 세그먼트 트리에서의 prefix max 질의](../assets/img/placeholder-diagram.svg)</p>
+        </div>
+        <section class="backlinks"></section>
+        <script type="text/markdown" class="post-src">
+최장 증가 부분 수열(LIS)은 이분 탐색으로 $O(N \log N)$에 풀 수 있지만, 세그먼트 트리를 쓰면 같은 복잡도로 더 많은 변형 문제에 대응할 수 있다.^[예를 들어 "각 원소가 LIS에 포함될 수 있는가" 같은 질의는 이분 탐색 풀이로는 바로 답하기 어렵다.] 이 글은 [[값 좌표압축]] 위에 max 세그먼트 트리를 얹는 표준 구성을 정리한다.
+
+## 아이디어
+
+수열 $a_1, \dots, a_N$에 대해 $f(i)$를 $a_i$로 끝나는 LIS의 길이라 하면 다음 점화식이 성립한다.^[[[DP 상태 정의 연습]]에서 다룬 논증과 같은 구조다 — 끝점을 고정해 부분 문제로 쪼갠다.]
+
+$$f(i) = 1 + \max_{j < i,\; a_j < a_i} f(j)$$
+
+$\max$ 부분을 "값이 $a_i$보다 작은 구간의 최댓값 질의"로 바꾸면, 값을 인덱스로 쓰는 세그먼트 트리로 각 $i$를 $O(\log N)$에 처리할 수 있다.
+
+!!prefix maximum!!
+
+## 구현
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+struct SegTree {
+    int n; vector<int> t;
+    SegTree(int n) : n(n), t(2 * n, 0) {}
+    void update(int i, int v) {
+        for (t[i += n] = max(t[i + n], v); i > 1; i >>= 1)
+            t[i >> 1] = max(t[i], t[i ^ 1]);
+    }
+    int query(int l, int r) {          // [l, r)
+        int res = 0;
+        for (l += n, r += n; l < r; l >>= 1, r >>= 1) {
+            if (l & 1) res = max(res, t[l++]);
+            if (r & 1) res = max(res, t[--r]);
+        }
+        return res;
+    }
+};
+
+int main() {
+    cin.tie(nullptr)->sync_with_stdio(false);
+    int n; cin >> n;
+    vector<int> a(n), s(a);
+    for (auto &x : a) cin >> x;
+    s = a;
+    sort(s.begin(), s.end());
+    s.erase(unique(s.begin(), s.end()), s.end());
+
+    SegTree st(s.size());
+    int ans = 0;
+    for (int i = 0; i < n; i++) {
+        int v = lower_bound(s.begin(), s.end(), a[i]) - s.begin();
+        int f = st.query(0, v) + 1;    // a[i]보다 작은 값들 중 최대 f
+        st.update(v, f);
+        ans = max(ans, f);
+    }
+    cout << ans << '\n';
+}
+```
+
+핵심은 `query(0, v)`가 점화식의 $\max$를 정확히 담당한다는 것.^[같은 값이 여러 번 나올 때 `query(0, v)`처럼 반열린 구간을 쓰면 "strictly increasing" 조건이 자동으로 지켜진다.] 좌표압축은 [Codeforces](https://codeforces.com/) 기출에서도 자주 쓰이는 기본기다.
+
+![값 축 세그먼트 트리에서의 prefix max 질의](../assets/img/placeholder-diagram.svg)
+        </script>
+      </article>
+      <div class="margin-col"></div>
+    </div>
+  </main>
+  <footer><p>&copy; 2026</p></footer>
+  <script>window.ROOT='..'</script>
+  <script src="../assets/data/content.js"></script>
+  <script src="../assets/js/util.js"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="../assets/js/code.js"></script>
+  <script src="../assets/js/post.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
+</body>
+</html>
