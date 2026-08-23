@@ -8,6 +8,14 @@
     <lastBuildDate>Sun, 23 Aug 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="https://jongdalsae11.github.io/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>코시 열</title>
+      <link>https://jongdalsae11.github.io/posts/2026-08-23-cauchy-sequence.html</link>
+      <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-23-cauchy-sequence.html</guid>
+      <pubDate>Sun, 23 Aug 2026 00:00:00 GMT</pubDate>
+      <category>해석학</category>
+      <description>항들 사이의 거리를 이용한 수열의 수렴성</description>
+    </item>
+    <item>
       <title>수열의 극한</title>
       <link>https://jongdalsae11.github.io/posts/2026-08-23-sequence-limit.html</link>
       <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-23-sequence-limit.html</guid>

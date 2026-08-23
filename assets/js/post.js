@@ -42,7 +42,10 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   /* ── 4. 읽는 시간 (한국어 분당 500자 기준) ──────── */
-  var chars = body.textContent.replace(/\s+/g, '').length;
+  /* 수식은 세 벌로 들어 있어 글자 수가 부풀려집니다 — 빼고 셉니다 */
+  var plain = body.cloneNode(true);
+  plain.querySelectorAll('.katex, .katex-display').forEach(function (x) { x.remove(); });
+  var chars = plain.textContent.replace(/\s+/g, '').length;
   var mins = Math.max(1, Math.round(chars / 500));
   var metaBar = document.querySelector('.post-meta');
   if (metaBar && !metaBar.querySelector('.read-time')) {
@@ -65,11 +68,21 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  /* ── 목차 — 소제목이 3개 이상일 때만 ────────────── */
+  /* ── 목차 — 소제목이 3개 이상일 때만 ──────────────
+     KaTeX 는 수식 하나를 세 벌(MathML · TeX 원문 · 화면 표시용)로 담습니다.
+     그래서 textContent 로 글자를 뽑으면 $(a_n)$ 이 "(an)(a_n)(an)" 처럼
+     세 번 나옵니다. 목차에는 이미 렌더된 내용을 그대로 옮기고(innerHTML),
+     id 를 만들 때만 수식을 통째로 빼낸 글자를 씁니다.                */
+  function headText(h) {
+    var c = h.cloneNode(true);
+    c.querySelectorAll('.katex, .katex-display').forEach(function (x) { x.remove(); });
+    return c.textContent.replace(/\s+/g, ' ').trim();
+  }
+
   var heads = Array.prototype.slice.call(body.querySelectorAll('h2, h3'));
   if (heads.length >= 3) {
     heads.forEach(function (h, i) {
-      if (!h.id) h.id = 'h-' + (i + 1) + '-' + U.slug(h.textContent).slice(0, 24);
+      if (!h.id) h.id = 'h-' + (i + 1) + '-' + U.slug(headText(h)).slice(0, 24);
     });
     var toc = document.createElement('details');
     toc.className = 'toc';
@@ -77,9 +90,19 @@ document.addEventListener('DOMContentLoaded', function () {
     toc.innerHTML = '<summary>목차 <span class="toc-n">' + heads.length + '</span></summary>' +
       '<ol>' + heads.map(function (h) {
         return '<li class="lv-' + h.tagName.toLowerCase() + '">' +
-          '<a href="#' + h.id + '">' + U.esc(h.textContent) + '</a></li>';
+          '<a href="#' + h.id + '">' + h.innerHTML + '</a></li>';
       }).join('') + '</ol>';
     body.parentNode.insertBefore(toc, body);
+
+    /* 목차를 만든 시점에 KaTeX 가 아직 안 왔다면 $…$ 가 그대로 들어옵니다.
+       그때는 목차에 대고 한 번 더 렌더합니다. */
+    if (window.renderMathInElement && /\$/.test(toc.textContent)) {
+      window.renderMathInElement(toc, {
+        delimiters: [{ left: '$$', right: '$$', display: false },
+                     { left: '$', right: '$', display: false }],
+        throwOnError: false
+      });
+    }
 
     /* 현재 읽는 위치 표시 (지원하지 않는 브라우저에서는 목차만 표시) */
     if (window.IntersectionObserver) {
