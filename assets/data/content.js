@@ -55,6 +55,13 @@ window.SITE = {
   },
 
   posts: [
+    { title: '수열의 극한',
+      file: '2026-08-23-sequence-limit.html',
+      category: 'math/analysis',
+      date: '2026-08-23',
+      tags: ['극한', '수열'],
+      summary: '수열의 극한의 엄밀한 정의를 다룬다' },
+
     { title: '이 사이트에 글 쓰는 법 — 기능 전부 설명',
       file: '2026-08-17-writing-guide.html', category: 'essay/guide',
       date: '2026-08-17', tags: ['가이드', '사용법'], pinned: true,
