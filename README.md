@@ -104,6 +104,7 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 **기본 팔레트** — bg `#0a0a14` · surface `#141423` · text `#e4e4ed` · line `#3a3a52`
 · cyan `#38bdf8`(상호작용) · purple `#a855f7`(보조) · orange `#f97316`(1% 강조)
 · wiki `#b79cff`(내 글 연결 — 분류 팔레트 밖의 색)
+· thm-bg `#16162a`(정리·증명 상자 바닥)
 **분류색 팔레트** — cyan · purple · emerald · amber · rose · indigo · teal · orange
 (등장 순서대로 자동 배정)
 
@@ -123,7 +124,8 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 
 **정리 환경** — `:::정리 제목` … `:::` · 종류별 자동 번호 ·
 정리/보조정리/따름정리/명제/정의/예/참고/증명 (한글·영어 이름 모두) ·
-증명은 상자 없이 `pf.` 로 시작해 끝에 ∎ ·
+증명은 `pf.` 로 시작해 끝에 ∎ (왼쪽 선만 옅게) ·
+모든 상자는 `--thm-bg` 바닥 + 위쪽 안쪽 그림자 ·
 이름표는 `content.js` 의 `envLabels` 로 바꿀 수 있음
 
 **코드·수식** — 줄번호 · 들여쓰기 가이드 · 언어 라벨 · 복사 · 긴 코드 접기 · KaTeX
