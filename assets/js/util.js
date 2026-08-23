@@ -38,9 +38,108 @@ window.U = (function () {
     return out;
   }
 
+  /* ── 한글 → 영어 낱말 ─────────────────────────────
+     브라우저에는 번역기가 없으므로 낱말집으로 옮깁니다.
+     낱말집에 없는 말만 로마자로 떨어집니다.
+     내 분야 용어는 content.js 의 terms 에 추가하면 바로 반영됩니다. */
+  var TERMS = {
+    /* 수학 — 해석 */
+    '수열': 'sequence', '급수': 'series', '극한': 'limit', '수렴': 'convergence',
+    '발산': 'divergence', '연속': 'continuity', '미분': 'derivative', '적분': 'integral',
+    '미적분': 'calculus', '해석학': 'analysis', '실해석': 'real-analysis',
+    '복소해석': 'complex-analysis', '위상수학': 'topology', '측도': 'measure',
+    '코시': 'cauchy', '판정법': 'criterion', '논법': 'argument', '정의': 'definition',
+    '정리': 'theorem', '보조정리': 'lemma', '따름정리': 'corollary', '증명': 'proof',
+    '반례': 'counterexample', '부등식': 'inequality', '등식': 'identity',
+    '함수': 'function', '집합': 'set', '사상': 'map', '공간': 'space',
+    '유계': 'bounded', '조밀': 'dense', '균등': 'uniform', '점별': 'pointwise',
+    /* 수학 — 대수·정수론 */
+    '정수론': 'number-theory', '대수': 'algebra', '선형대수': 'linear-algebra',
+    '군': 'group', '환': 'ring', '체': 'field', '행렬': 'matrix', '벡터': 'vector',
+    '소수': 'prime', '합동': 'congruence', '나머지': 'remainder', '약수': 'divisor',
+    '배수': 'multiple', '오일러': 'euler', '페르마': 'fermat', '가우스': 'gauss',
+    '조합': 'combinatorics', '확률': 'probability', '통계': 'statistics',
+    '생성함수': 'generating-function', '점화식': 'recurrence',
+    /* 알고리즘·전산 */
+    '알고리즘': 'algorithm', '자료구조': 'data-structure', '세그먼트': 'segment',
+    '세그먼트 트리': 'segment-tree', '트리': 'tree', '그래프': 'graph',
+    '탐색': 'search', '이분탐색': 'binary-search', '정렬': 'sort', '완전탐색': 'brute-force',
+    '동적계획법': 'dynamic-programming', '분할정복': 'divide-and-conquer',
+    '그리디': 'greedy', '백트래킹': 'backtracking', '최단경로': 'shortest-path',
+    '최소신장트리': 'minimum-spanning-tree', '플로우': 'flow', '유량': 'flow',
+    '해시': 'hash', '스택': 'stack', '큐': 'queue', '힙': 'heap', '덱': 'deque',
+    '문자열': 'string', '구현': 'implementation', '최적화': 'optimization',
+    '시간복잡도': 'time-complexity', '복잡도': 'complexity', '메모이제이션': 'memoization',
+    '좌표압축': 'coordinate-compression', '누적합': 'prefix-sum', '지연전파': 'lazy-propagation',
+    '위상정렬': 'topological-sort', '유니온파인드': 'union-find',
+    /* 물리·공학 */
+    '물리': 'physics', '역학': 'mechanics', '전자기': 'electromagnetism',
+    '열역학': 'thermodynamics', '양자': 'quantum', '상대성': 'relativity',
+    '파동': 'wave', '진동': 'oscillation', '에너지': 'energy', '운동': 'motion',
+    '힘': 'force', '설계': 'design', '실험': 'experiment', '측정': 'measurement',
+    /* 글쓰기·일반 */
+    '노트': 'note', '정리노트': 'notes', '메모': 'memo', '기록': 'log',
+    '회고': 'retrospective', '일지': 'journal', '후기': 'review', '요약': 'summary',
+    '입문': 'intro', '첫걸음': 'first-steps', '기초': 'basics', '심화': 'advanced',
+    '연습': 'practice', '문제': 'problem', '풀이': 'solution', '해설': 'walkthrough',
+    '사용법': 'how-to', '가이드': 'guide', '정리하기': 'organizing', '생각': 'thoughts',
+    '이유': 'why', '방법': 'how', '차이': 'difference', '비교': 'comparison',
+    '예시': 'example', '적용': 'application', '활용': 'using', '이해': 'understanding',
+    '일상': 'daily', '공부': 'study', '독서': 'reading', '책': 'book',
+    '프로젝트': 'project', '연구': 'research', '계획': 'plan', '목표': 'goal',
+    '오늘': 'today', '어제': 'yesterday', '내일': 'tomorrow', '주간': 'weekly',
+    '제목': 'title', '값': 'value', '파이': 'phi', '람다': 'lambda', '시그마': 'sigma',
+    '편심': 'eccentric', '도르래': 'pulley', '지렛대': 'lever', '기구': 'device',
+    '지연 전파': 'lazy-propagation', '좌표 압축': 'coordinate-compression',
+    '누적 합': 'prefix-sum', '이분 탐색': 'binary-search', '동적 계획법': 'dynamic-programming',
+    '완전 탐색': 'brute-force', '최단 경로': 'shortest-path', '시간 복잡도': 'time-complexity'
+  };
+
+  /* 낱말 뒤에 붙는 조사·어미 — 옮길 때 떼어 냅니다.
+     ('활용한' → using + 한,  '최적화하기' → optimization + 하기) */
+  var JOSA = /^(으로서|으로써|에서는|에게서|이라는|라는|으로|이라|에서|에게|까지|부터|보다|처럼|마다|조차|밖에|은|는|이|가|을|를|의|에|와|과|도|만|로|랑|이나|나)/;
+  var ENDING = /^(하였습니다|했습니다|합니다|입니다|하는|되는|하기|하여|해서|하다|되다|한|된|해|함|됨)/;
+
+  function terms() {
+    var extra = (window.SITE && window.SITE.terms) || {};
+    var all = {};
+    Object.keys(TERMS).forEach(function (k) { all[k] = TERMS[k]; });
+    Object.keys(extra).forEach(function (k) { all[k] = extra[k]; });
+    return all;
+  }
+
+  /* 제목을 영어 낱말로 옮깁니다. 모르는 말은 로마자로 남습니다. */
+  function translate(t) {
+    var dict = terms();
+    /* 긴 표현부터 맞춰야 '세그먼트 트리' 가 '세그먼트'+'트리' 로 쪼개지지 않습니다 */
+    var keys = Object.keys(dict).sort(function (a, b) { return b.length - a.length; });
+    var s = String(t || '').trim(), out = [], buf = '';
+
+    function flushBuf() {
+      if (buf.trim()) out.push(romanize(buf.trim()));
+      buf = '';
+    }
+
+    outer:
+    while (s.length) {
+      for (var i = 0; i < keys.length; i++) {
+        if (s.indexOf(keys[i]) === 0) {
+          flushBuf();
+          out.push(dict[keys[i]]);
+          s = s.slice(keys[i].length).replace(ENDING, '').replace(JOSA, '');
+          continue outer;
+        }
+      }
+      buf += s[0];
+      s = s.slice(1);
+    }
+    flushBuf();
+    return out.join(' ');
+  }
+
   /* 제목 → 파일명·주소에 쓸 수 있는 영문 문자열 */
   function slug(t) {
-    return romanize(String(t || '').trim())
+    return translate(t)
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
@@ -243,7 +342,8 @@ window.U = (function () {
   }
 
   return {
-    esc: esc, slug: slug, romanize: romanize, dot: dot, today: today, label: label,
+    esc: esc, slug: slug, romanize: romanize, translate: translate,
+    dot: dot, today: today, label: label,
     tags: tags, real: real, linkify: linkify, byDateDesc: byDateDesc,
     postByFile: postByFile, refById: refById, sortedPosts: sortedPosts,
     catColor: catColor, catVar: catVar, applyTheme: applyTheme,
