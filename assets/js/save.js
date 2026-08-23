@@ -125,6 +125,15 @@
     await dir.removeEntry(parts[parts.length - 1]);
   }
 
+  /* 파일명이 바뀌면 그 글을 가리키던 곳도 함께 고쳐야 합니다.
+     다른 글의 links: ['옛파일'] 과 연구의 post: '옛파일' 이 여기 해당합니다.
+     이걸 빠뜨리면 빌드 점검이 "없는 글을 연결" 로 실패합니다.        */
+  function retarget(text, oldId, newId) {
+    if (!oldId || oldId === newId) return text;
+    var pat = new RegExp("'" + oldId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "'", 'g');
+    return text.replace(pat, "'" + newId + "'");
+  }
+
   /* content.js 에서 항목 하나를 통째로 빼냅니다 */
   function dropEntry(text, key, idKey, idVal) {
     var head = text.indexOf('\n  ' + key + ': [');
@@ -229,7 +238,12 @@
       var path = 'assets/data/content.js';
       var before = await readFile(path);
       var after = before;
-      if (renamed && dropOld) after = dropEntry(after, reg.key, reg.idKey, was.id);
+      if (renamed && dropOld) {
+        after = dropEntry(after, reg.key, reg.idKey, was.id);
+        /* 옛 이름을 가리키던 링크·연결을 새 이름으로 */
+        var moved = retarget(after, was.id, reg.idVal);
+        if (moved !== after) { after = moved; done.push('이 글을 가리키던 링크도 갱신'); }
+      }
       after = patchContent(after, reg);
       if (after !== before) {
         await writeFile(path, after);

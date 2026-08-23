@@ -72,13 +72,13 @@ window.SITE = {
     { title: '이 사이트에 글 쓰는 법 — 기능 전부 설명',
       file: '2026-08-17-writing-guide.html', category: 'essay/guide',
       date: '2026-08-17', tags: ['가이드', '사용법'], pinned: true,
-      links: ['2026-08-17-lis-segment-tree.html', '2026-08-10-euler-phi.html'],
+      links: ['2026-08-17-segment-tree-using-lis-o-n-log-n-implementation.html', '2026-08-10-euler-phi.html'],
       summary: '코드블록·수식·이미지·여백주석·인용까지, 이 사이트의 모든 기능을 예제와 함께 정리한 글.' },
 
     { title: '느리게 갱신되는 구간 트리 노트',
       file: '2026-08-12-lazy-propagation.html', category: 'algo/data-structure',
       date: '2026-08-12', tags: ['세그먼트 트리', 'lazy'],
-      links: ['2026-08-17-lis-segment-tree.html'],
+      links: ['2026-08-17-segment-tree-using-lis-o-n-log-n-implementation.html'],
       summary: '구간 갱신을 미뤄 두는 아이디어를 짧게 정리한 더미 글.' },
 
     { title: '오일러 피 함수의 곱셈적 성질',
@@ -169,7 +169,7 @@ window.SITE = {
     { title: '구간 쿼리 자료구조 비교 노트',
       kind: 'PROJECT', year: 2025,
       desc: '세그먼트 트리·펜윅·스파스 테이블의 실측 성능을 정리한 프로젝트.',
-      tags: ['알고리즘'], url: '#', post: '2026-08-17-lis-segment-tree.html' }
+      tags: ['알고리즘'], url: '#', post: '2026-08-17-segment-tree-using-lis-o-n-log-n-implementation.html' }
   ],
 
   /* 홈 대시보드 '현재 탐구 중' 한 줄 */
