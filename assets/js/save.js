@@ -119,6 +119,29 @@
     await w.close();
   }
 
+  async function removeFile(path) {
+    var parts = path.split('/'), dir = root;
+    for (var i = 0; i < parts.length - 1; i++) dir = await dir.getDirectoryHandle(parts[i]);
+    await dir.removeEntry(parts[parts.length - 1]);
+  }
+
+  /* content.js 에서 항목 하나를 통째로 빼냅니다 */
+  function dropEntry(text, key, idKey, idVal) {
+    var head = text.indexOf('\n  ' + key + ': [');
+    if (head < 0) return text;
+    var open = text.indexOf('[', head) + 1;
+    var arrEnd = matchBracket(text, open - 1);
+    var idPat = new RegExp(idKey + ":\\s*'" + idVal.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "'");
+    var hit = text.slice(open, arrEnd).search(idPat);
+    if (hit < 0) return text;
+    var s0 = text.lastIndexOf('{', open + hit);
+    var e0 = matchBracket(text, s0) + 1;
+    if (text[e0] === ',') e0++;
+    /* 앞뒤 빈 줄이 겹치지 않도록 정리 */
+    return (text.slice(0, s0).replace(/[ \t]*$/, '') + text.slice(e0))
+      .replace(/\n{3,}/g, '\n\n');
+  }
+
   /* ── content.js 에 항목 넣기/바꾸기 ─────────────────
      같은 id 가 이미 있으면 그 항목만 갈아 끼우고, 없으면 배열 맨 앞에 넣습니다.
      중괄호를 세어 항목의 끝을 찾으므로 줄바꿈 모양이 달라도 안전합니다.   */
@@ -180,6 +203,21 @@
 
       var done = [];
 
+      /* 0. 고치던 것의 이름이 바뀌었는지 확인
+         제목을 바꾸면 파일명이 따라 바뀝니다. 그때 옛 항목을 그대로 두면
+         같은 글이 목록에 두 번 뜹니다. 여기서 옛것을 정리합니다. */
+      var was = W.editing;
+      var renamed = was && was.id !== reg.idVal;
+      var dropOld = false;
+      if (renamed) {
+        dropOld = confirm(
+          '이름이 바뀌었습니다.\n\n' +
+          '  이전: ' + was.id + '\n' +
+          '  이후: ' + reg.idVal + '\n\n' +
+          '이전 것을 목록에서 지우고 새 이름으로 옮길까요?\n' +
+          '(취소하면 둘 다 남습니다)');
+      }
+
       /* 1. 글이면 HTML 파일부터 */
       if (mode === 'post') {
         var file = 'posts/' + W.fileBase() + '.html';
@@ -190,11 +228,24 @@
       /* 2. content.js 에 등록 */
       var path = 'assets/data/content.js';
       var before = await readFile(path);
-      var after = patchContent(before, reg);
+      var after = before;
+      if (renamed && dropOld) after = dropEntry(after, reg.key, reg.idKey, was.id);
+      after = patchContent(after, reg);
       if (after !== before) {
         await writeFile(path, after);
-        done.push(path + (before.length > after.length - reg.text.length ? ' (갱신)' : ''));
+        done.push(path);
       }
+
+      /* 3. 이름이 바뀐 글이면 옛 파일도 치웁니다 */
+      if (renamed && dropOld && mode === 'post' && /\.html$/.test(was.id)) {
+        try {
+          await removeFile('posts/' + was.id);
+          done.push('posts/' + was.id + ' 삭제');
+        } catch (e) {
+          done.push('(옛 파일 posts/' + was.id + ' 은 직접 지워 주세요)');
+        }
+      }
+      if (renamed && dropOld && W.markEditing) W.markEditing(reg.idVal, mode);
 
       show('저장 완료 — ' + done.join(' · ') + '  이제 git push 만 하면 됩니다', 'ok');
       document.querySelector('.w-tabs button[data-tab="register"]').click();

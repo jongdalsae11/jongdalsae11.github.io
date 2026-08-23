@@ -137,11 +137,16 @@
 
   var bar = G('w-editing'), barFile = G('w-editing-file');
 
-  function markEditing(name) {
+  /* 지금 고치고 있는 원본 — 저장할 때 save.js 가 참고합니다.
+     제목을 바꾸면 파일명도 바뀌므로, 원래 파일을 알아야 옛 항목·옛 파일을
+     정리할 수 있습니다. (모르면 새 글로 취급되어 중복이 생깁니다)   */
+  function markEditing(name, kind) {
     if (name) { barFile.textContent = name; bar.hidden = false; }
     else bar.hidden = true;
     document.body.classList.toggle('editing', !!name);
+    W.editing = name ? { id: name, kind: kind || 'post' } : null;
   }
+  W.markEditing = markEditing;
   G('w-editing-off').addEventListener('click', function () {
     markEditing(null);
     history.replaceState(null, '', location.pathname);
@@ -244,7 +249,7 @@
         throw new Error('본문을 찾지 못했습니다');
       }
       W.ed.dispatchEvent(new Event('input', { bubbles: true }));
-      markEditing(file);
+      markEditing(file, 'post');
       W.refresh();
     }).catch(function (err) {
       alert('글 파일을 읽지 못했습니다: ' + err.message +
@@ -272,7 +277,7 @@
       G('r-tags').value = (it.tags || []).join(', ');
       G('r-post').value = it.post || ''; G('r-url').value = it.url || '';
     }
-    markEditing(it.ref || it.title);
+    markEditing(it.ref || it.title, mode);
     W.refresh();
     document.querySelectorAll('.tag-sug').forEach(function (b) {
       var inp = b.previousElementSibling && b.previousElementSibling.querySelector('input');
