@@ -88,6 +88,35 @@
     return s.replace(/\u0003(\d+)\u0004/g, function (_, i) { return math[+i]; });
   }
 
+  /* ── 정리 환경 (LaTeX 의 \begin{theorem} … 에 해당) ──────────
+       :::정리 코시 판정법
+       내용
+       :::
+     한글·영어 이름 둘 다 받습니다. 번호는 종류별로 자동으로 붙고,
+     증명은 번호 없이 끝에 ∎ 가 붙습니다.                        */
+  var ENV = {
+    'thm': 'thm', 'theorem': 'thm', '정리': 'thm',
+    'lem': 'lem', 'lemma': 'lem', '보조정리': 'lem',
+    'cor': 'cor', 'corollary': 'cor', '따름정리': 'cor', '계': 'cor',
+    'prop': 'prop', 'proposition': 'prop', '명제': 'prop',
+    'def': 'def', 'definition': 'def', '정의': 'def',
+    'ex': 'ex', 'example': 'ex', '예': 'ex', '예제': 'ex',
+    'rem': 'rem', 'remark': 'rem', '참고': 'rem', '비고': 'rem',
+    'proof': 'proof', 'pf': 'proof', '증명': 'proof'
+  };
+  /* 화면에 찍히는 이름. content.js 의 envLabels 로 덮어쓸 수 있습니다.
+     증명은 수학 글의 관례대로 pf. (CSS 가 마침표를 붙입니다) */
+  var ENV_LABEL_DEFAULT = {
+    thm: '정리', lem: '보조정리', cor: '따름정리', prop: '명제',
+    def: '정의', ex: '예', rem: '참고', proof: 'pf'
+  };
+  function envLabel(kind) {
+    var over = (S.envLabels || {})[kind];
+    return over != null ? over : ENV_LABEL_DEFAULT[kind];
+  }
+  var envCount = {};
+  function resetEnv() { envCount = {}; }
+
   /* 블록 첫 태그에 원문 줄번호를 새깁니다 (SyncTeX 식 양방향 이동에 씀) */
   function at(line, html) {
     return html.replace(/^<([a-z0-9]+)/i, '<$1 data-src="' + line + '"');
@@ -110,6 +139,29 @@
       }
       /* "!!" 한 줄 단독 — 다음 "!!" 줄까지 통째로 강조 박스.
          안의 내용은 그대로 다시 파싱하므로 수식블록·코드블록·문단이 섞여도 됩니다. */
+      /* ::: 정리 … :::  */
+      if (/^:::/.test(ln)) {
+        var spec = ln.slice(3).trim();
+        var sp = spec.match(/^(\S+)\s*([\s\S]*)$/) || [];
+        var kind = ENV[(sp[1] || '').toLowerCase()] || ENV[sp[1]];
+        if (kind) {
+          var envTitle = (sp[2] || '').trim();
+          var body = []; i++;
+          while (i < L.length && L[i].trim() !== ':::') { body.push(L[i]); i++; }
+          i++;
+          var name = envLabel(kind);
+          if (kind !== 'proof') {
+            envCount[kind] = (envCount[kind] || 0) + 1;
+            name += ' ' + envCount[kind];
+          }
+          out.push(at(at0,
+            '<div class="thmbox thmbox--' + kind + '">' +
+            '<p class="thm-head"><span class="thm-name">' + name + '</span>' +
+            (envTitle ? '<span class="thm-title">' + inline(esc(envTitle)) + '</span>' : '') +
+            '</p>' + parse(body.join('\n'), at0 + 1) + '</div>'));
+          continue;
+        }
+      }
       if (/^!!\s*$/.test(ln.trim())) {
         var blk = []; i++;
         while (i < L.length && L[i].trim() !== '!!') { blk.push(L[i]); i++; }
@@ -159,7 +211,7 @@
         if (txt.length) { chunks.push(inline(esc(txt.join(' ')))); txt = []; }
       }
       while (i < L.length && !/^\s*$/.test(L[i]) &&
-             !/^(#|```|>|[-*]\s|---|!!|<figure)/.test(L[i])) {
+             !/^(#|```|>|[-*]\s|---|!!|:::|<figure)/.test(L[i])) {
         if (/^\$\$/.test(L[i])) {
           var m = [], oneLine = /^\$\$[\s\S]*\$\$\s*$/.test(L[i]);
           if (oneLine) {
@@ -186,9 +238,11 @@
   }
 
   /* ── 미리보기 ────────────────────────────────────── */
-  function bodyHTML() { return parse(ed.value); }
+  /* 번호는 글 한 편마다 1 부터 — 최상위에서만 초기화합니다 */
+  function parseDoc(src) { resetEnv(); return parse(src); }
+  function bodyHTML() { return parseDoc(ed.value); }
   /* 내보내는 글 파일에는 편집용 줄번호를 남기지 않습니다 */
-  function bodyHTMLClean() { return parse(ed.value).replace(/ data-src="\d+"/g, ''); }
+  function bodyHTMLClean() { return parseDoc(ed.value).replace(/ data-src="\d+"/g, ''); }
 
   function refresh() {
     var pv = $('#preview');
@@ -557,6 +611,8 @@
     imath:  ['$', '$', 'x^2'],
     math:   ['\n$$\n', '\n$$\n', 'f(x) = x^2'],
     key:    ['\n!!', '!!\n', '핵심 결론'],
+    thm:    ['\n:::정리 \n', '\n:::\n', '내용'],
+    proof:  ['\n:::증명\n', '\n:::\n', '증명 내용'],
     sn:     ['^[', ']', '여백에 들어갈 설명'],
     link:   ['[', '](https://)', '링크 텍스트']
   };

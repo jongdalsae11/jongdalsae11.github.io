@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="./assets/css/base.css?v=1e5ade7e">
   <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="./assets/css/components.css?v=a690207b">
-  <link rel="stylesheet" href="./assets/css/post.css?v=3e7a6671">
+  <link rel="stylesheet" href="./assets/css/post.css?v=893c24c9">
   <link rel="stylesheet" href="./assets/css/write.css?v=042e607a">
 </head>
 <body class="page-write" data-crumb="~ / <b>새로 쓰기</b>">
@@ -161,6 +161,8 @@
                 <button data-ins="imath">$수식$</button>
                 <button data-ins="math">수식블록</button>
                 <button data-ins="key">결론강조</button>
+                <button data-ins="thm">정리</button>
+                <button data-ins="proof">증명</button>
               </div>
               <div class="w-tgroup">
                 <button data-ins="sn">여백주석</button>
@@ -186,6 +188,7 @@
               <span>·</span> <b>Ctrl K</b> 링크
               <span>·</span> 드래그 후 <b>강조</b>로 블록 통째 강조
               <span>·</span> <b>Ctrl Z</b> 되돌리기
+              <span>·</span> <b>:::정리</b> 정리·증명 상자
               <span>·</span> <b>Ctrl+클릭</b> 양쪽 같은 낱말로 이동
               <a class="w-hint-more plain" href="#" id="hint-more">도움말</a>
               <button class="w-hint-x" id="hint-x" title="이 줄 숨기기" aria-label="힌트 줄 숨기기">×</button>
@@ -311,7 +314,7 @@
   <footer><p>&copy; 2026</p></footer>
 
   <script>window.ROOT='.'</script>
-  <script src="./assets/data/content.js?v=b3f0ae1f"></script>
+  <script src="./assets/data/content.js?v=91dc47a0"></script>
   <script src="./assets/js/util.js?v=49bfa528"></script>
   <script src="./assets/js/nav.js?v=91cd2314"></script>
   <!-- defer 라서 write.js 보다 늦게 도착합니다. 도착하는 즉시 미리보기를 다시 그리게
@@ -322,9 +325,9 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
     onload="window.WRITE && window.WRITE.refresh()"
     onerror="window.WRITE && window.WRITE.mathFailed()"></script>
-  <script src="./assets/js/write.js?v=fada90d9"></script>
-  <script src="./assets/js/editor.js?v=a33fa23f"></script>
-  <script src="./assets/js/compose.js?v=4ae91382"></script>
+  <script src="./assets/js/write.js?v=692cda56"></script>
+  <script src="./assets/js/editor.js?v=f05671ec"></script>
+  <script src="./assets/js/compose.js?v=d0e819fa"></script>
   <script src="./assets/js/sync.js?v=5eaf6975"></script>
   <script src="./assets/js/save.js?v=74e4429c"></script>
 </body>

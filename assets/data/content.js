@@ -54,6 +54,14 @@ window.SITE = {
   terms: {
   },
 
+  /* 정리 환경(:::정리 … :::)의 화면 이름표.
+     여기 적은 것이 기본값을 덮어씁니다. 예를 들어 전부 영어로 쓰고 싶다면
+       envLabels: { thm: 'Theorem', lem: 'Lemma', def: 'Definition' }
+     기본값 — thm 정리 · lem 보조정리 · cor 따름정리 · prop 명제
+              def 정의 · ex 예 · rem 참고 · proof pf                    */
+  envLabels: {
+  },
+
   posts: [
     { title: '세그먼트 트리를 활용한 LIS O(N log N) 구현',
       file: '2026-08-17-segment-tree-using-lis-o-n-log-n-implementation.html',

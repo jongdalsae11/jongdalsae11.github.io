@@ -352,3 +352,77 @@ a.pn-item:hover .pn-title { color: var(--cyan); }
 }
 .post-meta .edit-link:hover { color: var(--cyan); border-bottom-color: rgba(56,189,248,.5); }
 @media print { .post-meta .edit-link { display: none; } }
+
+/* ============================================================
+   정리 환경 — LaTeX 의 theorem / lemma / definition / proof
+   ============================================================ */
+.thmbox {
+  margin: 1.9em 0;
+  padding: 0.9em 1.1em;
+  border: 1px solid var(--line-soft);
+  border-left: 3px solid var(--cat, var(--cyan));
+  border-radius: 0 8px 8px 0;
+  background: color-mix(in srgb, var(--cat, var(--cyan)) 5%, transparent);
+}
+.thmbox > :last-child { margin-bottom: 0; }
+.thmbox .thm-head {
+  margin: 0 0 0.5em;
+  font-size: 0.92em;
+}
+.thm-name {
+  font-weight: 700;
+  color: var(--cat, var(--cyan));
+  letter-spacing: 0.01em;
+}
+.thm-title {
+  margin-left: 0.5em;
+  color: var(--soft);
+  font-style: italic;
+}
+.thm-title::before { content: '('; }
+.thm-title::after  { content: ')'; }
+
+/* 정의·예·참고는 더 가볍게 — 배경 없이 선만 */
+.thmbox--def, .thmbox--ex, .thmbox--rem {
+  background: none;
+  border-color: transparent;
+  border-left-color: var(--line);
+  border-radius: 0;
+  padding: 0.2em 0 0.2em 1.1em;
+}
+.thmbox--def .thm-name { color: var(--soft); }
+.thmbox--ex .thm-name, .thmbox--rem .thm-name { color: var(--faint); font-weight: 600; }
+
+/* 증명은 LaTeX 처럼 상자 없이, 끝에 ∎ */
+.thmbox--proof {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 1.5em 0;
+}
+.thmbox--proof .thm-head {
+  display: inline;
+  margin: 0;
+}
+.thmbox--proof .thm-name {
+  color: var(--faint);
+  font-weight: 400;
+  font-style: italic;
+  /* pf. 는 라틴 약어이므로 본문 한글 글꼴이 아니라 수식 글꼴로 */
+  font-family: var(--math, Georgia, 'Times New Roman', serif);
+}
+.thmbox--proof .thm-name::after { content: '.'; }
+/* 제목 줄 다음 문단을 같은 줄에서 잇습니다 */
+.thmbox--proof .thm-head + p { display: inline; }
+.thmbox--proof > :last-child::after {
+  content: '∎';
+  float: right;
+  margin-left: 0.6em;
+  color: var(--cat, var(--cyan));
+}
+.thmbox--proof::after { content: ''; display: block; clear: both; }
+
+@media print {
+  .thmbox { break-inside: avoid; background: none; }
+}

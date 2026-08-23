@@ -193,6 +193,20 @@
           Array.prototype.forEach.call(el.children, function (li, i) {
             lines.push((t === 'ol' ? (i + 1) + '. ' : '- ') + one(inline(li)));
           });
+        } else if (el.classList.contains('thmbox')) {
+          /* 정리 환경 — 머리글은 다시 :::종류 제목 으로 되돌립니다 */
+          var head = el.querySelector('.thm-head');
+          var ti = head ? head.querySelector('.thm-title') : null;
+          /* 이름표(pf. 등)는 바뀔 수 있으므로 class 로 종류를 알아냅니다 */
+          var CANON = { thm: '정리', lem: '보조정리', cor: '따름정리', prop: '명제',
+                        def: '정의', ex: '예', rem: '참고', proof: '증명' };
+          var cls = (String(el.className).match(/thmbox--(\w+)/) || [])[1];
+          var word = CANON[cls] || '정리';
+          var clone = el.cloneNode(true);
+          var ch = clone.querySelector('.thm-head');
+          if (ch) ch.remove();
+          lines.push(':::' + word + (ti ? ' ' + ti.textContent : '') +
+                     '\n' + children(clone).join('\n\n') + '\n:::');
         } else if (el.classList.contains('key')) {
           /* 안이 문단 하나뿐이면 짧은 한 줄 강조, 여러 블록이면 통째로 강조 */
           var inner = children(el);

@@ -96,6 +96,23 @@
     setRange(from, to, ins, from + 3, from + 3 + body.length);
   }
 
+  /* 선택한 줄들을 정리 환경(::: … :::)으로 감쌉니다 */
+  function envWrap(word) {
+    var s = ed.selectionStart, e = ed.selectionEnd;
+    var from = lineBounds(s).from, to = lineBounds(e).to;
+    var body = ed.value.slice(from, to);
+    var open = ':::' + word;
+    if (new RegExp('^:::\\S+[^\\n]*\\n[\\s\\S]*\\n:::\\s*$').test(body)) {
+      var inner = body.replace(/^:::[^\n]*\n/, '').replace(/\n:::\s*$/, '');
+      setRange(from, to, inner, from, from + inner.length);
+      return;
+    }
+    if (!body.trim()) body = '내용';
+    var ins = open + ' \n' + body + '\n:::';
+    /* 제목 자리에 커서를 둡니다 */
+    setRange(from, to, ins, from + open.length + 1, from + open.length + 1);
+  }
+
   /* Esc 를 누른 직후의 Tab 은 포커스 이동용으로 넘겨 줍니다 (접근성) */
   var escaped = false;
 
@@ -212,6 +229,14 @@
     { k: '인라인 수식', hint: '$',  run: function () { surround('$', '$', 'x'); } },
     { k: '여백주석',  hint: '^[]',  run: function () { surround('^[', ']', '여백에 들어갈 설명'); } },
     { k: '결론 강조', hint: '!!',   run: blockWrap },
+    { k: '정리',      hint: ':::',  run: function () { envWrap('정리'); } },
+    { k: '보조정리',  hint: ':::',  run: function () { envWrap('보조정리'); } },
+    { k: '따름정리',  hint: ':::',  run: function () { envWrap('따름정리'); } },
+    { k: '명제',      hint: ':::',  run: function () { envWrap('명제'); } },
+    { k: '정의',      hint: ':::',  run: function () { envWrap('정의'); } },
+    { k: '증명',      hint: ':::',  run: function () { envWrap('증명'); } },
+    { k: '예',        hint: ':::',  run: function () { envWrap('예'); } },
+    { k: '참고',      hint: ':::',  run: function () { envWrap('참고'); } },
     { k: '구분선',    hint: '---',  run: function () { setRange(ed.selectionStart, ed.selectionEnd, '\n---\n'); } },
     { k: '링크',      hint: '[]()', run: function () { SHORTCUT.k(); } },
     { k: '이미지',    hint: 'img',  run: function () { var b = document.getElementById('btn-img'); if (b) b.click(); } },
