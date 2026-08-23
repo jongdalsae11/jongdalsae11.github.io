@@ -21,8 +21,8 @@
   <link rel="stylesheet" href="./assets/css/base.css?v=1e5ade7e">
   <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="./assets/css/components.css?v=a690207b">
-  <link rel="stylesheet" href="./assets/css/post.css?v=b704ea53">
-  <link rel="stylesheet" href="./assets/css/write.css?v=eeeb1e4b">
+  <link rel="stylesheet" href="./assets/css/post.css?v=3e7a6671">
+  <link rel="stylesheet" href="./assets/css/write.css?v=042e607a">
 </head>
 <body class="page-write" data-crumb="~ / <b>새로 쓰기</b>">
   <main id="main">
@@ -65,6 +65,12 @@
               <input id="f-tags" type="text" placeholder="세그먼트 트리, C++"></label>
             <label class="w-field w-field--full"><span>한 줄 요약</span>
               <input id="f-summary" type="text" placeholder="홈 카드에 표시될 한 문장"></label>
+            <label class="w-field w-field--full"><span>파일명 <em>비워 두면 제목에서 자동</em></span>
+              <span class="w-fname">
+                <code id="f-fname-date">2026-01-01</code><code class="w-fname-dash">-</code>
+                <input id="f-slug" type="text" placeholder="자동" spellcheck="false"><code>.html</code>
+                <button type="button" id="f-slug-auto" title="제목에서 다시 만들기">자동</button>
+              </span></label>
             <div class="w-field-row">
               <label class="w-check"><input id="f-pinned" type="checkbox"><span>홈에 고정</span></label>
               <span class="w-filename">→ <code id="f-filename">…</code></span>
@@ -191,10 +197,15 @@
             <button type="button" id="w-editing-off">새로 쓰기로 돌아가기</button>
           </p>
 
+          <p class="save-state" id="save-state"></p>
+
           <div class="w-actions">
             <button class="ghost" id="btn-clear">비우기</button>
+            <button class="ghost" id="btn-link">폴더 연결</button>
+            <button class="primary primary--go" id="btn-save"
+                    title="글 파일 저장 + content.js 등록까지 한 번에 (Ctrl+S)">저장 (Ctrl+S)</button>
             <button class="ghost" id="exp-md" data-for="post">원고(.md)</button>
-            <button class="primary" id="exp-html" data-for="post">글 파일 내려받기</button>
+            <button class="ghost" id="exp-html" data-for="post">내려받기</button>
             <button class="primary" id="go-register" data-for="other" hidden>등록 코드 보기 →</button>
           </div>
         </section>
@@ -214,7 +225,20 @@
 
           <div id="tab-register" class="w-tabbody" hidden>
             <div class="w-guide">
-              <h3>할 일</h3>
+
+              <!-- 폴더를 연결해 두면 아래 손작업이 전부 사라집니다 -->
+              <div class="fs-box">
+                <h3>바로 저장</h3>
+                <p class="fs-lead">폴더를 한 번 연결해 두면 파일 옮기기와
+                  <code>content.js</code> 붙여넣기를 대신 해 줍니다.</p>
+                <div class="fs-row">
+                  <button class="fs-btn" id="fs-connect">내 jongdal 폴더 연결</button>
+                  <button class="fs-btn fs-btn--go" id="fs-save" hidden>폴더에 저장</button>
+                </div>
+                <p class="fs-note" id="fs-note"></p>
+              </div>
+
+              <h3>손으로 하려면</h3>
               <ol class="w-todo" id="reg-steps"></ol>
 
               <div class="w-copybox">
@@ -287,8 +311,8 @@
   <footer><p>&copy; 2026</p></footer>
 
   <script>window.ROOT='.'</script>
-  <script src="./assets/data/content.js?v=9c94f2d9"></script>
-  <script src="./assets/js/util.js?v=9ac5ba88"></script>
+  <script src="./assets/data/content.js?v=cfe648d9"></script>
+  <script src="./assets/js/util.js?v=24db9303"></script>
   <script src="./assets/js/nav.js?v=91cd2314"></script>
   <!-- defer 라서 write.js 보다 늦게 도착합니다. 도착하는 즉시 미리보기를 다시 그리게
        onload 훅을 겁니다. (이게 없어서 수식이 첫 화면에 렌더되지 않았습니다) -->
@@ -298,9 +322,11 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
     onload="window.WRITE && window.WRITE.refresh()"
     onerror="window.WRITE && window.WRITE.mathFailed()"></script>
-  <script src="./assets/js/write.js?v=58e5e0d2"></script>
+  <script src="./assets/js/write.js?v=fada90d9"></script>
   <script src="./assets/js/editor.js?v=a33fa23f"></script>
   <script src="./assets/js/compose.js?v=3fb43d1c"></script>
   <script src="./assets/js/sync.js?v=5eaf6975"></script>
+  <script src="./assets/js/save.js?v=b4159d71"></script>
+  <script src="./assets/js/save.js?v=b4159d71"></script>
 </body>
 </html>

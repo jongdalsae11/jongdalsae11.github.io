@@ -15,12 +15,23 @@
 .post-date { font-family: var(--mono); font-size: 0.76rem; color: var(--faint); }
 
 /* ── 본문 타이포그래피 ────────────────────────────── */
-.post-body { font-size: 0.98rem; line-height: 1.9; }
+/* 본문 리듬 —
+   줄 사이 간격보다 문단 사이 간격이 확실히 넓어야 눈이 문단을 구분합니다.
+   예전에는 line-height 1.9 (줄 간격 ≈ 14px) 에 p margin 1em (≈ 16px) 이라
+   둘이 거의 같아서, 어디서 문단이 끝나는지 보이지 않고 회색 벽처럼 읽혔습니다. */
+.post-body { font-size: 1.02rem; line-height: 1.78; }
+.post-body p { margin: 0 0 1.65em; }
 .post-body h2 {
-  font-size: 1.22rem;
+  font-size: 1.24rem;
+  margin: 2.8em 0 0.85em;
   padding-bottom: 0.35em;
   border-bottom: 1px solid var(--line-soft);
 }
+.post-body h3 { margin: 2.1em 0 0.6em; }
+.post-body > :first-child { margin-top: 0; }
+
+/* 문단 안에 들어온 수식 — 앞뒤 문장과 한 덩어리로 읽히도록 간격을 좁힙니다 */
+.post-body p .katex-display { margin: 0.75em 0; }
 .post-body ul, .post-body ol { padding-left: 1.4em; }
 .post-body li { margin-bottom: 0.35em; }
 

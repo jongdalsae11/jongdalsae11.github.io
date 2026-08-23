@@ -9,6 +9,17 @@ VSCode 다크 테마 기반 개인 아카이브 · <https://jongdalsae11.github.
 > 자세한 사용법은 사이트의 **[이 사이트에 글 쓰는 법]** 글에 정리되어 있습니다.
 > (`posts/2026-08-17-writing-guide.html`)
 
+## 글 올리기 — 저장 → push
+
+작성 도구에서 **폴더 연결** 을 한 번 눌러 `jongdal` 폴더를 지정해 두면,
+그 뒤로는 **저장(Ctrl+S)** 한 번에
+
+1. `posts/새글.html` 이 만들어지고
+2. `assets/data/content.js` 에 등록까지 됩니다.
+
+남는 일은 `git push` 뿐입니다. (크롬·엣지 전용 · 지원하지 않는 브라우저에서는
+기존의 «내려받기 → 직접 옮기기» 방식이 그대로 남아 있습니다)
+
 ## 배포 — push 만 하면 끝
 
 ```
@@ -54,6 +65,7 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
     ├── css/  base · layout · components · post · write
     ├── js/   util · nav · lists · heatmap · progress · code · post
     │         write(작성) · editor(단축키·슬래시) · compose(태그추천·수정)
+    │         sync(양방향 이동) · save(폴더 연결 저장)
     ├── img/  글에 쓰는 이미지     files/  자료 PDF
     └── og.png  링크 공유 썸네일
 ```
@@ -75,6 +87,7 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 | 전체 색 바꾸기 | `assets/css/base.css` 의 `:root` |
 | 무언가 작성하기 | 사이드바 **+ 새로 쓰기** → 모드 선택 → 등록 코드 복사 |
 | 이미 올린 것 고치기 | 글 아래 **고치기** 링크, 또는 작성 도구의 **수정** 버튼 |
+| 글 저장 | **폴더 연결** 한 번 → 이후 **Ctrl+S** (파일 생성 + 등록 자동) |
 
 **기본 팔레트** — bg `#0a0a14` · surface `#141423` · text `#e4e4ed` · line `#3a3a52`
 · cyan `#38bdf8`(상호작용) · purple `#a855f7`(보조) · orange `#f97316`(1% 강조)

@@ -14,10 +14,38 @@ window.U = (function () {
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
-  /* 제목 → 파일명에 쓸 수 있는 문자열 */
+  /* ── 한글 → 로마자 ────────────────────────────────
+     파일명에 한글이 들어가면 주소가 %EC%9D%B4… 로 깨져 보이므로
+     국어의 로마자 표기법(문화체육관광부 고시)에 맞춰 옮깁니다.
+     받침이 뒤 음절 첫소리와 만날 때의 소리 변화까지 반영합니다.   */
+  var CHO = ['g','kk','n','d','tt','r','m','b','pp','s','ss','','j','jj','ch','k','t','p','h'];
+  var JUNG = ['a','ae','ya','yae','eo','e','yeo','ye','o','wa','wae','oe','yo',
+              'u','wo','we','wi','yu','eu','ui','i'];
+  var JONG = ['','g','k','ks','n','nj','nh','d','l','lg','lm','lb','ls','lt','lp','lh',
+              'm','b','bs','s','ss','ng','j','ch','k','t','p','h'];
+
+  function romanize(t) {
+    var out = '';
+    for (var i = 0; i < t.length; i++) {
+      var c = t.charCodeAt(i) - 0xac00;
+      if (c < 0 || c > 11171) { out += t[i]; continue; }
+      var cho = Math.floor(c / 588),
+          jung = Math.floor((c % 588) / 28),
+          jong = c % 28;
+      /* ㅇ 초성은 소리가 없으므로 자음을 붙이지 않습니다 */
+      out += CHO[cho] + JUNG[jung] + JONG[jong];
+    }
+    return out;
+  }
+
+  /* 제목 → 파일명·주소에 쓸 수 있는 영문 문자열 */
   function slug(t) {
-    return String(t || '').trim().toLowerCase()
-      .replace(/[^\w가-힣]+/g, '-').replace(/^-|-$/g, '');
+    return romanize(String(t || '').trim())
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60)
+      .replace(/-+$/, '');
   }
 
   /* 2026-08-17 → 2026.08.17 */
@@ -215,7 +243,7 @@ window.U = (function () {
   }
 
   return {
-    esc: esc, slug: slug, dot: dot, today: today, label: label,
+    esc: esc, slug: slug, romanize: romanize, dot: dot, today: today, label: label,
     tags: tags, real: real, linkify: linkify, byDateDesc: byDateDesc,
     postByFile: postByFile, refById: refById, sortedPosts: sortedPosts,
     catColor: catColor, catVar: catVar, applyTheme: applyTheme,

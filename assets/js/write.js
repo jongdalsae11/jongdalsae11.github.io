@@ -16,7 +16,8 @@
   var ed = $('#editor');
   var F = {
     title: $('#f-title'), cat: $('#f-cat'), date: $('#f-date'),
-    tags: $('#f-tags'), summary: $('#f-summary'), pinned: $('#f-pinned')
+    tags: $('#f-tags'), summary: $('#f-summary'), pinned: $('#f-pinned'),
+    slug: $('#f-slug')
   };
 
   /* 분류 후보 — 상위·하위 경로를 모두 제안 */
@@ -37,8 +38,12 @@
   var U = window.U;
   var esc = U.esc, slug = U.slug, todayStr = U.today;
 
+  /* 파일명 — 직접 적었으면 그것을, 비워 두면 제목에서 자동으로 */
+  function autoSlug() { return slug(F.title.value) || 'untitled'; }
   function fileBase() {
-    return (F.date.value || '날짜') + '-' + (slug(F.title.value) || 'untitled');
+    var manual = F.slug && F.slug.value.trim();
+    var name = manual ? slug(manual) : autoSlug();
+    return (F.date.value || '날짜') + '-' + (name || 'untitled');
   }
   function tagArr() {
     return F.tags.value.split(',').map(function (x) { return x.trim(); }).filter(Boolean);
@@ -103,13 +108,6 @@
                  (lang || 'plaintext') + '">' + esc(buf.join('\n')) + '</code></pre></div>'));
         continue;
       }
-      if (/^\$\$\s*$/.test(ln)) {
-        var m = []; i++;
-        while (i < L.length && !/^\$\$\s*$/.test(L[i])) { m.push(L[i]); i++; }
-        i++;
-        out.push(at(at0, '<p>$$' + esc(m.join('\n')) + '$$</p>'));
-        continue;
-      }
       /* "!!" 한 줄 단독 — 다음 "!!" 줄까지 통째로 강조 박스.
          안의 내용은 그대로 다시 파싱하므로 수식블록·코드블록·문단이 섞여도 됩니다. */
       if (/^!!\s*$/.test(ln.trim())) {
@@ -151,14 +149,38 @@
       if (/^---\s*$/.test(ln)) { out.push(at(at0, '<hr>')); i++; continue; }
       if (/^\s*$/.test(ln)) { i++; continue; }
 
-      var p = [];
+      /* ── 문단 ────────────────────────────────────────
+         빈 줄이 나올 때까지 모읍니다. 도중에 나오는 $$…$$ 는 문단 밖으로
+         내보내지 않고 안에 품습니다. 한 문장이 수식을 가운데 두고 이어질 때
+         (…대략적인 꼴은 / $$…$$ / 의 꼴이다) 앞뒤가 따로 떨어진 문단이 되어
+         글이 뚝뚝 끊겨 보이던 문제를 없애기 위해서입니다. LaTeX 과 같은 방식.  */
+      var chunks = [], txt = [];
+      function flushTxt() {
+        if (txt.length) { chunks.push(inline(esc(txt.join(' ')))); txt = []; }
+      }
       while (i < L.length && !/^\s*$/.test(L[i]) &&
-             !/^(#|```|>|[-*]\s|\$\$|---|!!|<figure)/.test(L[i])) { p.push(L[i]); i++; }
-      /* 어떤 규칙에도 걸리지 않고 문단으로도 못 모으는 줄이 있으면
-         (예: 닫히지 않은 !! 나 줄 첫머리의 #include) 그 줄을 그냥 소비합니다.
-         이 안전장치가 없으면 i 가 멈춰 무한 루프에 빠집니다.        */
-      if (!p.length) { p.push(L[i]); i++; }
-      out.push(at(at0, '<p>' + inline(esc(p.join(' '))) + '</p>'));
+             !/^(#|```|>|[-*]\s|---|!!|<figure)/.test(L[i])) {
+        if (/^\$\$/.test(L[i])) {
+          var m = [], oneLine = /^\$\$[\s\S]*\$\$\s*$/.test(L[i]);
+          if (oneLine) {
+            m.push(L[i].replace(/^\$\$/, '').replace(/\$\$\s*$/, ''));
+            i++;
+          } else {
+            i++;
+            while (i < L.length && !/^\$\$\s*$/.test(L[i])) { m.push(L[i]); i++; }
+            i++;
+          }
+          flushTxt();
+          chunks.push('$$' + esc(m.join('\n')) + '$$');
+          continue;
+        }
+        txt.push(L[i]); i++;
+      }
+      flushTxt();
+      /* 어떤 규칙에도 걸리지 않고 한 줄도 못 모으면 그 줄을 그냥 소비합니다.
+         (예: 닫히지 않은 !!) 이 안전장치가 없으면 i 가 멈춰 무한 루프에 빠집니다. */
+      if (!chunks.length) { chunks.push(inline(esc(L[i] || ''))); i++; }
+      out.push(at(at0, '<p>' + chunks.join('\n') + '</p>'));
     }
     return out.join('\n');
   }
@@ -267,6 +289,7 @@
       localStorage.setItem(DRAFT, JSON.stringify({
         title: F.title.value, cat: F.cat.value, date: F.date.value,
         tags: F.tags.value, summary: F.summary.value,
+        slug: F.slug ? F.slug.value : '',
         pinned: F.pinned.checked, body: ed.value
       }));
       var s = $('#w-saved');
@@ -281,6 +304,7 @@
       F.title.value = d.title || ''; F.cat.value = d.cat || 'essay';
       F.date.value = d.date || todayStr();
       F.tags.value = d.tags || ''; F.summary.value = d.summary || '';
+      if (F.slug) F.slug.value = d.slug || '';
       F.pinned.checked = !!d.pinned; ed.value = d.body || '';
     } else {
       F.date.value = todayStr();
@@ -377,7 +401,27 @@
   function q(s) { return "'" + String(s).replace(/'/g, "\\'") + "'"; }
   function arr(a) { return '[' + a.map(q).join(', ') + ']'; }
 
+  /* 파일명 칸 — '자동' 을 누르면 제목에서 다시 만들고, 날짜 부분을 함께 보여 줍니다 */
+  (function () {
+    var auto = $('#f-slug-auto'), dateEl = $('#f-fname-date');
+    function syncDate() { if (dateEl) dateEl.textContent = F.date.value || '날짜'; }
+    if (auto) {
+      auto.addEventListener('click', function () {
+        F.slug.value = autoSlug();
+        queue();
+      });
+    }
+    F.date.addEventListener('input', syncDate);
+    F.date.addEventListener('change', syncDate);
+    F.title.addEventListener('input', function () {
+      if (F.slug && !F.slug.value.trim()) F.slug.placeholder = autoSlug();
+    });
+    syncDate();
+  }());
+
   /* ── 등록 코드 생성 ──────────────────────────────── */
+  var LAST_REG = null;
+
   function genRegister() {
     var entry = '', where = '', steps = '', tip = '', commitMsg = '';
 
@@ -448,6 +492,16 @@
       commitMsg = '연구 추가: ' + (val('r-title') || '제목');
     }
 
+    /* 폴더 직접 저장(save.js)이 쓰도록 보관 */
+    LAST_REG = {
+      key:  { post: 'posts', library: 'library', problem: 'problems', research: 'research' }[MODE],
+      idKey: MODE === 'library' ? 'ref' : (MODE === 'post' ? 'file' : 'title'),
+      idVal: MODE === 'library' ? (val('l-ref') || '')
+           : MODE === 'post' ? fileBase() + '.html'
+           : (val(MODE === 'problem' ? 'p-title' : 'r-title') || ''),
+      text: entry,
+      msg:  commitMsg
+    };
     G('gen-entry').textContent = entry;
     G('reg-where').textContent = where;
     G('reg-steps').innerHTML = steps;
@@ -676,8 +730,8 @@
     download(fileBase() + '.md', fm + ed.value, 'text/markdown');
   });
 
-  $('#exp-html').addEventListener('click', function () {
-    if (!F.title.value.trim()) { alert('제목을 입력해 주세요.'); F.title.focus(); return; }
+  /* 글 파일 전체 HTML — 내려받기와 폴더 직접 저장이 함께 씁니다 */
+  function buildPostHTML() {
     var catLabel = (S.labels || {})[F.cat.value] || F.cat.value;
     var tagHTML = tagArr().map(function (t) {
       return '<span class="tag">' + esc(t) + '</span>';
@@ -731,6 +785,12 @@
       '    onload="renderMathInElement(document.body,{delimiters:[{left:\'$$\',right:\'$$\',display:true},{left:\'$\',right:\'$\',display:false}],throwOnError:false})"><\/script>\n' +
       '</body>\n</html>\n';
 
+    return html;
+  }
+
+  $('#exp-html').addEventListener('click', function () {
+    if (!F.title.value.trim()) { alert('제목을 입력해 주세요.'); F.title.focus(); return; }
+    var html = buildPostHTML();
     download(fileBase() + '.html', html, 'text/html');
 
     /* 내려받으면 등록 탭으로 자동 이동 */
@@ -743,6 +803,9 @@
     F: F, ed: ed, G: G, $: $, S: S, applyEdit: applyEdit,
     setMode: setMode, refresh: refresh, fileBase: fileBase, tagArr: tagArr,
     getMode: function () { return MODE; },
+    buildPostHTML: buildPostHTML,
+    genRegister: genRegister,
+    lastReg: function () { return LAST_REG; },
     /* 수식 라이브러리를 못 받아왔을 때 조용히 원문만 보여 주지 않고 알려 줍니다 */
     mathFailed: function () {
       var pv = $('#preview');
