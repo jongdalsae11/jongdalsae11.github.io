@@ -81,7 +81,14 @@ window.SITE = {
       file: '2026-08-01-first-ensemble.html', category: 'essay/daily',
       date: '2026-08-01', tags: ['일상'],
       links: ['2026-08-17-writing-guide.html'],
-      summary: '연습실에서의 하루를 적은 더미 에세이.' }
+      summary: '연습실에서의 하루를 적은 더미 에세이.' },
+
+    { title: 'ε-N 논법',
+      file: '2026-08-23-n-논법.html',
+      category: 'math/analysis',
+      date: '2026-08-23',
+      tags: ['극한', '수열'],
+      summary: '수열의 극한의 엄밀한 정의를 다룬다' }
   ],
 
   /* ── 자료정리집 ────────────────────────────────────
