@@ -427,8 +427,69 @@ a.pn-item:hover .pn-title { color: var(--cyan); }
   .thmbox { break-inside: avoid; background: none; }
 }
 
-/* 글 연결·링크 안에 수식이 들어갈 수 있습니다 — 색과 밑줄을 물려받게 */
+/* ============================================================
+   내 글 연결 (위키링크)
+   지금까지 색 규칙이 없어 일반 링크(#c9c9d8)를 물려받았고,
+   본문 글자색과 거의 같아 눈에 띄지 않았습니다.
+
+   라벤더 + 지퍼 밑줄 — 점선 트랙 위에 꺾쇠(›)가 손잡이처럼 얹힙니다.
+   꺾쇠는 글자 시작선에 정확히 맞춰 왼쪽으로 삐져나오지 않습니다.
+   ============================================================ */
+.post-body a.wikilink,
+.sidenote a.wikilink,
+.thmbox a.wikilink {
+  position: relative;
+  color: var(--wiki);
+  text-decoration: none;
+  padding-bottom: 3px;
+  /* 지퍼 트랙 — 점선 */
+  border-bottom: 1.5px dotted color-mix(in srgb, var(--wiki) 60%, transparent);
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+/* 지퍼 손잡이 — 정사각형의 위·오른쪽 변만 남겨 45° 돌리면 › 모양이 됩니다.
+   45° 회전하면 좌우로 약 0.9px 퍼지므로 left 로 그만큼 되밀어
+   글자의 시작선과 정확히 맞춥니다. */
+.post-body a.wikilink::before,
+.sidenote a.wikilink::before,
+.thmbox a.wikilink::before {
+  content: '';
+  position: absolute;
+  left: 0.9px;
+  bottom: -3.2px;
+  width: 4.5px;
+  height: 4.5px;
+  border-top: 1.6px solid var(--wiki);
+  border-right: 1.6px solid var(--wiki);
+  transform: rotate(45deg);
+  transition: border-color 0.15s ease;
+}
+
+.post-body a.wikilink:hover,
+.sidenote a.wikilink:hover,
+.thmbox a.wikilink:hover {
+  color: #d3c4ff;
+  border-bottom-color: var(--wiki);
+}
+.post-body a.wikilink:hover::before,
+.sidenote a.wikilink:hover::before,
+.thmbox a.wikilink:hover::before { border-color: #d3c4ff; }
+
+/* 아직 쓰지 않은 글 — 흐린 색, 손잡이 없음 */
+.post-body .wikilink.nolink,
+.sidenote .wikilink.nolink {
+  color: color-mix(in srgb, var(--wiki) 55%, var(--faint));
+  border-bottom: 1px dotted color-mix(in srgb, var(--wiki) 30%, transparent);
+  cursor: help;
+}
+
+/* 링크 안에 수식이 들어갈 수 있습니다 — 색을 물려받게 */
 .wikilink .katex, .post-body a .katex { color: inherit; }
 .wikilink .katex .mord, .wikilink .katex .mbin,
 .wikilink .katex .mrel, .wikilink .katex .mopen, .wikilink .katex .mclose { color: inherit; }
-.post-body a:has(.katex), .wikilink:has(.katex) { text-decoration-thickness: 1px; }
+
+@media print {
+  .post-body a.wikilink { color: inherit; border-bottom: 1px solid #999; }
+  .post-body a.wikilink::before { display: none; }
+}
+}

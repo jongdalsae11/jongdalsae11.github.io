@@ -103,6 +103,7 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 
 **기본 팔레트** — bg `#0a0a14` · surface `#141423` · text `#e4e4ed` · line `#3a3a52`
 · cyan `#38bdf8`(상호작용) · purple `#a855f7`(보조) · orange `#f97316`(1% 강조)
+· wiki `#b79cff`(내 글 연결 — 분류 팔레트 밖의 색)
 **분류색 팔레트** — cyan · purple · emerald · amber · rose · indigo · teal · orange
 (등장 순서대로 자동 배정)
 
