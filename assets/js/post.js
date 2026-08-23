@@ -190,27 +190,39 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  /* ── 4. 이전 / 다음 글 (같은 분류 안에서) ────────── */
+  /* ── 4. 이전 / 다음 글 — 내가 정한 «흐름» 순서로 ──────
+     예전에는 같은 분류 안에서 날짜순으로 이었습니다. 그러면 논리적으로
+     먼저 읽어야 할 글이 나중에 쓰였다는 이유만으로 뒤에 놓였습니다.
+     지금은 글 지도에서 정한 흐름(content.js 의 flows)을 따릅니다.
+     흐름에 속하지 않은 글에는 아무것도 붙지 않습니다.              */
   if (me) {
-    var siblings = U.sortedPosts(me.category);
-    var idx = siblings.findIndex(function (p) { return p.file === me.file; });
-    var newer = idx > 0 ? siblings[idx - 1] : null;
-    var older = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : null;
+    var fl = U.flowsOf(me.file);
 
-    if (newer || older) {
-      function side(p, dir, cls) {
-        if (!p) return '<span class="pn-item pn-empty"></span>';
-        return '<a class="pn-item ' + cls + '" href="./' + p.file + '">' +
-          '<span class="pn-dir">' + dir + '</span>' +
-          '<span class="pn-title">' + U.esc(p.title) + '</span></a>';
-      }
+    function side(p, dir, cls) {
+      if (!p) return '<span class="pn-item pn-empty"></span>';
+      return '<a class="pn-item ' + cls + '" href="./' + p.file + '">' +
+        '<span class="pn-dir">' + dir + '</span>' +
+        '<span class="pn-title">' + U.esc(p.title) + '</span></a>';
+    }
+
+    fl.forEach(function (f) {
+      var i = f.posts.indexOf(me.file);
+      var prev = i > 0 ? U.postByFile(f.posts[i - 1]) : null;
+      var next = i >= 0 && i < f.posts.length - 1 ? U.postByFile(f.posts[i + 1]) : null;
+      if (!prev && !next) return;
+
       var nav = document.createElement('nav');
       nav.className = 'post-nav';
-      nav.setAttribute('aria-label', U.label(me.category) + ' 글 이동');
-      nav.innerHTML = side(older, '← 이전 글', 'pn-prev') + side(newer, '다음 글 →', 'pn-next');
+      nav.setAttribute('aria-label', (f.label || f.id) + ' 흐름에서 이동');
+      nav.innerHTML =
+        '<p class="pn-flow"><a href="' + (window.ROOT || '.') + '/graph.html">' +
+        U.esc(f.label || f.id) + '</a>' +
+        '<span class="pn-step">' + (i + 1) + ' / ' + f.posts.length + '</span></p>' +
+        side(prev, '← 이전 글', 'pn-prev') + side(next, '다음 글 →', 'pn-next');
+
       var article = document.querySelector('article');
       if (article) article.appendChild(nav);
-    }
+    });
   }
 
   /* ── 1. 여백주석 배치 ───────────────────────────── */

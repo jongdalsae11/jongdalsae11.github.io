@@ -497,3 +497,24 @@ a.pn-item:hover .pn-title { color: var(--cyan); }
   .post-body a.wikilink::before { display: none; }
 }
 }
+
+/* 흐름 이름표 — 이전/다음 위에 "어느 흐름의 몇 번째" 를 알려 줍니다 */
+.post-nav { position: relative; }
+.pn-flow {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 2px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+}
+.pn-flow a {
+  color: var(--orange);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(249, 115, 22, 0.35);
+}
+.pn-flow a:hover { border-bottom-color: var(--orange); }
+.pn-flow .pn-step { color: var(--faint); }
+.post-nav + .post-nav { margin-top: 1.6em; padding-top: 1.2em; }
