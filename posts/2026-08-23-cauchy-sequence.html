@@ -16,12 +16,12 @@
   <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-  <link rel="stylesheet" href="../assets/css/base.css?v=1e5ade7e">
-  <link rel="stylesheet" href="../assets/css/layout.css?v=6cc86a2c">
-  <link rel="stylesheet" href="../assets/css/components.css?v=a690207b">
-  <link rel="stylesheet" href="../assets/css/post.css?v=666680b4">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/post.css">
 </head>
-<body data-cat="math/analysis" data-crumb="글 / 수학 / 해석학 / <b>코시 열</b>">
+<body data-crumb="글 / 해석학 / <b>코시 열</b>">
   <main id="main">
     <div class="page page--post">
       <article>
@@ -40,7 +40,7 @@
 <h2>코시 열의 정의</h2>
 <div class="key"><p>수열 ($a_n$)이 <strong>코시 열(cauchy sequence)</strong>이라는 것은 다음과 동치이다.
 $$\forall \epsilon&gt;0,\ \exists N \in \mathbb{N}\ \text{s.t.}\ \forall m,n&gt;N \implies |a_n-a_m|&lt;\epsilon$$</p></div>
-<p>몇몇은 눈치챘겠지만, 이는 $\epsilon-N$논법<span class="sidenote"><a class="wikilink" href="2026-08-23-sequence-limit.html">수열의 극한</a></span>과 매우 유사한 구조를 가지고 있다. 유일한 차이점은 $L$이 $a_m$이 되었다는 점이 있다.</p>
+<p>몇몇은 눈치챘겠지만, 이는 <a class="wikilink" href="2026-08-23-sequence-limit.html">$\epsilon-N$논법</a>과 매우 유사한 구조를 가지고 있다. 유일한 차이점은 $L$이 $a_m$이 되었다는 점이 있다.</p>
 <h2>유도되는 정리</h2>
 <h3>임의의 수열 $(a_n)$이 $L$로 수렴하면, 그 수열은 코시 열이다.</h3>
 <div class="thmbox thmbox--proof"><p class="thm-head"><span class="thm-name">pf</span></p><p> $\epsilon-N$논법에 의해, $\forall \epsilon &gt; 0, \exists N \in \N ~s.t. ~ n &gt; N \Rarr |a_n-L| &lt; \frac{\epsilon}{2}$이다<span class="sidenote">$\frac{\epsilon}{2}$로 잡아도 되는 이유는 수렴의 정의가 임의의 양수 전체에 대해 성립하기 때문이다. $\epsilon &gt; 0$이면 $\frac{\epsilon}{2}$ 역시 양수이므로, 정의에 그대로 대입할 수 있다.</span></p>
@@ -62,7 +62,7 @@ $$\forall \epsilon&gt;0,\ \exists N \in \mathbb{N}\ \text{s.t.}\ \forall m,n&gt;
 $$\forall \epsilon>0,\ \exists N \in \mathbb{N}\ \text{s.t.}\ \forall m,n>N \implies |a_n-a_m|<\epsilon$$
 !!
 
-몇몇은 눈치챘겠지만, 이는 $\epsilon-N$논법^[[[수열의 극한]]]과 매우 유사한 구조를 가지고 있다. 유일한 차이점은 $L$이 $a_m$이 되었다는 점이 있다.
+몇몇은 눈치챘겠지만, 이는 [[수열의 극한|$\epsilon-N$논법]]과 매우 유사한 구조를 가지고 있다. 유일한 차이점은 $L$이 $a_m$이 되었다는 점이 있다.
 
 ## 유도되는 정리
 
@@ -84,13 +84,13 @@ $\forall m,n > N, |a_n-a_m| \leq |a_n-L|+|L-a_m| < \frac{\epsilon}{2}+\frac{\eps
   </main>
   <footer><p>&copy; 2026</p></footer>
   <script>window.ROOT='..'</script>
-  <script src="../assets/data/content.js?v=c74ef93c"></script>
-  <script src="../assets/js/util.js?v=2324452d"></script>
-  <script src="../assets/js/nav.js?v=9c55cec3"></script>
-  <script src="../assets/js/progress.js?v=fb65c704"></script>
+  <script src="../assets/data/content.js"></script>
+  <script src="../assets/js/util.js"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/progress.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="../assets/js/code.js?v=4f048cff"></script>
-  <script src="../assets/js/post.js?v=38fa18e9"></script>
+  <script src="../assets/js/code.js"></script>
+  <script src="../assets/js/post.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
     onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>

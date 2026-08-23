@@ -80,6 +80,7 @@ window.SITE = {
       category: 'math/analysis',
       date: '2026-08-23',
       tags: ['수열', '극한'],
+      links: ['2026-08-23-sequence-limit.html'],
       summary: '항들 사이의 거리를 이용한 수열의 수렴성' },
 
 
