@@ -1,9 +1,16 @@
 # ============================================================
 #  push 할 때마다 자동으로 실행됩니다.
 #   1. content.js 를 점검하고 (오류가 있으면 실패로 표시)
-#   2. sitemap.xml · feed.xml · 글 메타태그를 새로 만들어
-#   3. 바뀐 게 있으면 자동으로 커밋합니다.
-#  → 글을 추가할 때 sitemap 을 직접 고칠 필요가 없습니다.
+#   2. sitemap.xml · feed.xml · 글 메타태그 · 캐시 번호를 새로 만들어
+#   3. 그 결과를 그대로 GitHub Pages 에 올립니다.
+#
+#  예전에는 3번 대신 결과를 저장소에 되커밋했습니다. 그러면 push 할 때마다
+#  원격에 [auto] 커밋이 하나 더 생겨 내 로컬이 항상 한 칸 뒤처지고,
+#  다음 push 가 거부되었습니다. 이제 커밋을 만들지 않으므로
+#  git pull 없이 git push 만 하면 됩니다.
+#
+#  ※ 저장소 Settings → Pages → Source 를 "GitHub Actions" 로 바꿔야
+#     이 워크플로의 결과가 실제로 배포됩니다.
 # ============================================================
 name: build site
 
@@ -13,13 +20,18 @@ on:
   workflow_dispatch:      # 저장소 Actions 탭에서 수동 실행도 가능
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+# 배포는 한 번에 하나씩. 연달아 push 해도 마지막 것이 올라갑니다.
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    # 이 워크플로가 만든 커밋으로 다시 실행되는 것을 방지
-    if: "!contains(github.event.head_commit.message, '[auto]')"
     steps:
       - uses: actions/checkout@v4
 
@@ -30,14 +42,25 @@ jobs:
       - name: 사이트 점검 및 생성
         run: node tools/build.mjs
 
-      - name: 바뀐 내용 커밋
+      - name: 무엇이 갱신됐는지 기록만 남김
         run: |
-          git config user.name  "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if [ -n "$(git status --porcelain)" ]; then
-            git add -A
-            git commit -m "[auto] sitemap · feed · 메타태그 갱신"
-            git push
+            echo "빌드가 아래 파일을 갱신했습니다 (저장소에는 커밋하지 않습니다):"
+            git status --porcelain
           else
-            echo "변경 사항 없음"
+            echo "이미 최신 상태입니다."
           fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

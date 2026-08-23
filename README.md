@@ -33,9 +33,17 @@ push 하면 GitHub Actions 가 자동으로
 1. `content.js` 를 점검하고 (중복 인용 태그 · 없는 파일 · 날짜 형식 · 깨진 링크)
 2. `sitemap.xml` · `feed.xml`(RSS) 를 다시 만들고
 3. 각 글의 `<title>` · description · og 태그를 `content.js` 기준으로 맞추고
-4. 바뀐 게 있으면 `[auto]` 커밋으로 되돌려 놓습니다.
+4. **그 결과를 그대로 Pages 에 올립니다.**
 
-sitemap 이나 메타태그를 직접 손댈 일이 없습니다.
+4번이 중요합니다. 예전에는 결과를 저장소에 되커밋해서, push 할 때마다
+원격에 `[auto]` 커밋이 하나 더 생겼습니다. 그러면 내 로컬이 항상 한 칸
+뒤처져 다음 push 가 거부되고 `git pull` 을 먼저 해야 했습니다.
+지금은 커밋을 만들지 않으므로 **그냥 push 하면 됩니다.**
+
+> **한 번만 해 둘 설정** — 저장소 **Settings → Pages → Source** 를
+> `Deploy from a branch` 가 아니라 **`GitHub Actions`** 로 바꿔 주세요.
+> 이걸 해야 위 4번이 실제로 배포됩니다.
+
 로컬에서 미리 확인하려면 (Node 필요):
 
 ```
