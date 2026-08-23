@@ -167,7 +167,12 @@
         var t = n.tagName.toLowerCase(), inner = inline(n);
         if (n.classList.contains('sidenote')) s += '^[' + inner + ']';
         else if (n.classList.contains('cite')) s += '{{' + (n.getAttribute('data-ref') || inner) + '}}';
-        else if (n.classList.contains('wikilink')) s += '[[' + inner + ']]';
+        else if (n.classList.contains('wikilink')) {
+          /* 보이는 이름이 대상 글 제목과 다르면 [[대상|보이는 이름]] 으로 되돌립니다 */
+          var tgt = U.postByFile(n.getAttribute('href') || '');
+          var name = tgt ? tgt.title : (n.getAttribute('data-target') || inner);
+          s += (tgt && inner !== name) ? '[[' + name + '|' + inner + ']]' : '[[' + name + ']]';
+        }
         else if (t === 'strong' || t === 'b') s += '**' + inner + '**';
         else if (t === 'em' || t === 'i') s += '*' + inner + '*';
         else if (t === 'code') s += '`' + inner + '`';

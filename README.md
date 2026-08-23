@@ -92,7 +92,8 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 | 하위 분류 만들기 | `category: 'algo/graph'` — 슬래시로 계층, 깊이 제한 없음 |
 | 분류 한글 이름 | `content.js` 의 `labels` (하위는 `'algo/graph'` 전체 경로로) |
 | 분류 강조색 바꾸기 | `content.js` 의 `colors: { math: '#34d399' }` |
-| 글끼리 연결(백링크) | `content.js` 의 `links: ['파일명.html']` — 양방향 자동 |
+| 글끼리 연결(백링크) | 본문에 `[[글 제목]]` — `links` 는 저장할 때 자동 수집 |
+| 링크 이름 바꾸기 | `[[글 제목\|보이는 이름]]` — 수식도 넣을 수 있음 |
 | 이름 바꾸기 | `assets/js/nav.js` 의 `SITE_NAME` |
 | 전체 색 바꾸기 | `assets/css/base.css` 의 `:root` |
 | 무언가 작성하기 | 사이드바 **+ 새로 쓰기** → 모드 선택 → 등록 코드 복사 |

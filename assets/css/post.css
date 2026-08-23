@@ -426,3 +426,9 @@ a.pn-item:hover .pn-title { color: var(--cyan); }
 @media print {
   .thmbox { break-inside: avoid; background: none; }
 }
+
+/* 글 연결·링크 안에 수식이 들어갈 수 있습니다 — 색과 밑줄을 물려받게 */
+.wikilink .katex, .post-body a .katex { color: inherit; }
+.wikilink .katex .mord, .wikilink .katex .mbin,
+.wikilink .katex .mrel, .wikilink .katex .mopen, .wikilink .katex .mclose { color: inherit; }
+.post-body a:has(.katex), .wikilink:has(.katex) { text-decoration-thickness: 1px; }

@@ -55,11 +55,21 @@
     s = s.replace(/\{\{([A-Za-z0-9_-]+)\}\}/g, function (_, id) {
       return '<span class="cite" data-ref="' + id + '"></span>';
     });
-    /* 글 연결 [[제목]] */
-    return s.replace(/\[\[([^\]]+)\]\]/g, function (_, t) {
-      var hit = (S.posts || []).filter(function (p) { return p.title === t; })[0];
-      var href = hit ? hit.file : slug(t) + '.html';
-      return '<a class="wikilink" href="' + href + '">' + t + '</a>';
+    /* 글 연결 [[대상]] 또는 [[대상|보이는 이름]]
+       대상은 글 제목이나 파일명. 보이는 이름은 문장에 자연스럽게 녹이려고
+       쓰며, 수식도 들어갈 수 있습니다. (수식은 이미 가려져 있으므로 안전) */
+    return s.replace(/\[\[([^\]|]+)(?:\|([^\]]*))?\]\]/g, function (_, target, alias) {
+      target = target.trim();
+      var hit = (S.posts || []).filter(function (p) {
+        return p.title === target || p.file === target;
+      })[0];
+      var show = (alias != null && alias.trim()) ? alias.trim() : target;
+      if (!hit) {
+        /* 대상을 data 로 남겨야 나중에 원고로 되돌릴 때 잃지 않습니다 */
+        return '<span class="wikilink nolink" data-target="' + target +
+               '" title="아직 쓰지 않은 글입니다">' + show + '</span>';
+      }
+      return '<a class="wikilink" href="' + hit.file + '">' + show + '</a>';
     });
   }
   function inline(s) {
@@ -473,6 +483,23 @@
     syncDate();
   }());
 
+  /* 본문에 쓴 [[글 연결]] 을 모아 links 로 만듭니다.
+     이걸 넣어야 글 아래 «인용한 글 / 이 글을 인용한 글» 과
+     글 지도의 화살표가 생깁니다. 손으로 적을 필요가 없습니다. */
+  function bodyLinks() {
+    var out = [], re = /\[\[([^\]|]+)(?:\|[^\]]*)?\]\]/g, m;
+    while ((m = re.exec(ed.value))) {
+      var t = m[1].trim();
+      var hit = (S.posts || []).filter(function (p) {
+        return p.title === t || p.file === t;
+      })[0];
+      if (hit && out.indexOf(hit.file) < 0 && hit.file !== fileBase() + '.html') {
+        out.push(hit.file);
+      }
+    }
+    return out;
+  }
+
   /* ── 등록 코드 생성 ──────────────────────────────── */
   var LAST_REG = null;
 
@@ -487,6 +514,7 @@
         "      date: '" + F.date.value + "',\n" +
         "      tags: " + arr(tagArr()) + ",\n" +
         (F.pinned.checked ? "      pinned: true,\n" : "") +
+        "      links: " + arr(bodyLinks()) + ",\n" +
         "      summary: " + q(F.summary.value || '') + " },";
       where = "content.js 의 posts: [ 아래에 붙여 넣기";
       steps = '<li>내려받은 파일을 <code>jongdal/posts/</code> 폴더에 넣습니다.</li>' +
@@ -645,14 +673,17 @@
     picker.style.top = (tb.offsetTop + tb.offsetHeight + 8) + 'px';
   }
 
+  var selBefore = { start: 0, end: 0 };
   function openPicker(mode) {
     if (pmode === mode && !picker.hidden) { picker.hidden = true; pmode = null; return; }
     pmode = mode;
+    /* 목록을 누르면 편집칸 선택이 풀리므로 미리 적어 둡니다 */
+    selBefore = { start: ed.selectionStart, end: ed.selectionEnd };
     pdata = mode === 'wiki'
       ? (S.posts || []).map(function (p) {
           return { main: p.title, sub: (S.labels[p.category] || p.category) + ' · ' + p.date,
                    find: (p.tags || []).join(' ') + ' ' + p.category,
-                   ins: '[[' + p.title + ']]' };
+                   file: p.file, title: p.title };
         })
       : (S.library || []).map(function (r) {
           return { main: r.title, sub: r.ref + ' · ' + (r.author || ''),
@@ -696,7 +727,16 @@
   plist.addEventListener('click', function (e) {
     var li = e.target.closest('li[data-i]');
     if (!li) return;
-    insert(pdata[+li.getAttribute('data-i')].ins);
+    var d = pdata[+li.getAttribute('data-i')];
+    if (d.ins) { insert(d.ins); closePicker(); return; }
+    /* 글 연결 — 글자를 고르고 눌렀다면 그것을 보이는 이름으로 씁니다.
+       예) "ε-N 논법" 을 고르고 «수열의 극한» 을 누르면
+           [[수열의 극한|ε-N 논법]] 이 되어, 문장은 그대로 두고
+           누르면 수열의 극한 글로 갑니다.                         */
+    var sel = ed.value.slice(selBefore.start, selBefore.end).trim();
+    ed.setSelectionRange(selBefore.start, selBefore.end);
+    insert(sel && sel !== d.title ? '[[' + d.title + '|' + sel + ']]'
+                                  : '[[' + d.title + ']]');
     closePicker();
   });
   $('#btn-wiki').addEventListener('click', function () { openPicker('wiki'); });

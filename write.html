@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="./assets/css/base.css?v=1e5ade7e">
   <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="./assets/css/components.css?v=a690207b">
-  <link rel="stylesheet" href="./assets/css/post.css?v=893c24c9">
+  <link rel="stylesheet" href="./assets/css/post.css?v=666680b4">
   <link rel="stylesheet" href="./assets/css/write.css?v=042e607a">
 </head>
 <body class="page-write" data-crumb="~ / <b>새로 쓰기</b>">
@@ -166,7 +166,7 @@
               </div>
               <div class="w-tgroup">
                 <button data-ins="sn">여백주석</button>
-                <button id="btn-wiki">글 연결 ▾</button>
+                <button id="btn-wiki" title="글자를 고르고 누르면 그 글자가 링크가 됩니다">글 연결 ▾</button>
                 <button id="btn-cite">자료 인용 ▾</button>
                 <button id="btn-img">이미지</button>
                 <button data-ins="link">링크</button>
@@ -293,6 +293,9 @@
                 <tr><td><code>$$ … $$</code></td><td>가운데 수식</td></tr>
                 <tr><td><code>^[내용]</code></td><td>여백주석</td></tr>
                 <tr><td><code>[[글 제목]]</code></td><td>내 글 연결</td></tr>
+                <tr><td><code>[[글 제목|보이는 이름]]</code></td>
+                    <td>문장에 맞춰 다른 이름으로 — 수식도 됩니다<br>
+                        <code>[[수열의 극한|$\epsilon$-N 논법]]</code></td></tr>
                 <tr><td><code>{{Ref-A01}}</code></td><td>자료 인용</td></tr>
                 <tr><td><code>!!결론!!</code></td><td>결론 강조 상자</td></tr>
               </table>
@@ -314,7 +317,7 @@
   <footer><p>&copy; 2026</p></footer>
 
   <script>window.ROOT='.'</script>
-  <script src="./assets/data/content.js?v=dd91d137"></script>
+  <script src="./assets/data/content.js?v=c74ef93c"></script>
   <script src="./assets/js/util.js?v=2324452d"></script>
   <script src="./assets/js/nav.js?v=9c55cec3"></script>
   <!-- defer 라서 write.js 보다 늦게 도착합니다. 도착하는 즉시 미리보기를 다시 그리게
@@ -325,9 +328,9 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
     onload="window.WRITE && window.WRITE.refresh()"
     onerror="window.WRITE && window.WRITE.mathFailed()"></script>
-  <script src="./assets/js/write.js?v=692cda56"></script>
+  <script src="./assets/js/write.js?v=7d3aa871"></script>
   <script src="./assets/js/editor.js?v=f05671ec"></script>
-  <script src="./assets/js/compose.js?v=d0e819fa"></script>
+  <script src="./assets/js/compose.js?v=9bd59cc0"></script>
   <script src="./assets/js/sync.js?v=5eaf6975"></script>
   <script src="./assets/js/save.js?v=74e4429c"></script>
 </body>

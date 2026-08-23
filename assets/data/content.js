@@ -69,6 +69,9 @@ window.SITE = {
        { id: 'analysis', label: '해석학 기초',
          posts: ['먼저.html', '다음.html', '마지막.html'] }          */
   flows: [
+    { id: 'analysis-basics',
+      label: '해석학의 기초',
+      posts: ['2026-08-23-sequence-limit.html', '2026-08-23-cauchy-sequence.html'] }
   ],
 
   posts: [
