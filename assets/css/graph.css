@@ -1,0 +1,243 @@
+/* ============================================================
+   graph.css — 글 지도
+   ============================================================ */
+
+.page--graph { max-width: none; }
+.lede-flow { color: var(--orange); font-weight: 600; }
+
+/* ── 위쪽 막대 ────────────────────────────────────── */
+.g-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.g-stats {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--soft);
+}
+.g-hint {
+  font-size: 0.7rem;
+  color: var(--line);
+}
+.g-btn {
+  margin-left: auto;
+  font: inherit;
+  font-size: 0.74rem;
+  color: var(--soft);
+  background: var(--surface);
+  border: 1px solid var(--line-soft);
+  border-radius: 7px;
+  padding: 5px 13px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.g-btn:hover { color: var(--cyan); border-color: rgba(56, 189, 248, 0.45); }
+.g-btn[aria-pressed="true"] {
+  color: var(--orange);
+  border-color: rgba(249, 115, 22, 0.5);
+  background: rgba(249, 115, 22, 0.1);
+}
+.g-btn--go {
+  margin-left: 0;
+  color: var(--cyan);
+  border-color: rgba(56, 189, 248, 0.5);
+  background: rgba(56, 189, 248, 0.12);
+  font-weight: 600;
+}
+.g-btn--ghost { margin-left: 0; }
+.g-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* ── 화면 ─────────────────────────────────────────── */
+.g-wrap { display: flex; gap: 16px; align-items: stretch; }
+
+.g-canvas {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: max(calc(100dvh - var(--topbar-h) - 210px), 520px);
+  overflow: hidden;
+  border: 1px solid var(--line-soft);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 1px 1px, var(--line-soft) 1px, transparent 0) 0 0 / 28px 28px,
+    var(--surface);
+  cursor: grab;
+  position: relative;
+}
+.g-canvas.dragging { cursor: grabbing; }
+.g-canvas svg {
+  transform-origin: 0 0;
+  overflow: visible;
+  display: block;
+}
+
+/* ── 레인 ─────────────────────────────────────────── */
+.lane-rule { stroke: var(--line-soft); stroke-width: 1; stroke-dasharray: 3 7; }
+.lane-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  fill: var(--orange);
+  letter-spacing: 0.06em;
+}
+.lane-label--dim { fill: var(--faint); }
+
+/* ── 화살표 ───────────────────────────────────────── */
+.ge {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.2;
+  transition: stroke 0.15s, opacity 0.15s;
+}
+.ge--flow {
+  stroke: var(--orange);
+  stroke-width: 2.6;
+  opacity: 0.85;
+}
+.ah { fill: var(--line); }
+.ah--flow { fill: var(--orange); }
+
+/* 마우스를 올린 글과 이어진 것만 밝게 */
+.focusing .ge { opacity: 0.12; }
+.focusing .ge.on { opacity: 1; stroke: var(--cyan); }
+.focusing .ge--flow.on { stroke: var(--orange); }
+.focusing .gn { opacity: 0.3; }
+.focusing .gn.on { opacity: 1; }
+
+/* ── 노드 ─────────────────────────────────────────── */
+.gn { cursor: pointer; transition: opacity 0.15s; }
+.gn-box {
+  fill: var(--bg);
+  stroke: var(--cat, var(--cyan));
+  stroke-width: 1.2;
+}
+.gn--flow .gn-box { stroke-width: 1.8; }
+.gn:hover .gn-box { fill: color-mix(in srgb, var(--cat, var(--cyan)) 16%, var(--bg)); }
+.gn-t {
+  text-anchor: middle;
+  font-size: 12px;
+  fill: var(--text);
+}
+.gn-dot {
+  fill: var(--bg);
+  stroke: var(--cat, var(--cyan));
+  stroke-width: 1.6;
+}
+.gn:hover .gn-dot { fill: var(--cat, var(--cyan)); }
+.gn-s {
+  text-anchor: middle;
+  font-size: 10px;
+  fill: var(--faint);
+}
+.gn:hover .gn-s { fill: var(--text); }
+
+/* 편집 중 고른 순서 */
+.gn-no { fill: var(--orange); }
+.gn-non {
+  text-anchor: middle;
+  font-size: 11px;
+  font-weight: 700;
+  fill: #0a0a14;
+}
+.gn--picked .gn-box, .gn--picked .gn-dot { stroke: var(--orange); stroke-width: 2.2; }
+body.picking .g-canvas { cursor: crosshair; }
+
+/* ── 흐름 편집 패널 ───────────────────────────────── */
+.flow-edit {
+  flex: 0 0 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  border-radius: 12px;
+  background: var(--surface);
+  padding: 14px 16px;
+  max-height: max(calc(100dvh - var(--topbar-h) - 210px), 520px);
+  overflow-y: auto;
+}
+.flow-edit[hidden] { display: none; }
+.flow-edit h2 {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--orange);
+}
+.fl-guide { margin: 0; font-size: 0.72rem; color: var(--faint); line-height: 1.6; }
+.fl-field { display: flex; flex-direction: column; gap: 4px; }
+.fl-field > span { font-size: 0.68rem; color: var(--faint); }
+.fl-field input, .fl-field select {
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--line-soft);
+  border-radius: 7px;
+  padding: 5px 9px;
+  outline: none;
+}
+.fl-field input:focus, .fl-field select:focus { border-color: var(--orange); }
+
+.fl-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.fl-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.76rem;
+  color: var(--soft);
+  background: var(--bg);
+  border: 1px solid var(--line-soft);
+  border-radius: 6px;
+  padding: 5px 8px;
+}
+.fl-list li b {
+  flex: 0 0 auto;
+  width: 17px; height: 17px;
+  display: grid; place-items: center;
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  color: #0a0a14;
+  background: var(--orange);
+  border-radius: 50%;
+}
+.fl-list li button {
+  margin-left: auto;
+  font: inherit;
+  color: var(--line);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.fl-list li button:hover { color: var(--orange); }
+.fl-list .fl-empty {
+  display: block;
+  color: var(--line);
+  background: none;
+  border: 1px dashed var(--line-soft);
+  text-align: center;
+  padding: 14px 8px;
+  line-height: 1.5;
+}
+
+.flow-state { margin: 0; font-size: 0.7rem; color: var(--faint); min-height: 1em; }
+.flow-state--ok { color: var(--emerald, #34d399); }
+.flow-state--bad { color: var(--orange); }
+.fl-actions { display: flex; gap: 8px; }
+.fl-actions .g-btn { flex: 1 1 auto; text-align: center; }
+.fl-note { margin: 0; font-size: 0.66rem; color: var(--line); line-height: 1.6; }
+.fl-note code { font-family: var(--mono); color: var(--faint); }
+
+/* ── 좁은 화면 ────────────────────────────────────── */
+@media (max-width: 920px) {
+  .g-wrap { flex-direction: column; }
+  .flow-edit { flex: 0 0 auto; max-height: none; }
+  .g-canvas { height: 60vh; }
+  .g-hint { display: none; }
+}

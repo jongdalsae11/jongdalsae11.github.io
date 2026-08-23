@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="글 사이의 인용 관계를 한 화면에 펼친 지도.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>글 지도 — 이름</title>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="글 지도 — 이름">
+  <meta property="og:description" content="글 사이의 인용 관계를 한 화면에 펼친 지도.">
+  <meta property="og:url" content="https://jongdalsae11.github.io/graph.html">
+  <meta property="og:image" content="https://jongdalsae11.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
+  <link rel="icon" href="./assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./assets/css/base.css?v=1e5ade7e">
+  <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
+  <link rel="stylesheet" href="./assets/css/components.css?v=a690207b">
+  <link rel="stylesheet" href="./assets/css/graph.css?v=7f44fddf">
+</head>
+<body data-crumb="~ / <b>글 지도</b>">
+  <main id="main">
+    <div class="page page--graph">
+      <div class="page-head">
+        <p class="eyebrow">MAP</p>
+        <h1>글 지도</h1>
+        <p class="lede">
+          글이 어떤 글을 인용하는지 한 화면에 펼친 지도입니다.
+          왼쪽일수록 먼저 읽어야 할 글이고, <b class="lede-flow">주황 선</b>은 제가 정한 읽는 순서입니다.
+        </p>
+      </div>
+
+      <div class="g-bar">
+        <span class="g-stats" id="g-stats"></span>
+        <span class="g-hint">끌어서 이동 · 휠로 확대 · 글을 누르면 이동</span>
+        <button class="g-btn" id="btn-flow" aria-pressed="false">흐름 편집</button>
+      </div>
+
+      <div class="g-wrap">
+        <div class="g-canvas" id="graph"></div>
+
+        <aside class="flow-edit" id="flow-edit" hidden>
+          <h2>흐름 만들기</h2>
+          <p class="fl-guide">그래프에서 글을 <b>읽는 순서대로</b> 누르세요.
+            다시 누르면 빠집니다.</p>
+
+          <label class="fl-field"><span>고칠 흐름</span>
+            <select id="flow-pick"></select></label>
+          <label class="fl-field"><span>이름</span>
+            <input type="text" id="flow-name" placeholder="예: 해석학 기초"></label>
+
+          <ol class="fl-list" id="flow-list"></ol>
+
+          <p class="flow-state" id="flow-state"></p>
+          <div class="fl-actions">
+            <button class="g-btn g-btn--ghost" id="btn-flow-del">흐름 지우기</button>
+            <button class="g-btn g-btn--go" id="btn-flow-save">저장</button>
+          </div>
+          <p class="fl-note">저장하면 <code>content.js</code> 의 <code>flows</code> 에 바로 써집니다.
+            (크롬·엣지에서 폴더 연결 필요)</p>
+        </aside>
+      </div>
+    </div>
+  </main>
+  <footer><p>&copy; 2026</p></footer>
+  <script>window.ROOT='.'</script>
+  <script src="./assets/data/content.js?v=dd91d137"></script>
+  <script src="./assets/js/util.js?v=2324452d"></script>
+  <script src="./assets/js/nav.js?v=9c55cec3"></script>
+  <script src="./assets/js/fs.js?v=29c4cc2f"></script>
+  <script src="./assets/js/graph.js?v=361ac557"></script>
+  <script src="./assets/js/progress.js?v=fb65c704"></script>
+</body>
+</html>

@@ -59,6 +59,7 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 ├── about.html      이력
 ├── research.html   연구·프로젝트
 ├── posts.html      글 목록 — #math · #algo · #tag=태그 로 필터
+├── graph.html      글 지도 — 인용 관계 유향그래프 · 흐름 편집
 ├── archive.html    문제 아카이브 (난이도 필터)
 ├── library.html    자료정리집 — #math · #Ref-A02 로 특정 자료 강조
 ├── contact.html    연락처
@@ -74,6 +75,7 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
     ├── js/   util · nav · lists · heatmap · progress · code · post
     │         write(작성) · editor(단축키·슬래시) · compose(태그추천·수정)
     │         sync(양방향 이동) · save(폴더 연결 저장)
+    │         fs(폴더 접근 공용) · graph(글 지도)
     ├── img/  글에 쓰는 이미지     files/  자료 PDF
     └── og.png  링크 공유 썸네일
 ```
@@ -96,6 +98,7 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 | 무언가 작성하기 | 사이드바 **+ 새로 쓰기** → 모드 선택 → 등록 코드 복사 |
 | 이미 올린 것 고치기 | 글 아래 **고치기** 링크, 또는 작성 도구의 **수정** 버튼 |
 | 글 저장 | **폴더 연결** 한 번 → 이후 **Ctrl+S** (파일 생성 + 등록 자동) |
+| 읽는 순서 정하기 | **글 지도** → 흐름 편집 → 노드를 순서대로 클릭 → 저장 |
 
 **기본 팔레트** — bg `#0a0a14` · surface `#141423` · text `#e4e4ed` · line `#3a3a52`
 · cyan `#38bdf8`(상호작용) · purple `#a855f7`(보조) · orange `#f97316`(1% 강조)
@@ -126,6 +129,10 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 **작성 도구** — 슬래시 메뉴(`/`) · 단축키(`Ctrl+B/I/K/1/2/3/E`) · 목록 자동 이어쓰기 ·
 드래그하면 서식바 · 자주 쓴 태그 추천(빈도순) · 이미 올린 것 불러와 **수정** ·
 편집/미리보기 드래그 분할 · 트리 접기(`Ctrl+\`) · 전체화면(`F9`)
+
+**글 지도** — 인용 관계를 위상 깊이로 배치(왼쪽일수록 먼저 읽을 글) ·
+흐름은 주황 레인으로 화면을 가로지름 · 흐름 밖 글은 이어진 곳 옆에 작은 점 ·
+끌어서 이동 · 휠로 확대 · 노드를 순서대로 눌러 흐름을 만들고 `content.js` 에 저장
 
 **기타** — 인쇄 스타일 · 키보드 접근성 · `prefers-reduced-motion` 존중 ·
 RSS · OG 썸네일 · sitemap / robots

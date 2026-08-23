@@ -26,6 +26,7 @@ var SITE_SUB  = 'archive';
     { label: '연구·프로젝트', href: 'research.html' },
     { key: 'posts',   label: '글',        base: 'posts.html',
       tree: window.U.catTree(S.posts), total: (S.posts || []).length },
+    { label: '글 지도',       href: 'graph.html' },
     { label: '문제 아카이브', href: 'archive.html' },
     { key: 'library', label: '자료정리집', base: 'library.html',
       tree: window.U.catTree(S.library), total: (S.library || []).length },

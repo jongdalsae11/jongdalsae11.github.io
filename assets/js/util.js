@@ -301,6 +301,68 @@ window.U = (function () {
     if (bodyCat) document.body.style.setProperty('--cat', catColor(bodyCat));
   }
 
+  /* ══════════════════════════════════════════════════
+     인용 그래프
+     글은 언제나 "이전 글"만 인용하므로 순환이 생길 수 없습니다.
+     즉 항상 DAG 이고, 위상 정렬과 층 배치가 반드시 성공합니다.
+     ══════════════════════════════════════════════════ */
+
+  /* links: ['a.html'] 은 "이 글이 a 를 인용한다" 는 뜻입니다.
+     읽는 순서로 보면 a 가 먼저이므로 화살표는 a → 나 로 그립니다. */
+  function graph() {
+    var posts = (S().posts || []).slice();
+    var byFile = {};
+    posts.forEach(function (p) { byFile[p.file] = p; });
+
+    var edges = [];
+    posts.forEach(function (p) {
+      (p.links || []).forEach(function (l) {
+        if (byFile[l]) edges.push({ from: l, to: p.file });
+      });
+    });
+    return { posts: posts, byFile: byFile, edges: edges };
+  }
+
+  /* 층(depth) = 그 글에 이르는 가장 긴 인용 사슬의 길이.
+     가장 긴 경로를 쓰면 "먼저 읽어야 할 글" 이 반드시 왼쪽에 옵니다. */
+  function layers(g) {
+    g = g || graph();
+    var depth = {}, inFrom = {};
+    g.posts.forEach(function (p) { depth[p.file] = 0; inFrom[p.file] = []; });
+    g.edges.forEach(function (e) { inFrom[e.to].push(e.from); });
+
+    /* 순환이 없으므로 반복이 반드시 끝납니다 (안전을 위해 상한도 둡니다) */
+    var changed = true, guard = 0;
+    while (changed && guard++ < g.posts.length + 2) {
+      changed = false;
+      g.posts.forEach(function (p) {
+        var d = 0;
+        inFrom[p.file].forEach(function (f) { d = Math.max(d, depth[f] + 1); });
+        if (d !== depth[p.file]) { depth[p.file] = d; changed = true; }
+      });
+    }
+    return depth;
+  }
+
+  /* 흐름 — content.js 의 flows. 순서 있는 글 목록이며 분류를 가로질러도 됩니다. */
+  function flows() {
+    return (S().flows || []).filter(function (f) {
+      return f && f.id && (f.posts || []).length;
+    });
+  }
+  /* 이 글이 속한 흐름들 */
+  function flowsOf(file) {
+    return flows().filter(function (f) { return (f.posts || []).indexOf(file) >= 0; });
+  }
+  /* 흐름 위의 이웃 (앞 글 · 뒤 글) */
+  function flowNeighbors(file, flowId) {
+    var f = flows().filter(function (x) { return x.id === flowId; })[0] || flowsOf(file)[0];
+    if (!f) return null;
+    var i = f.posts.indexOf(file);
+    if (i < 0) return null;
+    return { flow: f, prev: f.posts[i - 1] || null, next: f.posts[i + 1] || null, index: i };
+  }
+
   /* ── content.js 실수 검사 (콘솔에만 표시) ─────────── */
   function validate() {
     var s = S(), warn = [];
@@ -349,6 +411,8 @@ window.U = (function () {
     catColor: catColor, catVar: catVar, applyTheme: applyTheme,
     catTop: catTop, catDepth: catDepth, catChain: catChain,
     catMatches: catMatches, catPath: catPath, catTree: catTree,
+    graph: graph, layers: layers,
+    flows: flows, flowsOf: flowsOf, flowNeighbors: flowNeighbors,
     validate: validate
   };
 })();
