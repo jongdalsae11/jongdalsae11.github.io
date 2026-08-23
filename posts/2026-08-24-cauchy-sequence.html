@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="항들 사이의 거리를 이용한 수열의 수렴성">
+  <title>코시 열 — 이름</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="코시 열">
+  <meta property="og:description" content="항들 사이의 거리를 이용한 수열의 수렴성">
+  <meta property="og:image" content="https://jongdalsae11.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/post.css">
+</head>
+<body data-crumb="글 / 해석학 / <b>코시 열</b>">
+  <main id="main">
+    <div class="page page--post">
+      <article>
+        <div class="post-head">
+          <h1>코시 열</h1>
+          <div class="post-meta">
+            <span class="post-date">2026.08.24</span>
+            <span class="tag">수열</span>
+            <span class="tag">극한</span>
+          </div>
+        </div>
+        <div class="post-body">
+<p>극한값 $L$을 모르는 채로 수렴성을 판정하려면, 수렴한다는 것을 어떤 값과 가까워진다는 것이라고 생각할 수 없다. </p>
+<p> 수열이 수렴한다면, 뒤로 갈수록 항들은 $L$ 근처로 모여들 것이고, 그렇다면 항들끼리도 서로 가까워질 수밖에 없다.</p>
+<p>이 관찰을 뒤집어보자. $L$로 수렴하기 때문에 항들이 서로 가까워지는 것이 아니라, 항들이 서로 가까워진다는 조건 자체를 수렴성의 판정 기준으로 삼을 수는 없을까?</p>
+<h2>코시 열의 정의</h2>
+<div class="key"><p>수열 ($a_n$)이 <strong>코시 열(cauchy sequence)</strong>이라는 것은 다음과 동치이다.
+$$\forall \epsilon&gt;0,\ \exists N \in \mathbb{N}\ \text{s.t.}\ \forall m,n&gt;N \implies |a_n-a_m|&lt;\epsilon$$</p></div>
+<p>몇몇은 눈치챘겠지만, 이는 $\epsilon-N$논법과 매우 유사한 구조를 가지고 있다. 유일한 차이점은 $L$이 $a_m$이 되었다는 점이 있다.</p>
+<h2>유도되는 정리</h2>
+<h3>임의의 수열 $(a_n)$이 $L$로 수렴하면, 그 수열은 코시 열이다.</h3>
+<div class="thmbox thmbox--proof"><p class="thm-head"><span class="thm-name">pf</span></p><p> $\epsilon-N$논법에 의해, $\forall \epsilon &gt; 0, \exists N \in \N ~s.t. ~ n &gt; N \Rarr |a_n-L| &lt; \frac{\epsilon}{2}$이다<span class="sidenote">$\frac{\epsilon}{2}$로 잡아도 되는 이유는 수렴의 정의가 임의의 양수 전체에 대해 성립하기 때문이다. $\epsilon &gt; 0$이면 $\frac{\epsilon}{2}$ 역시 양수이므로, 정의에 그대로 대입할 수 있다.</span></p>
+<p>$\forall m,n &gt; N, |a_n-a_m| \leq |a_n-L|+|L-a_m| &lt; \frac{\epsilon}{2}+\frac{\epsilon}{2} = \epsilon$<span class="sidenote">삼각부등식을 사용한다.</span></p>
+<p>코시 열의 정의를 만족하므로 임의의 수렴하는 수열은 코시 열이다.</p></div>
+<p>하지만 그 역, 즉 코시 열이 수렴한다는 것은 자명하게 성립하지 않는다. 이것이 성립하려면 그 공간이 완비해야 하는데, 다음 글에서는 $\R$이 실제로 이 조건을 만족한다는 것, 즉 코시 열이라면 반드시 수렴한다는 것을 증명한다.</p>
+        </div>
+        <section class="backlinks"></section>
+        <script type="text/markdown" class="post-src">
+극한값 $L$을 모르는 채로 수렴성을 판정하려면, 수렴한다는 것을 어떤 값과 가까워진다는 것이라고 생각할 수 없다. 
+
+ 수열이 수렴한다면, 뒤로 갈수록 항들은 $L$ 근처로 모여들 것이고, 그렇다면 항들끼리도 서로 가까워질 수밖에 없다.
+
+이 관찰을 뒤집어보자. $L$로 수렴하기 때문에 항들이 서로 가까워지는 것이 아니라, 항들이 서로 가까워진다는 조건 자체를 수렴성의 판정 기준으로 삼을 수는 없을까?
+
+## 코시 열의 정의
+!!
+수열 ($a_n$)이 **코시 열(cauchy sequence)**이라는 것은 다음과 동치이다.
+$$\forall \epsilon>0,\ \exists N \in \mathbb{N}\ \text{s.t.}\ \forall m,n>N \implies |a_n-a_m|<\epsilon$$
+!!
+
+몇몇은 눈치챘겠지만, 이는 $\epsilon-N$논법과 매우 유사한 구조를 가지고 있다. 유일한 차이점은 $L$이 $a_m$이 되었다는 점이 있다.
+
+## 유도되는 정리
+
+### 임의의 수열 $(a_n)$이 $L$로 수렴하면, 그 수열은 코시 열이다.
+:::proof  
+ $\epsilon-N$논법에 의해, $\forall \epsilon > 0, \exists N \in \N ~s.t. ~ n > N \Rarr |a_n-L| < \frac{\epsilon}{2}$이다^[$\frac{\epsilon}{2}$로 잡아도 되는 이유는 수렴의 정의가 임의의 양수 전체에 대해 성립하기 때문이다. $\epsilon > 0$이면 $\frac{\epsilon}{2}$ 역시 양수이므로, 정의에 그대로 대입할 수 있다.]
+
+$\forall m,n > N, |a_n-a_m| \leq |a_n-L|+|L-a_m| < \frac{\epsilon}{2}+\frac{\epsilon}{2} = \epsilon$^[삼각부등식을 사용한다.]
+
+코시 열의 정의를 만족하므로 임의의 수렴하는 수열은 코시 열이다.
+:::
+
+
+하지만 그 역, 즉 코시 열이 수렴한다는 것은 자명하게 성립하지 않는다. 이것이 성립하려면 그 공간이 완비해야 하는데, 다음 글에서는 $\R$이 실제로 이 조건을 만족한다는 것, 즉 코시 열이라면 반드시 수렴한다는 것을 증명한다.
+        </script>
+      </article>
+      <div class="margin-col"></div>
+    </div>
+  </main>
+  <footer><p>&copy; 2026</p></footer>
+  <script>window.ROOT='..'</script>
+  <script src="../assets/data/content.js"></script>
+  <script src="../assets/js/util.js"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="../assets/js/code.js"></script>
+  <script src="../assets/js/post.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
+</body>
+</html>
