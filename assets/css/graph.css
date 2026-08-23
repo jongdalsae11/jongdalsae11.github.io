@@ -66,81 +66,96 @@
   cursor: grab;
   position: relative;
 }
+.g-canvas.panning { cursor: grabbing; }
 .g-canvas.dragging { cursor: grabbing; }
+/* SVG 는 칸을 가득 채우고, 안쪽 <g> 를 옮겨 이동·확대합니다.
+   (예전에는 SVG 자체에 CSS transform 을 걸어 좌표 계산이 어긋났습니다) */
 .g-canvas svg {
-  transform-origin: 0 0;
-  overflow: visible;
   display: block;
+  width: 100%;
+  height: 100%;
 }
+.g-root { transition: none; }
 
-/* ── 레인 ─────────────────────────────────────────── */
-.lane-rule { stroke: var(--line-soft); stroke-width: 1; stroke-dasharray: 3 7; }
+/* ── 레인 ─────────────────────────────────────────
+   이름표는 왼쪽 거터에만 둡니다. 예전에는 레인 바로 위에 있어서
+   첫 번째 노드와 글자가 겹쳐 읽을 수 없었습니다.                */
+.lane-rule { stroke: var(--line-soft); stroke-width: 1; stroke-dasharray: 2 8; }
 .lane-label {
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13px;
   fill: var(--orange);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
+  dominant-baseline: middle;
 }
 .lane-label--dim { fill: var(--faint); }
 
-/* ── 화살표 ───────────────────────────────────────── */
+/* ── 화살표 ───────────────────────────────────────
+   보이는 선은 가늘게, 잡는 영역은 두껍고 투명하게 따로 깔아
+   가는 선도 정확히 집을 수 있게 합니다.                        */
+.ge-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 16;
+  cursor: pointer;
+}
 .ge {
   fill: none;
   stroke: var(--line);
-  stroke-width: 1.2;
-  transition: stroke 0.15s, opacity 0.15s;
+  stroke-width: 1.3;
+  pointer-events: none;
+  transition: stroke 0.15s, opacity 0.15s, stroke-width 0.15s;
 }
-.ge--flow {
-  stroke: var(--orange);
-  stroke-width: 2.6;
-  opacity: 0.85;
-}
+.ge--flow { stroke: var(--orange); stroke-width: 2.8; opacity: 0.9; }
 .ah { fill: var(--line); }
 .ah--flow { fill: var(--orange); }
 
-/* 마우스를 올린 글과 이어진 것만 밝게 */
-.focusing .ge { opacity: 0.12; }
-.focusing .ge.on { opacity: 1; stroke: var(--cyan); }
-.focusing .ge--flow.on { stroke: var(--orange); }
-.focusing .gn { opacity: 0.3; }
+.focusing .ge { opacity: 0.1; }
+.focusing .ge.on { opacity: 1; stroke: var(--cyan); stroke-width: 2.2; }
+.focusing .ge--flow.on { stroke: var(--orange); stroke-width: 3.4; }
+.focusing .gn { opacity: 0.22; }
 .focusing .gn.on { opacity: 1; }
 
-/* ── 노드 ─────────────────────────────────────────── */
+/* ── 노드 ─────────────────────────────────────────
+   옵시디언처럼 원 하나 + 아래 이름. 이어진 곳이 많을수록 커집니다. */
 .gn { cursor: pointer; transition: opacity 0.15s; }
-.gn-box {
-  fill: var(--bg);
-  stroke: var(--cat, var(--cyan));
-  stroke-width: 1.2;
+.gn-halo {
+  fill: var(--cat, var(--cyan));
+  opacity: 0;
+  transition: opacity 0.15s;
 }
-.gn--flow .gn-box { stroke-width: 1.8; }
-.gn:hover .gn-box { fill: color-mix(in srgb, var(--cat, var(--cyan)) 16%, var(--bg)); }
-.gn-t {
-  text-anchor: middle;
-  font-size: 12px;
-  fill: var(--text);
-}
+.gn:hover .gn-halo, .gn.on .gn-halo { opacity: 0.16; }
 .gn-dot {
-  fill: var(--bg);
+  fill: color-mix(in srgb, var(--cat, var(--cyan)) 22%, var(--bg));
   stroke: var(--cat, var(--cyan));
-  stroke-width: 1.6;
+  stroke-width: 1.8;
+  transition: fill 0.15s;
 }
+.gn--flow .gn-dot { stroke-width: 2.6; }
 .gn:hover .gn-dot { fill: var(--cat, var(--cyan)); }
-.gn-s {
+.gn-label {
   text-anchor: middle;
-  font-size: 10px;
+  font-size: 11.5px;
   fill: var(--faint);
+  pointer-events: none;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3.5;
+  stroke-linejoin: round;
+  transition: fill 0.15s;
 }
-.gn:hover .gn-s { fill: var(--text); }
+.gn:hover .gn-label, .gn.on .gn-label { fill: var(--text); }
 
 /* 편집 중 고른 순서 */
-.gn-no { fill: var(--orange); }
-.gn-non {
+.gn-badge circle { fill: var(--orange); }
+.gn-badge text {
   text-anchor: middle;
   font-size: 11px;
   font-weight: 700;
   fill: #0a0a14;
+  pointer-events: none;
 }
-.gn--picked .gn-box, .gn--picked .gn-dot { stroke: var(--orange); stroke-width: 2.2; }
+.gn--picked .gn-dot { stroke: var(--orange); stroke-width: 3; }
 body.picking .g-canvas { cursor: crosshair; }
 
 /* ── 흐름 편집 패널 ───────────────────────────────── */
@@ -241,3 +256,7 @@ body.picking .g-canvas { cursor: crosshair; }
   .g-canvas { height: 60vh; }
   .g-hint { display: none; }
 }
+
+/* 막대 안 작은 단추들 */
+.g-btn--sm { margin-left: 0; font-size: 0.7rem; padding: 4px 10px; }
+#btn-fit { margin-left: auto; }

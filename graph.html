@@ -20,7 +20,7 @@
   <link rel="stylesheet" href="./assets/css/base.css?v=1e5ade7e">
   <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="./assets/css/components.css?v=a690207b">
-  <link rel="stylesheet" href="./assets/css/graph.css?v=7f44fddf">
+  <link rel="stylesheet" href="./assets/css/graph.css?v=36f7b7f4">
 </head>
 <body data-crumb="~ / <b>글 지도</b>">
   <main id="main">
@@ -36,7 +36,9 @@
 
       <div class="g-bar">
         <span class="g-stats" id="g-stats"></span>
-        <span class="g-hint">끌어서 이동 · 휠로 확대 · 글을 누르면 이동</span>
+        <span class="g-hint">바탕을 끌면 이동 · 휠로 확대 · 노드를 끌면 옮김 · 누르면 그 글로</span>
+        <button class="g-btn g-btn--sm" id="btn-fit">가운데 맞춤</button>
+        <button class="g-btn g-btn--sm" id="btn-reset">배치 되돌리기</button>
         <button class="g-btn" id="btn-flow" aria-pressed="false">흐름 편집</button>
       </div>
 
@@ -72,7 +74,7 @@
   <script src="./assets/js/util.js?v=2324452d"></script>
   <script src="./assets/js/nav.js?v=9c55cec3"></script>
   <script src="./assets/js/fs.js?v=29c4cc2f"></script>
-  <script src="./assets/js/graph.js?v=361ac557"></script>
+  <script src="./assets/js/graph.js?v=8f680ef8"></script>
   <script src="./assets/js/progress.js?v=fb65c704"></script>
 </body>
 </html>
