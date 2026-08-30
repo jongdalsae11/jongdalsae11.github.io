@@ -304,6 +304,11 @@
     /* ── 문제 아카이브 (문제집 스타일) ── */
     problems: function (el) {
       var diffLabel = { easy: '쉬움', mid: '보통', hard: '어려움' };
+      if (!(S.problems || []).length) {
+        el.innerHTML = '<li class="empty">아직 올린 문제가 없습니다. ' +
+          '<a href="' + ROOT + '/write.html">문제 등록</a>에서 추가할 수 있습니다.</li>';
+        return;
+      }
       el.innerHTML = (S.problems || []).slice().sort(byDateDesc).map(function (p) {
         return '<li class="prob" data-diff="' + p.diff + '">' +
           '<div class="prob-head">' +
@@ -330,6 +335,11 @@
 
     /* ── 연구·프로젝트 ── */
     research: function (el) {
+      if (!(S.research || []).length) {
+        el.innerHTML = '<li class="empty">아직 올린 연구·프로젝트가 없습니다. ' +
+          '<a href="' + ROOT + '/write.html">연구 등록</a>에서 추가할 수 있습니다.</li>';
+        return;
+      }
       el.innerHTML = (S.research || []).map(function (r) {
         var href = r.post ? ROOT + '/posts/' + r.post : (real(r.url) ? r.url : null);
         var inner =

@@ -1046,3 +1046,11 @@ a.stat--misc:hover { border-color: var(--line); background: var(--surface-2); }
   .home-cols { grid-template-columns: 1fr; gap: 18px; }
   .cloud { gap: 7px 10px; }
 }
+
+/* ── 온라인 저지 등급 (API 로 채워짐) ─────────────── */
+.rating {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  color: var(--faint);
+}
+.rating--live { font-weight: 600; }

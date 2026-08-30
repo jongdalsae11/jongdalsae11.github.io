@@ -6,8 +6,8 @@
      (첫 렌더에는 애니메이션을 끄기 때문에 다시 펼쳐지는 깜빡임 없음)
    ============================================================ */
 
-var SITE_NAME = '이름';
-var SITE_SUB  = 'archive';
+var SITE_NAME = '종달새 서재';
+var SITE_SUB  = 'SKYLARK ARCHIVE';
 
 (function () {
   var ROOT = window.ROOT || '.';

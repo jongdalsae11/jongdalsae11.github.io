@@ -1,6 +1,6 @@
-# 개인 아카이브 사이트
+# 종달새 서재
 
-VSCode 다크 테마 기반 개인 아카이브 · <https://jongdalsae11.github.io>
+수학·알고리즘 공부 기록 · <https://jongdalsae11.github.io>
 
 > **평소에 고치는 파일은 `assets/data/content.js` 하나입니다.**
 > 글·자료·문제·연구를 여기에 등록하면 왼쪽 트리, 목록 페이지, 홈 대시보드,
@@ -75,7 +75,7 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
     ├── js/   util · nav · lists · heatmap · progress · code · post
     │         write(작성) · editor(단축키·슬래시) · compose(태그추천·수정)
     │         sync(양방향 이동) · save(폴더 연결 저장)
-    │         fs(폴더 접근 공용) · graph(글 지도)
+    │         fs(폴더 접근 공용) · graph(글 지도) · rating(저지 등급)
     ├── img/  글에 쓰는 이미지     files/  자료 PDF
     └── og.png  링크 공유 썸네일
 ```
@@ -94,7 +94,8 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 | 분류 강조색 바꾸기 | `content.js` 의 `colors: { math: '#34d399' }` |
 | 글끼리 연결(백링크) | 본문에 `[[글 제목]]` — `links` 는 저장할 때 자동 수집 |
 | 링크 이름 바꾸기 | `[[글 제목\|보이는 이름]]` — 수식도 넣을 수 있음 |
-| 이름 바꾸기 | `assets/js/nav.js` 의 `SITE_NAME` |
+| 이름 바꾸기 | `assets/js/nav.js` 의 `SITE_NAME` · `SITE_SUB` |
+| 저지 등급 | `about.html` 의 `data-solvedac` · `data-cf` 핸들 (등급은 API 자동) |
 | 전체 색 바꾸기 | `assets/css/base.css` 의 `:root` |
 | 무언가 작성하기 | 사이드바 **+ 새로 쓰기** → 모드 선택 → 등록 코드 복사 |
 | 이미 올린 것 고치기 | 글 아래 **고치기** 링크, 또는 작성 도구의 **수정** 버튼 |

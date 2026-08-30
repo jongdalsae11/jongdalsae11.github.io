@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="완비성 공리를 통한 실수체의 완비를 다룬다.">
+  <title>실수체 $\R$의 완비성 — 이름</title>
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="실수체 $\R$의 완비성">
+  <meta property="og:description" content="완비성 공리를 통한 실수체의 완비를 다룬다.">
+  <meta property="og:image" content="https://jongdalsae11.github.io/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/post.css">
+</head>
+<body data-crumb="글 / 해석학 / <b>실수체 $\R$의 완비성</b>">
+  <main id="main">
+    <div class="page page--post">
+      <article>
+        <div class="post-head">
+          <h1>실수체 $\R$의 완비성</h1>
+          <div class="post-meta">
+            <span class="post-date">2026.08.23</span>
+            <span class="tag">수열</span>
+            <span class="tag">실수</span>
+          </div>
+        </div>
+        <div class="post-body">
+<p><a class="wikilink" href="2026-08-23-cauchy-sequence.html">앞선 글</a>에서는 코시 열과 수렴하는 수열의 관계의 일부만을 보였다. 수렴하는 수열은 반드시 코시 열이지만, 그 역, 코시 열이면 반드시 수렴한다는 것은 자명하지 않다.</p>
+<p>코시 열은 항들이 서로 가까워진다는 것만 알 수 있을 뿐, 그 항들이 어디로 모이는지는 알려주지 않는다. 직관적으로는 항들이 서로 붙어가고 있으니 어딘가로는 모여들 것 같은데, 정작 그 어딘가가 실제로 존재하는 점인지는 별개의 문제다.<span class="sidenote">생각하기 어렵다면, 불연속점에서 극한을 떠올려보자! 극한값과 함숫값이 다를 수 있고, 심지어는 함숫값이 존재하지 않아도 극한은 정의될 수 있다</span></p>
+<p>예를 들어 유리수 안에서만 생각한다면, 항들이 $\sqrt{2}$로 모여들어도 그 지점 자체가 유리수에 없을 수 있다. 즉, 항들은 계속 가까워지는데, 정작 도착지가 비어있는 것이다.</p>
+<p>그렇다면 실수에서는 이런 일이 안 생긴다는 걸, 즉 항들이 모여드는 그 자리에 실제로 점이 있다는 걸 보장해주는 게 무엇일까. 그게 바로 완비성이다.</p>
+<h2>상한공리</h2>
+<p>이를 위해 먼저 필요한 것이 상한의 개념이다. 집합 $S \subseteq \R$이 <strong>위로 유계</strong>하다는 것은, $\exists M\in\R, \forall x \in S ~s.t. ~x\leq M $이라는 것이다. 그리고 이때 $M$을 $S$의 상계(upper bound)라고 한다. $S$의 상한(supremum)인 $\sup S$는 $S$의 상계중 최솟값, 즉 최소상계(least upper bound)를 의미한다. 이때 실수체 $\R$에 대해 다음이 성립한다</p>
+<div class="key"><p>상한공리</p>
+<p>$S \subseteq \R ~\land ~S\ne \emptyset$ 인 $S$가 위로 유계이면, $S$는 $\R$ 안에 상한 $\sup S$를 갖는다.</p></div>
+<p>지금까지 다룬 명제들과 달리, 이것은 증명되는 정리가 아니라 공리다. 우리가 실수라고 부르는 모든 수체계에 대해 이는 항상 성립하는 성질이다. 앞서 말한 빈틈이 없다는 직관을, 이 상한공리라는 형태로 명시한 것이다.<span class="sidenote"><strong>이 공리를 만족시키도록</strong> $\mathbb{Q}$로부터 $\R$을 직접 구성하는 직접 구성하는 방법(데데킨트 절단, 코시 완비화 등)을 택하면 이 성질이 오히려 증명 가능한 정리가 된다. 다만 그 구성법들은 상한공리를 만족시키기 위해 고안된 것들이지, 상한공리보다 더 근본적인 게 아니다. 이는 별도로 다룬다. 우리가 지금 다루는 $\R$은 구성된 객체가 아닌 실수 자체를 다루고 있음을 알아야 한다.</span></p>
+<p>도입부에서 말한 항들이 모이는 자리에 실제로 점이 있다는 직관을 다시 떠올려보자. 코시 열이 수렴한다는 것은 정확히 이 직관과 일치한다. 즉, 서로 가까워지는 항들이 실제로 어떤 실수 $L$로 모여든다는 것. 즉 <strong>"모든 코시 열은 수렴한다"는 명제 자체가 완비성이다.</strong></p>
+<p>이런 이유로 상한공리는 완비성 공리라고도 불린다.</p>
+<p>이제 상한공리로부터 이 명제를 이끌어내 보자.</p>
+<h2>실수의 완비성</h2>
+<h3>1. 코시열의 유계성</h3>
+<div class="thmbox thmbox--thm"><p class="thm-head"><span class="thm-name">정리 1</span><span class="thm-title">Boundedness of Cauchy sequences</span></p><p>코시 열 $(a_n)$은 유계다. 즉, $$\exists M &gt; 0,\forall n ~s.t.~ |a_n|\leq M$$</p></div>
+<div class="thmbox thmbox--proof"><p class="thm-head"><span class="thm-name">pf</span></p><p>  $(a_n)$이 코시열이므로, $\epsilon = 1$에 대해 다음 명제를 만족하는 $N$이 존재한다.
+$$m,n&gt;N \implies |a_n-a_m|&lt;\epsilon=1$$</p>
+<p>$n&gt;N$인 모든 $n$에 대해 $m=N+1$을 대입하면, 
+$$|a_n-a_{N+1}|&lt;1 \implies |a_n| &lt; |a_{N+1}|+1$$
+$$(\because |a_n| = |(a_n-a_{N+1})+a_{N+1}| \leq |a_n-a_{N+1}|+|a_{N+1}| &lt; |a_{N+1}|+1)$$
+이다.</p>
+<p>$a_1, a_2, \dots, a_N$은 유한개이므로, 최댓값이 존재한다. 그러므로
+$$M=\max \{ |a_1|,\dots,|a_N|,\ |a_{N+1}|+1 \}$$
+으로 하면 모든 $n$에 대해 $|a_n|\leq M$이다.</p></div>
+<p>코시 열이 유계라는 사실 자체는 아직 수렴성을 보장해주지 않는다. 유계라는 건 그저 항들이 어떤 범위 $[−M,M]$ 안에 존재한다는 것뿐이지, 그 범위 안 어디로도 수렴한다는 뜻은 아니기 때문이다.<span class="sidenote">유계이면서도 발산하는 수열의 예: $a_n=(-1)^n$은 $[−1,1]$ 안에 갇혀 있지만 두 값에서 진동할 뿐 수렴하지 않는다.</span></p>
+<p>하지만 유계라는 사실은 다음 단계로 넘어갈 발판이 된다. 유계인 수열이라면, 적어도 그 안에서 수렴하는 부분수열을 하나는 반드시 만들어낼 수 있다. 이것이 볼차노-바이어슈트라스 정리이다.</p>
+<h3>2. 볼차노-바이어슈트라스 정리</h3>
+<div class="thmbox thmbox--thm"><p class="thm-head"><span class="thm-name">정리 2</span><span class="thm-title">Bolzano-Weierstraß theorem</span></p><p>유계인 수열 $(a_n)$은 수렴하는 부분수열을 갖는다</p></div>
+<div class="thmbox thmbox--proof"><p class="thm-head"><span class="thm-name">pf</span></p><p> $(a_n)$이 유계이므로, $$\exists M&gt;0~ s.t.~ \forall n \in\N, a_n \in [-M,M]=I_1$$ 또 $n_1 \coloneqq min\{n\in\N:a_n\in I_1\}$이라 하자.  $I_1$이 모든 항을 포함하므로 $n_1=1$이다.</p>
+<p>이때 $k \in \N$에 대해 $n_k \in \N$와 $I_k=[\alpha_k,\beta_k]$가 정의되어있다고 가정할 때, 구간 $I_{k+1}=[\alpha_{k+1},\beta_{k+1}]$를 다음과 같이 정의한다.</p>
+<p>$I_k$에 대해 $c_k=\frac{\alpha_k+\beta_k}{2}$로 정의하면, 구간 $[\alpha_k,c_k]$와 $[c_k,\beta_k]$ 중 적어도 하나는 수열 $(a_n)$에서 무한히 많은 원소를 포함한다.<span class="sidenote">비둘기집의 원리에 의해, 두 폐구간 모두 수열의 원소를 유한개 가진다면, 수열이 무한수열이라는 가정에 모순된다.</span> 그 구간을 $I_{k+1}$이라 하고, 
+$$I_{k+1}=\begin{cases}[\alpha_k,c_k]&amp;(|\{n\in \N : a_n \in [\alpha_k,c_k]\}|=\infty)\\ [c_k,\beta_k]&amp;(|\{n\in \N : a_n \in [\alpha_k,c_k]\}|&lt;\infty)\end{cases}$$
+로 정의한다. 또, $n_{k+1}$은
+$$n_{k+1}\coloneqq min\{n\in \N : a_n \in I_{k+1}, n &gt; n_k\}$$
+와 같이 재귀적으로 정의한다.</p>
+<p>$I_{k+1}$가 무한히 많은 항을 가지므로, $\exists n\in\N ~s.t.~ a_n \in I_{k+1} \land n &gt; n_k$이다.<span class="sidenote">유한집합 $\{1,\dots,n_k\}$만으로는 무한집합 $\N$을 덮을 수 없기 때문이다.</span> 그렇다면 $\emptyset \subsetneq\{n\in\N : a_n \in I_{k+1}\land n&gt;n_k\}\subsetneq\N$ 은 최소원의 원리(well-ordering principle)에 의해 최소원을 가지므로 $n_{k+1}$이 존재한다.</p>
+<p>이런 재귀적 정의에 의해 
+$$  I_1 \supseteq I_2 \supseteq I_3 \supseteq \dots~~\land~~|I_k| = \frac{2M}{2^{k-1}}~(k\in\N)$$
+를 만족하는 폐구간들<span class="sidenote">이렇게 구간들이 포함관계로 싸여 있는 구조를 <strong>중첩(nested)</strong>되었다고 부른다.</span>과 $n_1&lt;n_2&lt;n_3&lt;\dots$ 를 만족하는 부분수열 $(a_{n_k})_{k\in\N}$ 을 구성할 수 있다. 여기서 모든 $k\in\N$에 대해  $a_{n_k}\in I_k$이다.</p>
+<hr>
+<p>이제 이 구성한 수열이 정말 수렴하는지 알아보자. $I_k=[\alpha_k,\beta_k]$라고 하면, $(\alpha_k)$는 단조증가하고, $(\beta_k)$는 단조감소하며, $\beta_k-\alpha_k\to0$이다. </p>
+<p>집합 $S=\{\alpha_k:k\in\N\}$에 대해, $S$는 위로 유계이므로(모든 $\beta_k$가 상계이다), <strong>상한공리</strong>에 의해 상한 $L=\sup S$가 존재한다.</p>
+<p>이제 모든 $k\in\N$에 대해 $L\in[\alpha_k,\beta_k]$임을 보이자.</p>
+<p>1. $L$이 $S=\{\alpha_k:k\in\N\}$의 상한이므로, $\alpha_k \leq L$은 자명하다.</p>
+<p>2. $k\in\N$를 고정하자. 임의의 $j\in\N$에 대해 $(I_j)$가 nested이다. </p>
+<p>$j&lt;k$일 경우 $I_k \subseteq I_j$이므로, $\alpha_j \leq \alpha_k \leq \beta_k$이다.</p>
+<p>$j\geq k$일 경우 $I_j \subseteq I_k$이므로, $\alpha_j \leq \beta_j \leq \beta_k$이다.</p>
+<p>두 경우 모두 $\alpha_j \leq \beta_k$이므로, $\beta_k$는 $S$의 상계이다. $L=\sup S$<span class="sidenote">최소 상계</span>이므로 $L\leq\beta_k$이다.</p>
+<p>따라서 $\alpha_k \leq L \leq \beta_k$, 즉 $L\in I_k$가 모든 $k\in\N$에서 성립한다.</p>
+<p>이제 $a_{n_k}\in I_k$이고 $L\in I_k$이므로
+$$|a_{n_k}-L|\leq|I_k|=\frac{2M}{2^{k-1}}\to0 \quad (k\to\infty)$$
+따라서 $a_{n_k}\to L$이다.<span class="sidenote">여기서 $L$이 수열 $(a_n)$의 항일 필요는 없다는 것에 주의하자. $L$은 그저 부분수열이 다가가는 실수 하나일 뿐이다.</span></p></div>
+<p>지금까지의 과정을 돌아보면, 구성 단계에선 이분법이라는 규칙, 즉 길이를 절반씩 줄이고, 무한히 많은 항이 있는 쪽을 택한다는 것만 지키며 구성했을 뿐, 어디로 수렴하는지는 전혀 몰랐다. 그럼에도 그 규칙이 가진 성질인, 길이가 0으로 줄어드는 중첩된 구간들이 상한공리를 통해 스스로 수렴값을 가진 것이다.</p>
+<p>이제 남은 것은, 이렇게 얻은 부분수열의 수렴을 원래의 코시 열 $(a_n)$ 전체로 확장하는 일이다.</p>
+<h3>3. 부분수열에서 전체수열로</h3>
+<div class="thmbox thmbox--thm"><p class="thm-head"><span class="thm-name">정리 3</span><span class="thm-title">전체 열의 수렴성</span></p><p>$(a_n)$이 코시 열이고, $(a_{n_k})$가 $L$로 수렴하면, $(a_n)$도 $L$로 수렴한다.</p></div>
+<div class="thmbox thmbox--proof"><p class="thm-head"><span class="thm-name">pf</span></p><p>  $\forall \epsilon &gt;0,$</p>
+<p>$(a_n)$이 코시 열이므로, $\exists N_1 ~s.t. ~ m,n &gt; N_1 \implies |a_n-a_m|&lt;\frac{\epsilon}{2}$</p>
+<p>$a_{n_k}\to L$이므로, $\exists K ~ s.t.  ~ k&gt;K \implies |a_{n_k}-L|&lt;\frac{\epsilon}{2}$</p>
+<p>$n_k\to\infty$이므로, $k&gt;K\land n_k&gt;N_1$인 $k$에 대해,</p>
+<p>$$\forall n&gt;N_1, |a_n-L| \leq |a_n-a_{n_k}|+|a_{n_k}-L| &lt; \frac{\epsilon}{2}+\frac{\epsilon}{2}=\epsilon$$
+그러므로, $a_n\to L$이다.</p></div>
+<p>이로써 상한공리로부터 "코시 열은 반드시 수렴한다"는 것을 증명했다. 유계성으로 항들을 가두고, 볼차노-바이어슈트라스로 그 안에서 수렴하는 부분수열 하나를 길어 올린 뒤, 코시 조건이 가진, 서로 가까워진다는 성질로 그 수렴을 전체 열까지 끌어온 것이다.</p>
+<p>그런데 이 증명이 보인 것은 한 방향뿐이다. 상한공리가 있으면 코시 열이 수렴한다는 것. 처음에 완비성을 "코시 열이 수렴한다는 것 자체"라고도 부를 수 있다고 했었는데, 그렇다면 반대 방향은 어떨까?</p>
+<p>코시 열이 항상 수렴한다는 성질만 가지고도, 거꾸로 상한공리를 복원할 수 있을까? 두 명제가 정말 동치라면, 이 반대 화살표 역시 직접 그려 보여야 한다. 다음 글에서는 그 화살표를 그려, 상한공리와 코시 완비성이 서로를 완전히 지지하는, 그리고 그로 인한 지금까지의 명제들의 순환<span class="sidenote">TFAE</span>을 완성한다.</p>
+        </div>
+        <section class="backlinks"></section>
+        <script type="text/markdown" class="post-src">
+[[코시 열|앞선 글]]에서는 코시 열과 수렴하는 수열의 관계의 일부만을 보였다. 수렴하는 수열은 반드시 코시 열이지만, 그 역, 코시 열이면 반드시 수렴한다는 것은 자명하지 않다.
+
+코시 열은 항들이 서로 가까워진다는 것만 알 수 있을 뿐, 그 항들이 어디로 모이는지는 알려주지 않는다. 직관적으로는 항들이 서로 붙어가고 있으니 어딘가로는 모여들 것 같은데, 정작 그 어딘가가 실제로 존재하는 점인지는 별개의 문제다.^[생각하기 어렵다면, 불연속점에서 극한을 떠올려보자! 극한값과 함숫값이 다를 수 있고, 심지어는 함숫값이 존재하지 않아도 극한은 정의될 수 있다]
+
+예를 들어 유리수 안에서만 생각한다면, 항들이 $\sqrt{2}$로 모여들어도 그 지점 자체가 유리수에 없을 수 있다. 즉, 항들은 계속 가까워지는데, 정작 도착지가 비어있는 것이다.
+
+그렇다면 실수에서는 이런 일이 안 생긴다는 걸, 즉 항들이 모여드는 그 자리에 실제로 점이 있다는 걸 보장해주는 게 무엇일까. 그게 바로 완비성이다.
+
+## 상한공리
+이를 위해 먼저 필요한 것이 상한의 개념이다.
+집합 $S \subseteq \R$이 **위로 유계**하다는 것은, $\exists M\in\R, \forall x \in S ~s.t. ~x\leq M $이라는 것이다. 그리고 이때 $M$을 $S$의 상계(upper bound)라고 한다.
+$S$의 상한(supremum)인 $\sup S$는 $S$의 상계중 최솟값, 즉 최소상계(least upper bound)를 의미한다.
+이때 실수체 $\R$에 대해 다음이 성립한다
+!!
+상한공리
+
+$S \subseteq \R ~\land ~S\ne \emptyset$ 인 $S$가 위로 유계이면, $S$는 $\R$ 안에 상한 $\sup S$를 갖는다.
+!!
+지금까지 다룬 명제들과 달리, 이것은 증명되는 정리가 아니라 공리다. 우리가 실수라고 부르는 모든 수체계에 대해 이는 항상 성립하는 성질이다. 앞서 말한 빈틈이 없다는 직관을, 이 상한공리라는 형태로 명시한 것이다.^[**이 공리를 만족시키도록** $\mathbb{Q}$로부터 $\R$을 직접 구성하는 직접 구성하는 방법(데데킨트 절단, 코시 완비화 등)을 택하면 이 성질이 오히려 증명 가능한 정리가 된다. 다만 그 구성법들은 상한공리를 만족시키기 위해 고안된 것들이지, 상한공리보다 더 근본적인 게 아니다. 이는 별도로 다룬다. 우리가 지금 다루는 $\R$은 구성된 객체가 아닌 실수 자체를 다루고 있음을 알아야 한다.]
+
+도입부에서 말한 항들이 모이는 자리에 실제로 점이 있다는 직관을 다시 떠올려보자. 코시 열이 수렴한다는 것은 정확히 이 직관과 일치한다. 즉, 서로 가까워지는 항들이 실제로 어떤 실수 $L$로 모여든다는 것. 즉 **"모든 코시 열은 수렴한다"는 명제 자체가 완비성이다.**
+
+이런 이유로 상한공리는 완비성 공리라고도 불린다.
+
+이제 상한공리로부터 이 명제를 이끌어내 보자.
+
+## 실수의 완비성
+### 1. 코시열의 유계성
+:::정리 Boundedness of Cauchy sequences
+코시 열 $(a_n)$은 유계다. 즉, $$\exists M > 0,\forall n ~s.t.~ |a_n|\leq M$$
+:::
+:::증명 
+
+  $(a_n)$이 코시열이므로, $\epsilon = 1$에 대해 다음 명제를 만족하는 $N$이 존재한다.
+$$m,n>N \implies |a_n-a_m|<\epsilon=1$$
+
+$n>N$인 모든 $n$에 대해 $m=N+1$을 대입하면, 
+$$|a_n-a_{N+1}|<1 \implies |a_n| < |a_{N+1}|+1$$
+$$(\because |a_n| = |(a_n-a_{N+1})+a_{N+1}| \leq |a_n-a_{N+1}|+|a_{N+1}| < |a_{N+1}|+1)$$
+이다.
+
+$a_1, a_2, \dots, a_N$은 유한개이므로, 최댓값이 존재한다.
+그러므로
+$$M=\max \{ |a_1|,\dots,|a_N|,\ |a_{N+1}|+1 \}$$
+으로 하면 모든 $n$에 대해 $|a_n|\leq M$이다.
+:::
+
+코시 열이 유계라는 사실 자체는 아직 수렴성을 보장해주지 않는다. 유계라는 건 그저 항들이 어떤 범위 $[−M,M]$ 안에 존재한다는 것뿐이지, 그 범위 안 어디로도 수렴한다는 뜻은 아니기 때문이다.^[유계이면서도 발산하는 수열의 예: $a_n=(-1)^n$은 $[−1,1]$ 안에 갇혀 있지만 두 값에서 진동할 뿐 수렴하지 않는다.]
+
+하지만 유계라는 사실은 다음 단계로 넘어갈 발판이 된다. 유계인 수열이라면, 적어도 그 안에서 수렴하는 부분수열을 하나는 반드시 만들어낼 수 있다. 이것이 볼차노-바이어슈트라스 정리이다.
+
+### 2. 볼차노-바이어슈트라스 정리
+:::정리 Bolzano-Weierstraß theorem
+유계인 수열 $(a_n)$은 수렴하는 부분수열을 갖는다
+:::
+:::증명  
+ $(a_n)$이 유계이므로, $$\exists M>0~ s.t.~ \forall n \in\N, a_n \in [-M,M]=I_1$$
+또 $n_1 \coloneqq min\{n\in\N:a_n\in I_1\}$이라 하자. 
+$I_1$이 모든 항을 포함하므로 $n_1=1$이다.
+
+이때 $k \in \N$에 대해 $n_k \in \N$와 $I_k=[\alpha_k,\beta_k]$가 정의되어있다고 가정할 때, 구간 $I_{k+1}=[\alpha_{k+1},\beta_{k+1}]$를 다음과 같이 정의한다.
+
+$I_k$에 대해 $c_k=\frac{\alpha_k+\beta_k}{2}$로 정의하면, 구간 $[\alpha_k,c_k]$와 $[c_k,\beta_k]$ 중 적어도 하나는 수열 $(a_n)$에서 무한히 많은 원소를 포함한다.^[비둘기집의 원리에 의해, 두 폐구간 모두 수열의 원소를 유한개 가진다면, 수열이 무한수열이라는 가정에 모순된다.]
+그 구간을 $I_{k+1}$이라 하고, 
+$$I_{k+1}=\begin{cases}[\alpha_k,c_k]&(|\{n\in \N : a_n \in [\alpha_k,c_k]\}|=\infty)\\ [c_k,\beta_k]&(|\{n\in \N : a_n \in [\alpha_k,c_k]\}|<\infty)\end{cases}$$
+로 정의한다.
+또, $n_{k+1}$은
+$$
+n_{k+1}\coloneqq min\{n\in \N : a_n \in I_{k+1}, n > n_k\}
+$$
+와 같이 재귀적으로 정의한다.
+
+$I_{k+1}$가 무한히 많은 항을 가지므로, $\exists n\in\N ~s.t.~ a_n \in I_{k+1} \land n > n_k$이다.^[유한집합 $\{1,\dots,n_k\}$만으로는 무한집합 $\N$을 덮을 수 없기 때문이다.]
+그렇다면 $\emptyset \subsetneq\{n\in\N : a_n \in I_{k+1}\land n>n_k\}\subsetneq\N$ 은 최소원의 원리(well-ordering principle)에 의해 최소원을 가지므로 $n_{k+1}$이 존재한다.
+
+이런 재귀적 정의에 의해 
+$$
+  I_1 \supseteq I_2 \supseteq I_3 \supseteq \dots~~\land~~|I_k| = \frac{2M}{2^{k-1}}~(k\in\N)
+$$
+를 만족하는 폐구간들^[이렇게 구간들이 포함관계로 싸여 있는 구조를 **중첩(nested)**되었다고 부른다.]과 $n_1<n_2<n_3<\dots$ 를 만족하는 부분수열 $(a_{n_k})_{k\in\N}$ 을 구성할 수 있다. 여기서 모든 $k\in\N$에 대해  $a_{n_k}\in I_k$이다.
+
+---
+이제 이 구성한 수열이 정말 수렴하는지 알아보자.
+$I_k=[\alpha_k,\beta_k]$라고 하면, $(\alpha_k)$는 단조증가하고, $(\beta_k)$는 단조감소하며, $\beta_k-\alpha_k\to0$이다. 
+
+집합 $S=\{\alpha_k:k\in\N\}$에 대해, $S$는 위로 유계이므로(모든 $\beta_k$가 상계이다), **상한공리**에 의해 상한 $L=\sup S$가 존재한다.
+
+이제 모든 $k\in\N$에 대해 $L\in[\alpha_k,\beta_k]$임을 보이자.
+
+1. $L$이 $S=\{\alpha_k:k\in\N\}$의 상한이므로, $\alpha_k \leq L$은 자명하다.
+
+2. $k\in\N$를 고정하자. 임의의 $j\in\N$에 대해 $(I_j)$가 nested이다. 
+
+$j<k$일 경우 $I_k \subseteq I_j$이므로, $\alpha_j \leq \alpha_k \leq \beta_k$이다.
+
+$j\geq k$일 경우 $I_j \subseteq I_k$이므로, $\alpha_j \leq \beta_j \leq \beta_k$이다.
+
+두 경우 모두 $\alpha_j \leq \beta_k$이므로, $\beta_k$는 $S$의 상계이다. $L=\sup S$^[최소 상계]이므로 $L\leq\beta_k$이다.
+
+따라서 $\alpha_k \leq L \leq \beta_k$, 즉 $L\in I_k$가 모든 $k\in\N$에서 성립한다.
+
+이제 $a_{n_k}\in I_k$이고 $L\in I_k$이므로
+$$|a_{n_k}-L|\leq|I_k|=\frac{2M}{2^{k-1}}\to0 \quad (k\to\infty)$$
+따라서 $a_{n_k}\to L$이다.^[여기서 $L$이 수열 $(a_n)$의 항일 필요는 없다는 것에 주의하자. $L$은 그저 부분수열이 다가가는 실수 하나일 뿐이다.]
+:::
+
+지금까지의 과정을 돌아보면, 구성 단계에선 이분법이라는 규칙, 즉 길이를 절반씩 줄이고, 무한히 많은 항이 있는 쪽을 택한다는 것만 지키며 구성했을 뿐, 어디로 수렴하는지는 전혀 몰랐다. 그럼에도 그 규칙이 가진 성질인, 길이가 0으로 줄어드는 중첩된 구간들이 상한공리를 통해 스스로 수렴값을 가진 것이다.
+
+이제 남은 것은, 이렇게 얻은 부분수열의 수렴을 원래의 코시 열 $(a_n)$ 전체로 확장하는 일이다.
+
+### 3. 부분수열에서 전체수열로
+
+:::정리 전체 열의 수렴성
+$(a_n)$이 코시 열이고, $(a_{n_k})$가 $L$로 수렴하면, $(a_n)$도 $L$로 수렴한다.
+:::
+:::증명 
+  $\forall \epsilon >0,$
+
+$(a_n)$이 코시 열이므로, $\exists N_1 ~s.t. ~ m,n > N_1 \implies |a_n-a_m|<\frac{\epsilon}{2}$
+
+$a_{n_k}\to L$이므로, $\exists K ~ s.t.  ~ k>K \implies |a_{n_k}-L|<\frac{\epsilon}{2}$
+
+$n_k\to\infty$이므로, $k>K\land n_k>N_1$인 $k$에 대해,
+
+$$
+\forall n>N_1, |a_n-L| \leq |a_n-a_{n_k}|+|a_{n_k}-L| < \frac{\epsilon}{2}+\frac{\epsilon}{2}=\epsilon
+$$
+그러므로, $a_n\to L$이다.
+:::
+
+이로써 상한공리로부터 "코시 열은 반드시 수렴한다"는 것을 증명했다. 유계성으로 항들을 가두고, 볼차노-바이어슈트라스로 그 안에서 수렴하는 부분수열 하나를 길어 올린 뒤, 코시 조건이 가진, 서로 가까워진다는 성질로 그 수렴을 전체 열까지 끌어온 것이다.
+
+그런데 이 증명이 보인 것은 한 방향뿐이다. 상한공리가 있으면 코시 열이 수렴한다는 것. 처음에 완비성을 "코시 열이 수렴한다는 것 자체"라고도 부를 수 있다고 했었는데, 그렇다면 반대 방향은 어떨까?
+
+코시 열이 항상 수렴한다는 성질만 가지고도, 거꾸로 상한공리를 복원할 수 있을까? 두 명제가 정말 동치라면, 이 반대 화살표 역시 직접 그려 보여야 한다. 다음 글에서는 그 화살표를 그려, 상한공리와 코시 완비성이 서로를 완전히 지지하는, 그리고 그로 인한 지금까지의 명제들의 순환^[TFAE]을 완성한다.
+
+        </script>
+      </article>
+      <div class="margin-col"></div>
+    </div>
+  </main>
+  <footer><p>&copy; 2026</p></footer>
+  <script>window.ROOT='..'</script>
+  <script src="../assets/data/content.js"></script>
+  <script src="../assets/js/util.js"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/progress.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="../assets/js/code.js"></script>
+  <script src="../assets/js/post.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
+</body>
+</html>
