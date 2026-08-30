@@ -211,7 +211,8 @@
 
       var ap = U.postByFile(e.from), bp = U.postByFile(e.to);
       var tip = el('title');
-      tip.textContent = (bp ? bp.title : e.to) + ' 이(가) ' + (ap ? ap.title : e.from) + ' 을(를) 인용';
+      tip.textContent = U.mathPlain(bp ? bp.title : e.to) + ' 이(가) ' +
+                        U.mathPlain(ap ? ap.title : e.from) + ' 을(를) 인용';
       hit.appendChild(tip);
 
       gEdges.appendChild(hit);
@@ -230,7 +231,8 @@
       g.appendChild(el('circle', { 'class': 'gn-dot', r: r }));
 
       var t = el('text', { 'class': 'gn-label', y: r + 17 });
-      t.textContent = cut(p.title, 14);
+      /* SVG 안에서는 수식을 그릴 수 없으므로 읽을 수 있는 글자로 바꿉니다 */
+      t.textContent = cut(U.mathPlain(p.title), 14);
       g.appendChild(t);
 
       var badge = el('g', { 'class': 'gn-badge' });
@@ -240,7 +242,7 @@
       g.appendChild(badge);
 
       var tip = el('title');
-      tip.textContent = p.title + '  ·  ' + U.catPath(p.category, ' › ') + '  ·  ' + p.date;
+      tip.textContent = U.mathPlain(p.title) + '  ·  ' + U.catPath(p.category, ' › ') + '  ·  ' + p.date;
       g.appendChild(tip);
 
       gNodes.appendChild(g);
@@ -466,7 +468,7 @@
     listEl.innerHTML = picked.length
       ? picked.map(function (f, i) {
           var p = U.postByFile(f);
-          return '<li><b>' + (i + 1) + '</b><span>' + U.esc(p ? p.title : f) +
+          return '<li><b>' + (i + 1) + '</b><span>' + U.mathify(p ? p.title : f) +
                  '</span><button type="button" data-drop="' + U.esc(f) + '" aria-label="빼기">×</button></li>';
         }).join('')
       : '<li class="fl-empty">그래프에서 글을 읽는 순서대로 누르세요</li>';

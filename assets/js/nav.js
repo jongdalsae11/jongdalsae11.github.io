@@ -352,7 +352,7 @@ var SITE_SUB  = 'SKYLARK ARCHIVE';
     }).slice(0, 12);
     results.innerHTML = hits.length
       ? hits.map(function (it) {
-          return '<li><a class="plain" href="' + it.href + '"><span class="sr-t">' + it.t +
+          return '<li><a class="plain" href="' + it.href + '"><span class="sr-t">' + window.U.mathify(it.t) +
                  '</span><span class="sr-s">' + it.s + '</span></a></li>';
         }).join('')
       : '<li class="sr-empty">결과 없음</li>';

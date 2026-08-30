@@ -38,6 +38,89 @@ window.U = (function () {
     return out;
   }
 
+  /* ══════════════════════════════════════════════════
+     제목 속 수식
+     KaTeX 는 본문에만 돕니다. 제목은 목록·카드·그래프(SVG)·브라우저 탭
+     같은 여러 곳에 글자로 뿌려지는데, 거기에 KaTeX 를 다 얹으면
+     제목 몇 개 때문에 270KB 를 더 받아야 하고 SVG 안에서는 아예 안 됩니다.
+     그래서 흔한 기호만 유니코드로 바꿔 읽을 수 있게 만듭니다.
+       mathPlain : $R$ → R        (SVG · <title> · og 태그용)
+       mathify   : $R$ → <i>R</i> (HTML 용 — 수식 글꼴로 기울여 표시)
+     ══════════════════════════════════════════════════ */
+  var SYM = {
+    /* 그리스 */
+    alpha:'α', beta:'β', gamma:'γ', delta:'δ', epsilon:'ε', varepsilon:'ε',
+    zeta:'ζ', eta:'η', theta:'θ', vartheta:'ϑ', iota:'ι', kappa:'κ', lambda:'λ',
+    mu:'μ', nu:'ν', xi:'ξ', pi:'π', rho:'ρ', sigma:'σ', tau:'τ', upsilon:'υ',
+    phi:'φ', varphi:'φ', chi:'χ', psi:'ψ', omega:'ω',
+    Gamma:'Γ', Delta:'Δ', Theta:'Θ', Lambda:'Λ', Xi:'Ξ', Pi:'Π',
+    Sigma:'Σ', Phi:'Φ', Psi:'Ψ', Omega:'Ω',
+    /* 관계·연산 */
+    le:'≤', leq:'≤', ge:'≥', geq:'≥', ne:'≠', neq:'≠', approx:'≈', equiv:'≡',
+    times:'×', div:'÷', pm:'±', mp:'∓', cdot:'·', cdots:'⋯', dots:'…', ldots:'…',
+    to:'→', rightarrow:'→', leftarrow:'←', Rightarrow:'⇒', Leftarrow:'⇐',
+    Rarr:'⇒', Larr:'⇐', leftrightarrow:'↔', Leftrightarrow:'⇔', Lrarr:'⇔', mapsto:'↦',
+    in:'∈', notin:'∉', subset:'⊂', subseteq:'⊆', supset:'⊃', supseteq:'⊇',
+    cup:'∪', cap:'∩', emptyset:'∅', varnothing:'∅', setminus:'∖',
+    forall:'∀', exists:'∃', exist:'∃', nexists:'∄', neg:'¬', land:'∧', lor:'∨',
+    sum:'∑', prod:'∏', int:'∫', oint:'∮', partial:'∂', nabla:'∇',
+    infty:'∞', sqrt:'√', angle:'∠', perp:'⊥', parallel:'∥',
+    lvert:'|', rvert:'|', lVert:'‖', rVert:'‖', langle:'⟨', rangle:'⟩',
+    lceil:'⌈', rceil:'⌉', lfloor:'⌊', rfloor:'⌋', quad:' ', qquad:'  ',
+    /* 함수 이름은 그대로 */
+    log:'log', ln:'ln', lim:'lim', max:'max', min:'min', sup:'sup', inf:'inf',
+    sin:'sin', cos:'cos', tan:'tan', exp:'exp', gcd:'gcd', deg:'deg',
+    /* 칠판체 */
+    R:'ℝ', N:'ℕ', Z:'ℤ', Q:'ℚ', C:'ℂ', P:'ℙ', E:'𝔼'
+  };
+  var SUP = { '0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹',
+              'n':'ⁿ','i':'ⁱ','+':'⁺','-':'⁻','*':'*' };
+  var SUB = { '0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉',
+              'n':'ₙ','i':'ᵢ','j':'ⱼ','k':'ₖ','m':'ₘ','a':'ₐ','x':'ₓ','+':'₊','-':'₋' };
+
+  /* 수식 한 토막($ 안쪽)을 읽을 수 있는 글자로 */
+  function texToText(t) {
+    t = String(t || '');
+    /* \mathbb{R} \mathbf{x} 같은 글꼴 명령은 안쪽만 남깁니다 */
+    t = t.replace(/\\math(?:bb|bf|rm|cal|frak|sf|tt|it)\s*\{([^{}]*)\}/g,
+                  function (_, c) { return SYM[c] || c; });
+    t = t.replace(/\\operatorname\s*\{([^{}]*)\}/g, '$1');
+    t = t.replace(/\\(?:left|right|limits|displaystyle|,|;|!|\s)/g, '');
+    /* 이름 있는 기호 */
+    t = t.replace(/\\([A-Za-z]+)/g, function (m, n) { return SYM[n] != null ? SYM[n] : n; });
+    /* 위·아래 첨자 — 한 글자거나 { } 로 묶인 짧은 것만 */
+    t = t.replace(/\^\{([^{}]{1,4})\}|\^(.)/g, function (_, a, b) {
+      var v = a || b, o = '';
+      for (var i = 0; i < v.length; i++) { if (!SUP[v[i]]) return '^' + v; o += SUP[v[i]]; }
+      return o;
+    });
+    t = t.replace(/_\{([^{}]{1,4})\}|_(.)/g, function (_, a, b) {
+      var v = a || b, o = '';
+      for (var i = 0; i < v.length; i++) { if (!SUB[v[i]]) return '_' + v; o += SUB[v[i]]; }
+      return o;
+    });
+    return t.replace(/[{}]/g, '').replace(/\s+/g, ' ').trim();
+  }
+
+  /* 제목에서 $…$ 를 걷어낸 순수 글자 (SVG · 브라우저 탭 · og 태그용) */
+  function mathPlain(t) {
+    return String(t || '').replace(/\$\$?([^$]+)\$\$?/g, function (_, m) {
+      return texToText(m);
+    });
+  }
+
+  /* 제목을 HTML 로 — 수식 부분은 수식 글꼴로 기울여 둡니다 */
+  function mathify(t) {
+    var out = '', s = String(t || ''), i = 0;
+    var re = /\$\$?([^$]+)\$\$?/g, m;
+    while ((m = re.exec(s))) {
+      out += esc(s.slice(i, m.index));
+      out += '<i class="tmath">' + esc(texToText(m[1])) + '</i>';
+      i = m.index + m[0].length;
+    }
+    return out + esc(s.slice(i));
+  }
+
   /* ── 한글 → 두벌식 자판 글쇠 ───────────────────────
      영문 입력 상태에서 한글 낱말을 그대로 치면(예: 증명 → wmdaud)
      그것으로도 찾을 수 있게 하려고, 낱말을 자모로 쪼갠 뒤
@@ -451,6 +534,7 @@ window.U = (function () {
   return {
     esc: esc, slug: slug, romanize: romanize, translate: translate,
     qwerty: qwerty, matches: matches,
+    mathify: mathify, mathPlain: mathPlain,
     dot: dot, today: today, label: label,
     tags: tags, real: real, linkify: linkify, byDateDesc: byDateDesc,
     postByFile: postByFile, refById: refById, sortedPosts: sortedPosts,

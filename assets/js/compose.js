@@ -340,7 +340,7 @@
     plist.innerHTML = hits.length
       ? hits.map(function (d, i) {
           return '<li class="' + (i ? '' : 'on') + '" data-i="' + pool.indexOf(d) + '">' +
-                 esc(d.t) + '<span>' + esc(d.s) + '</span></li>';
+                 U.mathify(d.t) + '<span>' + esc(d.s) + '</span></li>';
         }).join('')
       : '<li class="empty">해당하는 것이 없습니다</li>';
   }

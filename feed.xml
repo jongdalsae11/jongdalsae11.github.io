@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>archive</title>
+    <title>종달새 서재</title>
     <link>https://jongdalsae11.github.io/</link>
     <description>경쟁 프로그래밍 · 알고리즘 연구 · 글쓰기</description>
     <language>ko</language>
     <lastBuildDate>Mon, 31 Aug 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="https://jongdalsae11.github.io/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
-      <title>실수체 $R$의 완비성</title>
+      <title>실수체 R의 완비성</title>
       <link>https://jongdalsae11.github.io/posts/2026-08-31-completeness-of-the-real-numbers.html</link>
       <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-31-completeness-of-the-real-numbers.html</guid>
       <pubDate>Mon, 31 Aug 2026 00:00:00 GMT</pubDate>

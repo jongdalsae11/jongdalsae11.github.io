@@ -78,6 +78,21 @@ for (const f of allHtml) {
   }
 }
 
+/* 사이트 이름은 nav.js 한 곳에만 적어 두고 여기서 읽어 옵니다 */
+const SITE_NAME = (r('assets/js/nav.js').match(/SITE_NAME\s*=\s*'([^']*)'/) || [,'archive'])[1];
+
+/* ── 제목 속 수식 ──────────────────────────────────
+   브라우저 탭·검색 결과·공유 미리보기에는 $R$ 이 그대로 뜨면 안 되므로
+   util.js 의 변환기를 그대로 빌려 씁니다. (규칙을 두 벌 두지 않으려고
+   파일을 읽어 그 안의 함수만 꺼내 옵니다)                        */
+const U = (() => {
+  const src = r('assets/js/util.js');
+  const box = { window: {}, document: undefined };
+  new Function('window', src)(box.window);
+  return box.window.U;
+})();
+const mp = (t) => U.mathPlain(t);
+
 /* ── 2. sitemap.xml ──────────────────────────────── */
 const pages = fs.readdirSync(ROOT)
   .filter((f) => f.endsWith('.html') && !['404.html', 'write.html'].includes(f))
@@ -105,18 +120,18 @@ const rfc822 = (d) => new Date(d + 'T09:00:00+09:00').toUTCString();
 const label = (id) => (S.labels && S.labels[id]) || id;
 
 const items = byDate.slice(0, 30).map((p) => `    <item>
-      <title>${xesc(p.title)}</title>
+      <title>${xesc(mp(p.title))}</title>
       <link>${SITE_URL}/posts/${encodeURI(p.file)}</link>
       <guid isPermaLink="true">${SITE_URL}/posts/${encodeURI(p.file)}</guid>
       <pubDate>${rfc822(p.date)}</pubDate>
       <category>${xesc(label(p.category))}</category>
-      <description>${xesc(p.summary || p.title)}</description>
+      <description>${xesc(mp(p.summary || p.title))}</description>
     </item>`).join('\n');
 
 if (w('feed.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>${xesc(S.siteName || 'archive')}</title>
+    <title>${xesc(SITE_NAME)}</title>
     <link>${SITE_URL}/</link>
     <description>경쟁 프로그래밍 · 알고리즘 연구 · 글쓰기</description>
     <language>ko</language>
@@ -127,12 +142,13 @@ ${items}
 </rss>
 `)) changed.push('feed.xml');
 
+
 /* ── 4. 글 HTML 메타 동기화 ──────────────────────── */
 for (const p of S.posts) {
   const f = 'posts/' + p.file;
   if (!fs.existsSync(path.join(ROOT, f))) continue;
   let src = r(f);
-  const desc = xesc(p.summary || p.title);
+  const desc = xesc(mp(p.summary || p.title));
   const url = `${SITE_URL}/posts/${encodeURI(p.file)}`;
 
   const set = (re, replacement) => {
@@ -141,7 +157,9 @@ for (const p of S.posts) {
   set(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${desc}">`);
   set(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${desc}">`);
   set(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${url}">`);
-  set(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${xesc(p.title)}">`);
+  set(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${xesc(mp(p.title))}">`);
+  /* 브라우저 탭 제목 — 수식 기호가 그대로 뜨지 않게 */
+  set(/<title>[^<]*<\/title>/, `<title>${xesc(mp(p.title))} — ${SITE_NAME}</title>`);
   /* 글 분류를 본문에 심어 색 테마가 자동 적용되게 함 */
   if (!/data-cat="/.test(src))
     src = src.replace('<body ', `<body data-cat="${p.category}" `);
@@ -153,7 +171,7 @@ for (const p of S.posts) {
     acc.push(acc.length ? acc[acc.length - 1] + '/' + part : part);
     return acc;
   }, []);
-  const crumb = ['글', ...chain.map(label), `<b>${xesc(p.title)}</b>`].join(' / ');
+  const crumb = ['글', ...chain.map(label), `<b>${xesc(mp(p.title))}</b>`].join(' / ');
   if (/data-crumb="/.test(src)) src = src.replace(/data-crumb="[^"]*"/, `data-crumb="${crumb}"`);
 
   if (w(f, src)) changed.push(f);

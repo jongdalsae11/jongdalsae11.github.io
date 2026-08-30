@@ -1054,3 +1054,10 @@ a.stat--misc:hover { border-color: var(--line); background: var(--surface-2); }
   color: var(--faint);
 }
 .rating--live { font-weight: 600; }
+
+/* 제목 안의 수식 — KaTeX 대신 유니코드로 옮긴 조각 */
+.tmath {
+  font-family: var(--math, Georgia, serif);
+  font-style: italic;
+  letter-spacing: 0.01em;
+}

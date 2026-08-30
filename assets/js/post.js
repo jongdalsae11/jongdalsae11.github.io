@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function listOf(items, emptyMsg) {
       if (!items.length) return '<li class="empty">' + emptyMsg + '</li>';
       return items.map(function (p) {
-        return '<li><a href="./' + p.file + '">' + U.esc(p.title) + '</a>' +
+        return '<li><a href="./' + p.file + '">' + U.mathify(p.title) + '</a>' +
           '<span class="bl-why">' + U.label(p.category) + ' · ' + U.dot(p.date) +
           (p.summary ? ' — ' + U.esc(p.summary) : '') + '</span></li>';
       }).join('');
@@ -174,16 +174,16 @@ document.addEventListener('DOMContentLoaded', function () {
         var y = 40 + i * rowH;
         edges += '<path class="cg-edge" fill="none" d="M' + (W / 2 - 8) + ',' + midY +
                  ' C' + (W / 2 - 90) + ',' + midY + ' 200,' + y + ' 128,' + y + '"/>';
-        nds += node(120, y, p.title, false, 'end', './' + p.file);
+        nds += node(120, y, U.mathPlain(p.title), false, 'end', './' + p.file);
       });
       citedBy.forEach(function (p, i) {
         var y = 40 + i * rowH;
         edges += '<path class="cg-edge" fill="none" d="M' + (W / 2 + 8) + ',' + midY +
                  ' C' + (W / 2 + 90) + ',' + midY + ' ' + (W - 200) + ',' + y +
                  ' ' + (W - 128) + ',' + y + '"/>';
-        nds += node(W - 120, y, p.title, false, 'start', './' + p.file);
+        nds += node(W - 120, y, U.mathPlain(p.title), false, 'start', './' + p.file);
       });
-      nds += node(W / 2, midY, me.title, true, 'middle', null);
+      nds += node(W / 2, midY, U.mathPlain(me.title), true, 'middle', null);
 
       g.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" ' +
                     'role="img" aria-label="인용 관계 그래프">' + edges + nds + '</svg>';
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!p) return '<span class="pn-item pn-empty"></span>';
       return '<a class="pn-item ' + cls + '" href="./' + p.file + '">' +
         '<span class="pn-dir">' + dir + '</span>' +
-        '<span class="pn-title">' + U.esc(p.title) + '</span></a>';
+        '<span class="pn-title">' + U.mathify(p.title) + '</span></a>';
     }
 
     fl.forEach(function (f) {

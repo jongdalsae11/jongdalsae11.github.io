@@ -20,7 +20,7 @@
     return list.map(function (p) {
       return '<li' + U.catVar(p.category) + '><a class="row plain" href="' + postHref(p) + '">' +
         '<span class="row-date">' + dot(p.date) + '</span>' +
-        '<span class="row-title">' + esc(p.title) + '</span>' +
+        '<span class="row-title">' + U.mathify(p.title) + '</span>' +
         '<span class="row-cat">' + U.catPath(p.category, ' › ') + '</span>' +
         '<span class="row-tags">' + tags(p.tags) + '</span></a></li>';
     }).join('');
@@ -82,7 +82,7 @@
       el.innerHTML = pinned.map(function (p) {
         return '<a class="pin plain" href="' + postHref(p) + '">' +
           '<span class="pin-label">PINNED · ' + esc(U.catPath(p.category, ' › ')) + '</span>' +
-          '<p class="pin-title">' + esc(p.title) + '</p>' +
+          '<p class="pin-title">' + U.mathify(p.title) + '</p>' +
           '<p class="pin-desc">' + esc(p.summary || '') + '</p></a>';
       }).join('');
     },
@@ -121,7 +121,7 @@
       el.innerHTML = list.map(function (r) {
         return '<li' + U.catVar(r.category) + '><a class="mini plain" href="' + ROOT +
           '/library.html#' + encodeURIComponent(r.ref) + '">' +
-          '<span class="mini-title">' + esc(r.title) + '</span>' +
+          '<span class="mini-title">' + U.mathify(r.title) + '</span>' +
           '<span class="mini-sub">' + esc(U.catPath(r.category, ' › ')) +
             (r.year ? ' · ' + r.year : '') + '</span>' +
           '<span class="mini-tag mono">' + esc(r.ref) + '</span></a></li>';
@@ -135,7 +135,7 @@
       if (!list.length) { el.innerHTML = '<li class="empty">문제가 없습니다.</li>'; return; }
       el.innerHTML = list.map(function (p) {
         return '<li><a class="mini plain" href="' + ROOT + '/archive.html">' +
-          '<span class="mini-title">' + esc(p.title) + '</span>' +
+          '<span class="mini-title">' + U.mathify(p.title) + '</span>' +
           '<span class="mini-sub">' + dot(p.date) + ' · ' +
             (diffLabel[p.diff] || p.diff) + '</span>' +
           '<span class="mini-tag mono">' + esc((p.tags || [])[0] || '') + '</span></a></li>';
@@ -233,7 +233,7 @@
       function item(r) {
         return '<li class="ref" id="' + r.ref + '">' +
           '<div class="ref-body">' +
-            '<div class="ref-title">' + linkify(esc(r.title), r.url) + '</div>' +
+            '<div class="ref-title">' + linkify(U.mathify(r.title), r.url) + '</div>' +
             '<div class="ref-src">' + esc(r.author || '') +
               (r.year ? ' · ' + r.year : '') + '</div>' +
             (r.desc ? '<p class="ref-desc">' + esc(r.desc) + '</p>' : '') +
@@ -312,7 +312,7 @@
       el.innerHTML = (S.problems || []).slice().sort(byDateDesc).map(function (p) {
         return '<li class="prob" data-diff="' + p.diff + '">' +
           '<div class="prob-head">' +
-            '<h3 class="prob-title">' + linkify(esc(p.title), p.url) + '</h3>' +
+            '<h3 class="prob-title">' + linkify(U.mathify(p.title), p.url) + '</h3>' +
             '<div class="prob-meta">' + tags(p.tags) +
               '<span class="tag tag--dim">' + (diffLabel[p.diff] || p.diff) + '</span></div>' +
           '</div>' +
@@ -344,7 +344,7 @@
         var href = r.post ? ROOT + '/posts/' + r.post : (real(r.url) ? r.url : null);
         var inner =
           '<p class="card-meta">' + esc(r.kind || '') + ' · ' + (r.year || '') + '</p>' +
-          '<p class="card-title">' + esc(r.title) + '</p>' +
+          '<p class="card-title">' + U.mathify(r.title) + '</p>' +
           '<p class="card-desc">' + esc(r.desc || '') + '</p>' +
           '<div class="row-tags">' + tags(r.tags) + '</div>' +
           (r.post ? '<p class="card-link mono">관련 글 →</p>'

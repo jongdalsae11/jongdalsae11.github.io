@@ -67,7 +67,7 @@ window.SITE = {
   flows: [
     { id: 'analysis-basics',
       label: '해석학의 기초',
-      posts: ['2026-08-23-sequence-limit.html', '2026-08-23-cauchy-sequence.html'] }
+      posts: ['2026-08-23-sequence-limit.html', '2026-08-23-cauchy-sequence.html', '2026-08-31-completeness-of-the-real-numbers.html'] }
   ],
 
   posts: [
