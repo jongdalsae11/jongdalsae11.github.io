@@ -932,3 +932,15 @@ body.fs-linked #btn-link::before { content: '● '; font-size: 0.8em; }
   cursor: pointer;
 }
 .w-fname button:hover { color: var(--cyan); border-color: rgba(56,189,248,.45); }
+
+/* 선택 서식바의 글·자료 연결 단추 — 다른 서식과 성격이 달라 색으로 구분 */
+.sel-bar button[data-a="wiki"] { color: var(--wiki); }
+.sel-bar button[data-a="wiki"]:hover {
+  color: #d3c4ff;
+  background: color-mix(in srgb, var(--wiki) 14%, transparent);
+}
+.sel-bar button[data-a="cite"] { color: var(--purple); }
+.sel-bar button[data-a="cite"]:hover {
+  color: #c98cff;
+  background: rgba(168, 85, 247, 0.14);
+}

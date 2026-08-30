@@ -71,6 +71,14 @@ window.SITE = {
   ],
 
   posts: [
+    { title: '코시 열의 완비성에서 상한공리로',
+      file: '2026-08-31-cahchy-sequence-s-completeness-to-supremum-axiom.html',
+      category: 'math/analysis',
+      date: '2026-08-31',
+      tags: ['수열', '극한', '실수'],
+      links: ['2026-08-31-completeness-of-the-real-numbers.html'],
+      summary: '상한공리에서 완비성을 보이는 과정의 역과정에 대하여.' },
+
     { title: '실수체 $\R$의 완비성',
       file: '2026-08-31-completeness-of-the-real-numbers.html',
       category: 'math/analysis',

@@ -50,7 +50,13 @@
   }
 
   /* ── 확장 마크다운 파서 ──────────────────────────── */
-  function inlineLinks(s) {
+  /* unmask: 가려 둔 수식을 원래 글자로 되돌리는 함수.
+     [[실수체 $R$의 완비성]] 처럼 대상 제목에 수식이 있으면, 가려진 채로는
+     content.js 의 제목과 대조가 안 되어 «아직 쓰지 않은 글» 로 떨어집니다.
+     그래서 찾을 때만 원문으로 되돌립니다. (보이는 이름은 가린 채 둬야
+     그 안의 수식이 나중에 KaTeX 로 렌더됩니다)                      */
+  function inlineLinks(s, unmask) {
+    unmask = unmask || function (x) { return x; };
     /* 자료 인용 {{Ref-xx}} */
     s = s.replace(/\{\{([A-Za-z0-9_-]+)\}\}/g, function (_, id) {
       return '<span class="cite" data-ref="' + id + '"></span>';
@@ -59,7 +65,7 @@
        대상은 글 제목이나 파일명. 보이는 이름은 문장에 자연스럽게 녹이려고
        쓰며, 수식도 들어갈 수 있습니다. (수식은 이미 가려져 있으므로 안전) */
     return s.replace(/\[\[([^\]|]+)(?:\|([^\]]*))?\]\]/g, function (_, target, alias) {
-      target = target.trim();
+      target = unmask(target.trim());
       var hit = (S.posts || []).filter(function (p) {
         return p.title === target || p.file === target;
       })[0];
@@ -83,10 +89,14 @@
       return '\u0003' + (math.length - 1) + '\u0004';
     });
 
+    var unmask = function (x) {
+      return String(x).replace(/\u0003(\d+)\u0004/g, function (_, i) { return math[+i]; });
+    };
+
     s = s.replace(/\^\[((?:[^\[\]]|\[\[[^\]]*\]\]|\{\{[^}]*\}\})*)\]/g, function (_, b) {
-      return '\u0001' + inlineLinks(b) + '\u0002';
+      return '\u0001' + inlineLinks(b, unmask) + '\u0002';
     });
-    s = inlineLinks(s);
+    s = inlineLinks(s, unmask);
     s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
     s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     s = s.replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>');
@@ -737,7 +747,14 @@
     var li = e.target.closest('li[data-i]');
     if (!li) return;
     var d = pdata[+li.getAttribute('data-i')];
-    if (d.ins) { insert(d.ins); closePicker(); return; }
+    if (d.ins) {
+      /* 자료 인용은 고른 글자를 지우지 않고 그 뒤에 붙입니다.
+         («범위 최소 질의{{Ref-A02}}» 처럼 문장이 그대로 남아야 합니다) */
+      ed.setSelectionRange(selBefore.end, selBefore.end);
+      insert(d.ins);
+      closePicker();
+      return;
+    }
     /* 글 연결 — 글자를 고르고 눌렀다면 그것을 보이는 이름으로 씁니다.
        예) "ε-N 논법" 을 고르고 «수열의 극한» 을 누르면
            [[수열의 극한|ε-N 논법]] 이 되어, 문장은 그대로 두고

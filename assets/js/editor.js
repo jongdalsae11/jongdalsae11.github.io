@@ -316,6 +316,10 @@
     '<span class="sb-sep"></span>' +
     '<button data-a="k">링크</button>' +
     '<button data-a="sn">여백주석</button>' +
+    '<span class="sb-sep"></span>' +
+    '<button data-a="wiki" title="고른 글자를 그대로 두고 내 글로 연결합니다">글</button>' +
+    '<button data-a="cite" title="고른 자리에 자료 인용을 넣습니다">자료</button>' +
+    '<span class="sb-sep"></span>' +
     '<button data-a="key" title="선택한 부분을 통째로 강조 박스에 — 수식블록·코드블록도 그대로 됩니다">강조</button>';
 
   selBar.addEventListener('mousedown', function (e) {
@@ -325,6 +329,15 @@
     var a = b.getAttribute('data-a');
     if (a === 'sn') surround('^[', ']', '설명');
     else if (a === 'key') blockWrap();
+    else if (a === 'wiki' || a === 'cite') {
+      /* 선택을 유지한 채 선택창을 엽니다 — 고른 글자가 링크 이름이 됩니다.
+         지금 이 mousedown 은 곧 document 까지 올라가 «바깥을 눌렀으니 닫아라»
+         처리에 걸립니다. 그래서 한 틱 미뤄 그 뒤에 열어야 바로 닫히지 않습니다. */
+      var btn = document.getElementById(a === 'wiki' ? 'btn-wiki' : 'btn-cite');
+      hideBar();
+      if (btn) setTimeout(function () { btn.click(); }, 0);
+      return;
+    }
     else if (SHORTCUT[a]) SHORTCUT[a]();
     hideBar();
   });
