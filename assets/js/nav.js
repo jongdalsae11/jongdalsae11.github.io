@@ -347,7 +347,8 @@ var SITE_SUB  = 'SKYLARK ARCHIVE';
   function render(q) {
     var s = q.trim().toLowerCase();
     var hits = !s ? index.slice(0, 8) : index.filter(function (it) {
-      return (it.t + ' ' + it.s + ' ' + it.tags.join(' ')).toLowerCase().indexOf(s) >= 0;
+      /* 한글 그대로도, 영문 자판 상태로 친 것도 찾습니다 */
+      return window.U.matches(it.t + ' ' + it.s + ' ' + it.tags.join(' '), s);
     }).slice(0, 12);
     results.innerHTML = hits.length
       ? hits.map(function (it) {

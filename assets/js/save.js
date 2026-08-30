@@ -259,7 +259,10 @@
           done.push('(옛 파일 posts/' + was.id + ' 은 직접 지워 주세요)');
         }
       }
-      if (renamed && dropOld && W.markEditing) W.markEditing(reg.idVal, mode);
+      /* 저장한 뒤부터는 «이것을 고치는 중» 으로 표시해 둡니다.
+         이게 없으면 곧바로 날짜나 제목만 고쳐 다시 저장했을 때
+         도구가 새 글로 알아듣고 같은 글이 두 번 등록됩니다.       */
+      if (W.markEditing) W.markEditing(reg.idVal, mode);
 
       show('저장 완료 — ' + done.join(' · ') + '  이제 git push 만 하면 됩니다', 'ok');
       document.querySelector('.w-tabs button[data-tab="register"]').click();

@@ -249,7 +249,8 @@
   function drawSlash() {
     var q = ed.value.slice(slashAt + 1, ed.selectionStart).toLowerCase();
     slashHits = CMDS.filter(function (c) {
-      return !q || c.k.toLowerCase().indexOf(q) >= 0 || c.hint.indexOf(q) >= 0;
+      /* 한글 그대로도, 영문 자판 상태로 친 것도(증명 → wmdaud) 찾습니다 */
+      return !q || window.U.matches(c.k, q) || c.hint.indexOf(q) >= 0;
     });
     if (!slashHits.length) {
       slash.innerHTML = '<div class="slash-empty">해당하는 블록이 없습니다</div>';

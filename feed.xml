@@ -5,8 +5,16 @@
     <link>https://jongdalsae11.github.io/</link>
     <description>경쟁 프로그래밍 · 알고리즘 연구 · 글쓰기</description>
     <language>ko</language>
-    <lastBuildDate>Sun, 23 Aug 2026 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Mon, 31 Aug 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="https://jongdalsae11.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>실수체 $R$의 완비성</title>
+      <link>https://jongdalsae11.github.io/posts/2026-08-31-completeness-of-the-real-numbers.html</link>
+      <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-31-completeness-of-the-real-numbers.html</guid>
+      <pubDate>Mon, 31 Aug 2026 00:00:00 GMT</pubDate>
+      <category>해석학</category>
+      <description>완비성 공리를 통한 실수체의 완비를 다룬다.</description>
+    </item>
     <item>
       <title>코시 열</title>
       <link>https://jongdalsae11.github.io/posts/2026-08-23-cauchy-sequence.html</link>

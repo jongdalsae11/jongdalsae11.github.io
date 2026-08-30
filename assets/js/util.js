@@ -38,6 +38,51 @@ window.U = (function () {
     return out;
   }
 
+  /* ── 한글 → 두벌식 자판 글쇠 ───────────────────────
+     영문 입력 상태에서 한글 낱말을 그대로 치면(예: 증명 → wmdaud)
+     그것으로도 찾을 수 있게 하려고, 낱말을 자모로 쪼갠 뒤
+     두벌식 자판의 글쇠로 바꿔 둡니다.
+     반대로 «친 글자를 한글로 조합» 하는 방식은 조합 규칙이 복잡한데,
+     이쪽은 표 하나면 되고 실수할 여지가 없습니다.               */
+  var K_CHO = ['r','R','s','e','E','f','a','q','Q','t','T','d','w','W','c','z','x','v','g'];
+  var K_JUNG = ['k','o','i','O','j','p','u','P','h','hk','ho','hl','y',
+                'n','nj','np','nl','b','m','ml','l'];
+  var K_JONG = ['','r','R','rt','s','sw','sg','e','f','fr','fa','fq','ft','fx','fv','fg',
+                'a','q','qt','t','T','d','w','c','z','x','v','g'];
+  /* 자모 하나만 있는 글자(ㄱ ㅏ 등)도 받습니다 */
+  var K_SINGLE = {
+    'ㄱ':'r','ㄲ':'R','ㄴ':'s','ㄷ':'e','ㄸ':'E','ㄹ':'f','ㅁ':'a','ㅂ':'q','ㅃ':'Q',
+    'ㅅ':'t','ㅆ':'T','ㅇ':'d','ㅈ':'w','ㅉ':'W','ㅊ':'c','ㅋ':'z','ㅌ':'x','ㅍ':'v','ㅎ':'g',
+    'ㅏ':'k','ㅐ':'o','ㅑ':'i','ㅒ':'O','ㅓ':'j','ㅔ':'p','ㅕ':'u','ㅖ':'P','ㅗ':'h',
+    'ㅛ':'y','ㅜ':'n','ㅠ':'b','ㅡ':'m','ㅣ':'l'
+  };
+
+  function qwerty(t) {
+    var out = '';
+    t = String(t || '');
+    for (var i = 0; i < t.length; i++) {
+      var ch = t[i], code = t.charCodeAt(i) - 0xac00;
+      if (code >= 0 && code <= 11171) {
+        out += K_CHO[Math.floor(code / 588)] +
+               K_JUNG[Math.floor((code % 588) / 28)] +
+               K_JONG[code % 28];
+      } else if (K_SINGLE[ch]) {
+        out += K_SINGLE[ch];
+      } else {
+        out += ch;
+      }
+    }
+    return out.toLowerCase();
+  }
+
+  /* 검색어가 이름에 맞는가 — 한글 그대로 / 영문 자판 상태 둘 다 봅니다 */
+  function matches(name, q) {
+    if (!q) return true;
+    q = String(q).toLowerCase();
+    name = String(name || '');
+    return name.toLowerCase().indexOf(q) >= 0 || qwerty(name).indexOf(q) >= 0;
+  }
+
   /* ── 한글 → 영어 낱말 ─────────────────────────────
      브라우저에는 번역기가 없으므로 낱말집으로 옮깁니다.
      낱말집에 없는 말만 로마자로 떨어집니다.
@@ -405,6 +450,7 @@ window.U = (function () {
 
   return {
     esc: esc, slug: slug, romanize: romanize, translate: translate,
+    qwerty: qwerty, matches: matches,
     dot: dot, today: today, label: label,
     tags: tags, real: real, linkify: linkify, byDateDesc: byDateDesc,
     postByFile: postByFile, refById: refById, sortedPosts: sortedPosts,

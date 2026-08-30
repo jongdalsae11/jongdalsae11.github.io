@@ -79,14 +79,6 @@ window.SITE = {
       links: ['2026-08-23-cauchy-sequence.html'],
       summary: '완비성 공리를 통한 실수체의 완비를 다룬다.' },
 
-    { title: '실수체 $\R$의 완비성',
-      file: '2026-08-23-completeness-of-the-real-numbers.html',
-      category: 'math/analysis',
-      date: '2026-08-23',
-      tags: ['수열', '실수'],
-      links: ['2026-08-23-cauchy-sequence.html'],
-      summary: '완비성 공리를 통한 실수체의 완비를 다룬다.' },
-
     { title: '코시 열',
       file: '2026-08-23-cauchy-sequence.html',
       category: 'math/analysis',

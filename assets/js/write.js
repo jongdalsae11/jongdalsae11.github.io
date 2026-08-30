@@ -354,6 +354,7 @@
         title: F.title.value, cat: F.cat.value, date: F.date.value,
         tags: F.tags.value, summary: F.summary.value,
         slug: F.slug ? F.slug.value : '',
+        editing: window.WRITE && window.WRITE.editing || null,
         pinned: F.pinned.checked, body: ed.value
       }));
       var s = $('#w-saved');
@@ -370,6 +371,14 @@
       F.tags.value = d.tags || ''; F.summary.value = d.summary || '';
       if (F.slug) F.slug.value = d.slug || '';
       F.pinned.checked = !!d.pinned; ed.value = d.body || '';
+      /* 새로고침해도 «고치는 중» 상태가 이어지도록 */
+      if (d.editing) {
+        setTimeout(function () {
+          if (window.WRITE && window.WRITE.markEditing) {
+            window.WRITE.markEditing(d.editing.id, d.editing.kind);
+          }
+        }, 0);
+      }
     } else {
       F.date.value = todayStr();
       F.cat.value = 'essay';
@@ -714,7 +723,7 @@
   function drawPicker(q) {
     var s = q.toLowerCase();
     var hits = pdata.filter(function (d) {
-      return (d.main + ' ' + d.sub + ' ' + (d.find || '')).toLowerCase().indexOf(s) >= 0;
+      return U.matches(d.main + ' ' + d.sub + ' ' + (d.find || ''), s);
     });
     plist.innerHTML = hits.length
       ? hits.map(function (d, i) {

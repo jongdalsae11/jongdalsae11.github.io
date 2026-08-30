@@ -70,7 +70,7 @@
     function draw() {
       var q = typing(), have = chosen();
       var hits = RANK.filter(function (r) {
-        return !q || r.tag.toLowerCase().indexOf(q) >= 0 || have.indexOf(r.tag) >= 0;
+        return U.matches(r.tag, q) || have.indexOf(r.tag) >= 0;
       }).slice(0, limit || 14);
 
       if (!hits.length) { box.innerHTML = ''; return; }
@@ -335,7 +335,7 @@
 
   function drawPick(q) {
     q = (q || '').toLowerCase();
-    var hits = pool.filter(function (d) { return !q || d.t.toLowerCase().indexOf(q) >= 0; });
+    var hits = pool.filter(function (d) { return U.matches(d.t, q); });
     cur = 0;
     plist.innerHTML = hits.length
       ? hits.map(function (d, i) {
