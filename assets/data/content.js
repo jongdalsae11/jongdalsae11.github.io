@@ -71,6 +71,14 @@ window.SITE = {
   ],
 
   posts: [
+    { title: '데이터의 무손실 압축',
+      file: '2026-08-31-lossless-compression.html',
+      category: 'school/informatics',
+      date: '2026-08-31',
+      tags: ['압축'],
+      links: [],
+      summary: '무손실 압축에 대한 글' },
+
     { title: '코시 열의 완비성에서 상한공리로',
       file: '2026-08-31-cahchy-sequence-s-completeness-to-supremum-axiom.html',
       category: 'math/analysis',
