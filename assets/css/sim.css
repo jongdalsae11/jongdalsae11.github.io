@@ -1,55 +1,50 @@
 /* ============================================================
-   demo.css — 글 안의 인터랙티브 블록
+   sim.css — 시뮬레이션 페이지 (sims/*.html) 안쪽
+   글에 끼워졌을 때의 바깥 액자는 post.css 의 .sim-embed 가 맡습니다.
    ============================================================ */
 
-.dm, .demo-host {
-  margin: 2.2em 0;
-  padding: 14px 16px 12px;
-  border: 1px solid var(--line-soft);
-  border-left: 3px solid var(--cyan);
-  border-radius: 0 10px 10px 0;
-  background: var(--thm-bg, #16162a);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.38);
-}
+/* ── 끼워진 상태: 사이드바·헤더·꼬리말 없이 알맹이만 ── */
+html.sim-embed,
+html.sim-embed body { background: transparent; }
+html.sim-embed body { margin: 0; padding: 0; }
+html.sim-embed #main,
+html.sim-embed .page { margin: 0; padding: 0; max-width: none; }
+html.sim-embed .sim-chrome { display: none; }
 
-.dm-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.dm-kicker {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  color: var(--cyan);
-  text-transform: uppercase;
-}
-.dm-title { margin: 0; font-size: 0.95rem; color: var(--text); }
-.dm-note {
-  margin: 10px 0 0;
-  font-size: 0.74rem;
-  line-height: 1.65;
+/* ── 단독으로 열었을 때의 머리 ── */
+.sim-page .page-head { margin-bottom: 18px; }
+.sim-back { margin-top: 26px; font-size: 0.8rem; color: var(--faint); }
+
+.sm { margin: 0; }
+.sm-note {
+  margin: 12px 0 0;
+  font-size: 0.78rem;
+  line-height: 1.7;
   color: var(--faint);
 }
-.dm-error { margin: 0; font-size: 0.78rem; color: var(--orange); }
+.sm-error { margin: 0; font-size: 0.8rem; color: var(--orange); }
 
 /* ── 조작칸 ───────────────────────────────────────── */
-.dm-ctls {
+.sm-ctls {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 18px;
-  margin: 12px 0 10px;
+  margin: 0 0 14px;
 }
-.dm-ctl { display: flex; align-items: center; gap: 8px; }
-.dm-ctl-label { font-size: 0.72rem; color: var(--soft); white-space: nowrap; }
-.dm-ctl-val {
+.sm-ctl { display: flex; align-items: center; gap: 8px; }
+.sm-ctl-label { font-size: 0.74rem; color: var(--soft); white-space: nowrap; }
+.sm-ctl-val {
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   color: var(--cyan);
   min-width: 4.2em;
 }
 
-.dm-input { font: inherit; accent-color: var(--cyan); }
-.dm-input--range { width: 150px; }
-.dm-input--select, .dm-input--text {
-  font-size: 0.78rem;
+.sm-input { font: inherit; accent-color: var(--cyan); }
+.sm-input--range { width: 150px; }
+.sm-input--select, .sm-input--text {
+  font-size: 0.8rem;
   color: var(--text);
   background: var(--bg);
   border: 1px solid var(--line-soft);
@@ -57,13 +52,13 @@
   padding: 4px 8px;
   outline: none;
 }
-.dm-input--text { min-width: 190px; }
-.dm-input--select:focus, .dm-input--text:focus { border-color: var(--cyan); }
+.sm-input--text { min-width: 190px; }
+.sm-input--select:focus, .sm-input--text:focus { border-color: var(--cyan); }
 
 /* ── 단추 · 재생 ──────────────────────────────────── */
-.dm-btn {
+.sm-btn {
   font: inherit;
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   color: var(--soft);
   background: var(--surface);
   border: 1px solid var(--line-soft);
@@ -72,19 +67,19 @@
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
 }
-.dm-btn:hover { color: var(--cyan); border-color: rgba(56, 189, 248, 0.45); }
-.dm-btn--sm { font-size: 0.7rem; padding: 3px 9px; }
-.dm-btn--go {
+.sm-btn:hover { color: var(--cyan); border-color: rgba(56, 189, 248, 0.45); }
+.sm-btn--sm { font-size: 0.72rem; padding: 3px 9px; }
+.sm-btn--go {
   color: var(--cyan);
   border-color: rgba(56, 189, 248, 0.5);
   background: rgba(56, 189, 248, 0.12);
 }
-.dm-play { display: flex; align-items: center; gap: 7px; margin: 10px 0 0; flex-wrap: wrap; }
-.dm-speed { margin-left: auto; }
+.sm-play { display: flex; align-items: center; gap: 7px; margin: 12px 0 0; flex-wrap: wrap; }
+.sm-speed { margin-left: auto; }
 
 /* ── 무대 · 수치판 ────────────────────────────────── */
-.dm-stage { margin: 4px 0 0; }
-.dm-stats {
+.sm-stage { margin: 0; }
+.sm-stats {
   display: flex;
   flex-wrap: wrap;
   gap: 6px 16px;
@@ -92,15 +87,15 @@
   padding-top: 10px;
   border-top: 1px solid var(--line-soft);
   font-family: var(--mono);
-  font-size: 0.73rem;
+  font-size: 0.75rem;
   color: var(--soft);
 }
-.dm-stat b { font-weight: 400; color: var(--faint); margin-right: 6px; }
-.dm-stat--ok span { color: var(--emerald, #34d399); }
-.dm-stat--bad span { color: var(--orange); font-weight: 600; }
+.sm-stat b { font-weight: 400; color: var(--faint); margin-right: 6px; }
+.sm-stat--ok span { color: var(--emerald, #34d399); }
+.sm-stat--bad span { color: var(--orange); font-weight: 600; }
 
 /* ══════════════════════════════════════════════════
-   RLE
+   런 렝스 부호화
    ══════════════════════════════════════════════════ */
 .rle-strip {
   display: flex;
@@ -121,7 +116,7 @@
   gap: 4px;
   margin-top: 10px;
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
 }
 .rle-tok {
   color: var(--soft);
@@ -149,11 +144,11 @@
   align-items: baseline;
   margin: 0 0 7px;
   font-family: var(--mono);
-  font-size: 0.76rem;
+  font-size: 0.78rem;
 }
 .lz-tag {
   flex: 0 0 62px;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   color: var(--faint);
   text-align: right;
 }
@@ -168,7 +163,7 @@
 }
 .lz-s { color: var(--cyan); }
 .lz-out, .lz-back { color: var(--soft); overflow-wrap: anywhere; }
-.lz-cmp { margin-left: 10px; font-size: 0.66rem; color: var(--emerald, #34d399); }
+.lz-cmp { margin-left: 10px; font-size: 0.68rem; color: var(--emerald, #34d399); }
 
 .lz-dic { display: flex; flex-wrap: wrap; gap: 4px; }
 .lz-row {
@@ -177,7 +172,7 @@
   border: 1px solid var(--line-soft);
   border-radius: 4px;
   padding: 1px 6px;
-  font-size: 0.7rem;
+  font-size: 0.72rem;
 }
 .lz-row.base { color: var(--faint); }
 .lz-row b { color: var(--cyan); font-weight: 400; margin-right: 5px; }
@@ -191,7 +186,7 @@
 .lz-kwk {
   margin: 10px 0 0;
   padding: 7px 10px;
-  font-size: 0.73rem;
+  font-size: 0.75rem;
   line-height: 1.6;
   color: var(--text);
   border-left: 2px solid var(--orange);
@@ -209,7 +204,7 @@
   max-height: 5.4em;
   overflow: hidden;
   font-family: var(--mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   line-height: 1.6;
   color: var(--faint);
   background: var(--bg);
@@ -222,7 +217,7 @@
 .cc-name {
   flex: 0 0 48px;
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   color: var(--soft);
 }
 .cc-track {
@@ -241,23 +236,22 @@
   flex: 0 0 46px;
   text-align: right;
   font-family: var(--mono);
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   color: var(--soft);
 }
 
 /* ── 좁은 화면 ────────────────────────────────────── */
 @media (max-width: 640px) {
-  .dm-input--range { width: 110px; }
-  .dm-input--text { min-width: 130px; }
+  .sm-input--range { width: 110px; }
+  .sm-input--text { min-width: 130px; }
   .lz-line { flex-direction: column; gap: 2px; }
   .lz-tag { text-align: left; flex: none; }
-  .dm-speed { margin-left: 0; }
+  .sm-speed { margin-left: 0; }
 }
 
 /* ── 인쇄 ─────────────────────────────────────────── */
 @media print {
-  .dm-ctls, .dm-play { display: none; }
-  .dm { break-inside: avoid; box-shadow: none; background: none; }
+  .sm-ctls, .sm-play { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .cc-fill, .rle-run, .rle-tok { transition: none; }

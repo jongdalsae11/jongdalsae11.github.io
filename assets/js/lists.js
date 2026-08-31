@@ -229,6 +229,42 @@
     /* ── 자료정리집 ────────────────────────────────────
        해시가 카테고리면 그 분류만, 해시가 Ref-xx 면
        그 자료가 속한 분류를 열고 해당 항목을 강조합니다.  */
+    /* ── 시뮬레이션 목록 ────────────────────────────
+       자료정리집과 같은 생김새로 두었습니다. 글에 넣는 방법도 같으니까요.
+       [Sim-xx] 를 누르면 인용 태그가 그대로 복사됩니다.            */
+    sims: function (el) {
+      var ROOT = window.ROOT || '.';
+      var all = S.sims || [];
+      if (!all.length) { el.innerHTML = '<p class="empty">아직 없음</p>'; return; }
+
+      el.innerHTML = '<ul class="ref-list">' + all.map(function (r) {
+        var post = r.post ? U.postByFile(r.post) : null;
+        return '<li class="ref" id="' + esc(r.ref) + '">' +
+          '<div class="ref-body">' +
+            '<div class="ref-title"><a href="' + ROOT + '/sims/' + esc(r.file) + '">' +
+              U.mathify(r.title) + '</a></div>' +
+            '<div class="ref-src">' + esc(U.catPath(r.category, ' › ')) +
+              (post ? ' · 쓰인 글 <a href="' + ROOT + '/posts/' + esc(post.file) + '">' +
+                      U.mathify(post.title) + '</a>' : '') + '</div>' +
+            (r.desc ? '<p class="ref-desc">' + esc(r.desc) + '</p>' : '') +
+            '<div class="row-tags">' + tags(r.tags) + '</div>' +
+          '</div>' +
+          '<span class="ref-fmt tag tag--dim">SIM</span>' +
+          '<button class="ref-id" data-cite="{{' + esc(r.ref) + '}}">[' + esc(r.ref) + ']</button>' +
+        '</li>';
+      }).join('') + '</ul>';
+
+      el.querySelectorAll('.ref-id').forEach(function (b) {
+        b.addEventListener('click', function () {
+          navigator.clipboard.writeText(b.getAttribute('data-cite')).then(function () {
+            var t = b.textContent;
+            b.textContent = '복사됨 ✓';
+            setTimeout(function () { b.textContent = t; }, 1400);
+          });
+        });
+      });
+    },
+
     library: function (el) {
       function item(r) {
         return '<li class="ref" id="' + r.ref + '">' +

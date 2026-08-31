@@ -41,6 +41,9 @@ document.addEventListener('DOMContentLoaded', function () {
     mark.remove();
   });
 
+  /* ── 3. 시뮬레이션 인용 → 액자·링크로 살리기 ────── */
+  U.simFrames(body);
+
   /* ── 4. 읽는 시간 (한국어 분당 500자 기준) ──────── */
   /* 수식은 세 벌로 들어 있어 글자 수가 부풀려집니다 — 빼고 셉니다 */
   var plain = body.cloneNode(true);

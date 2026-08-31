@@ -10,6 +10,10 @@ var SITE_NAME = '종달새 서재';
 var SITE_SUB  = 'SKYLARK ARCHIVE';
 
 (function () {
+  /* 시뮬레이션이 글 안에 끼워진 상태(?embed=1)면 껍데기를 그리지 않습니다.
+     좁은 액자 안에 사이드바와 헤더가 또 들어가면 안 되니까요.        */
+  if (window.EMBED) return;
+
   var ROOT = window.ROOT || '.';
   var S = window.SITE || { posts: [], library: [], labels: {} };
   var here = (location.pathname.split('/').pop() || 'index.html');
@@ -27,6 +31,7 @@ var SITE_SUB  = 'SKYLARK ARCHIVE';
     { key: 'posts',   label: '글',        base: 'posts.html',
       tree: window.U.catTree(S.posts), total: (S.posts || []).length },
     { label: '글 지도',       href: 'graph.html' },
+    { label: '시뮬레이션',    href: 'sims.html' },
     { label: '문제 아카이브', href: 'archive.html' },
     { key: 'library', label: '자료정리집', base: 'library.html',
       tree: window.U.catTree(S.library), total: (S.library || []).length },
@@ -324,6 +329,10 @@ var SITE_SUB  = 'SKYLARK ARCHIVE';
     .concat((S.library || []).map(function (r) {
       return { t: r.title, s: '자료 · ' + window.U.catPath(r.category) + ' · ' + r.ref,
                tags: r.tags || [], href: ROOT + '/library.html#' + encodeURIComponent(r.category) };
+    }))
+    .concat((S.sims || []).map(function (r) {
+      return { t: r.title, s: '시뮬레이션 · ' + r.ref,
+               tags: r.tags || [], href: ROOT + '/sims/' + r.file };
     }))
     .concat((S.problems || []).map(function (p) {
       return { t: p.title, s: '문제', tags: p.tags || [], href: ROOT + '/archive.html' };

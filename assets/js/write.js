@@ -55,10 +55,30 @@
      content.js 의 제목과 대조가 안 되어 «아직 쓰지 않은 글» 로 떨어집니다.
      그래서 찾을 때만 원문으로 되돌립니다. (보이는 이름은 가린 채 둬야
      그 안의 수식이 나중에 KaTeX 로 렌더됩니다)                      */
+  /* 인용 태그가 시뮬레이션인지 — 등록돼 있거나 Sim- 으로 시작하면.
+     («Sim-» 으로 시작하는데 등록이 안 된 경우도 시뮬레이션으로 봐야
+      자료정리집이 아니라 sims 를 확인하라는 안내가 나갑니다)          */
+  function isSim(id) {
+    return !!U.simByRef(id) || /^Sim-/i.test(id);
+  }
+  /* 그 줄에 시뮬레이션 인용 하나만 있는가 (있으면 액자로 끼워 넣습니다) */
+  function simLineOf(line) {
+    var m = String(line).trim().match(/^\{\{([A-Za-z0-9_-]+)(?:\s+([^}]*))?\}\}$/);
+    return (m && isSim(m[1])) ? m : null;
+  }
+  function isSimLine(line) { return !!simLineOf(line); }
+
   function inlineLinks(s, unmask) {
     unmask = unmask || function (x) { return x; };
-    /* 자료 인용 {{Ref-xx}} */
-    s = s.replace(/\{\{([A-Za-z0-9_-]+)\}\}/g, function (_, id) {
+    /* 인용 {{Ref-xx}} · {{Sim-xx}} · {{Sim-xx 잡음=20}}
+       자료면 여백주석으로, 시뮬레이션이면 그리로 가는 링크로 살아납니다.
+       (한 줄에 혼자 둔 {{Sim-xx}} 는 parse 가 먼저 잡아 액자로 만듭니다) */
+    s = s.replace(/\{\{([A-Za-z0-9_-]+)(?:\s+([^}]*))?\}\}/g, function (_, id, opts) {
+      if (isSim(id)) {
+        return '<span class="simcite" data-sim="' + id + '"' +
+               (opts && opts.trim() ? ' data-opts="' + esc(opts.trim()) + '"' : '') +
+               '></span>';
+      }
       return '<span class="cite" data-ref="' + id + '"></span>';
     });
     /* 글 연결 [[대상]] 또는 [[대상|보이는 이름]]
@@ -164,21 +184,6 @@
         var spec = ln.slice(3).trim();
         var sp = spec.match(/^(\S+)\s*([\s\S]*)$/) || [];
 
-        /* ::: demo 이름  —  글 안에 넣는 인터랙티브 블록.
-           안쪽 줄은 "잡음 = 10" 같은 설정으로 그대로 넘겨 줍니다.       */
-        if ((sp[1] || '').toLowerCase() === 'demo') {
-          var dname = (sp[2] || '').trim().split(/\s+/)[0] || '';
-          var dbody = []; i++;
-          while (i < L.length && L[i].trim() !== ':::') { dbody.push(L[i]); i++; }
-          i++;
-          out.push(at(at0,
-            '<div class="demo-host" data-demo="' + esc(dname) + '"' +
-            (dbody.length ? ' data-opts="' + esc(dbody.join('\n')) + '"' : '') +
-            '><p class="dm-note">‹' + esc(dname) +
-            '› 데모 — 브라우저에서 열면 움직입니다.</p></div>'));
-          continue;
-        }
-
         var kind = ENV[(sp[1] || '').toLowerCase()] || ENV[sp[1]];
         if (kind) {
           var envTitle = (sp[2] || '').trim();
@@ -235,6 +240,22 @@
         continue;
       }
       if (/^---\s*$/.test(ln)) { out.push(at(at0, '<hr>')); i++; continue; }
+
+      /* 시뮬레이션 인용이 한 줄에 혼자 있으면 → 글 안에 통째로 끼워 넣습니다.
+         («…는 {{Sim-RLE}} 에서 볼 수 있다» 처럼 문장 속에 있으면 그냥 링크)
+         액자는 util.js 의 simFrames 가 채웁니다. 여기서 주소를 굳혀 두면
+         글(posts/)과 미리보기(맨 위)의 깊이가 달라 한쪽이 깨집니다.      */
+      var simLine = simLineOf(ln);
+      if (simLine) {
+        out.push(at(at0,
+          '<div class="sim-embed" data-sim="' + esc(simLine[1]) + '"' +
+          (simLine[2] && simLine[2].trim()
+            ? ' data-opts="' + esc(simLine[2].trim()) + '"' : '') + '>' +
+          '<p class="sim-fallback">‹' + esc(simLine[1]) +
+          '› 시뮬레이션 — 브라우저에서 열면 움직입니다.</p></div>'));
+        i++; continue;
+      }
+
       if (/^\s*$/.test(ln)) { i++; continue; }
 
       /* ── 문단 ────────────────────────────────────────
@@ -247,7 +268,8 @@
         if (txt.length) { chunks.push(inline(esc(txt.join(' ')))); txt = []; }
       }
       while (i < L.length && !/^\s*$/.test(L[i]) &&
-             !/^(#|```|>|[-*]\s|---|!!|:::|<figure)/.test(L[i])) {
+             !/^(#|```|>|[-*]\s|---|!!|:::|<figure)/.test(L[i]) &&
+             !isSimLine(L[i])) {
         if (/^\$\$/.test(L[i])) {
           var m = [], oneLine = /^\$\$[\s\S]*\$\$\s*$/.test(L[i]);
           if (oneLine) {
@@ -311,10 +333,10 @@
           throwOnError: false
         });
       }
-      /* 글 안의 데모를 미리보기에서도 돌립니다.
-         reuse: 설정이 그대로면 이미 만든 것을 옮겨 와, 한 글자 칠 때마다
-         데모가 처음으로 돌아가 버리는 일이 없게 합니다.            */
-      if (window.Demo) window.Demo.mountAll(pv, { reuse: true, eager: true });
+      /* 시뮬레이션 인용도 미리보기에서 그대로 살립니다.
+         한 글자 칠 때마다 미리보기를 다시 그리므로, 이미 채워 둔 액자는
+         그대로 두고(dataset.ready) 새로 생긴 것만 채웁니다.          */
+      U.simFrames(pv, { reuse: true });
 
       if (window.hljs) {
         pv.querySelectorAll('pre code').forEach(function (c) { window.hljs.highlightElement(c); });
@@ -725,15 +747,21 @@
                    find: (p.tags || []).join(' ') + ' ' + p.category,
                    file: p.file, title: p.title };
         })
-      : (S.library || []).map(function (r) {
+      /* 인용 목록에는 자료와 시뮬레이션이 함께 뜹니다 — 넣는 방법이 같으니까 */
+      : (S.sims || []).map(function (r) {
+          return { main: r.title, sub: '시뮬레이션 · ' + r.ref,
+                   find: (r.tags || []).join(' ') + ' ' + (r.category || '') + ' ' + (r.desc || '') +
+                         ' 시뮬레이션 sim',
+                   ins: '{{' + r.ref + '}}' };
+        }).concat((S.library || []).map(function (r) {
           return { main: r.title, sub: r.ref + ' · ' + (r.author || ''),
                    find: (r.tags || []).join(' ') + ' ' + r.category + ' ' + (r.desc || ''),
                    ins: '{{' + r.ref + '}}' };
-        });
+        }));
     picker.hidden = false;
     placePicker();
     pq.value = '';
-    pq.placeholder = mode === 'wiki' ? '연결할 글 검색…' : '인용할 자료 검색…';
+    pq.placeholder = mode === 'wiki' ? '연결할 글 검색…' : '인용할 자료 · 시뮬레이션 검색…';
     drawPicker('');
     pq.focus();
   }
@@ -900,7 +928,6 @@
       '  <link rel="stylesheet" href="../assets/css/layout.css">\n' +
       '  <link rel="stylesheet" href="../assets/css/components.css">\n' +
       '  <link rel="stylesheet" href="../assets/css/post.css">\n' +
-      '  <link rel="stylesheet" href="../assets/css/demo.css">\n' +
       '</head>\n<body data-crumb="글 / ' + esc(catLabel) +
       ' / <b>' + esc(F.title.value) + '</b>">\n' +
       '  <main id="main">\n    <div class="page page--post">\n      <article>\n' +
@@ -924,7 +951,6 @@
       '  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"><\/script>\n' +
       '  <script src="../assets/js/code.js"><\/script>\n' +
       '  <script src="../assets/js/post.js"><\/script>\n' +
-      '  <script src="../assets/js/demo.js"><\/script>\n' +
       '  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"><\/script>\n' +
       '  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"\n' +
       '    onload="renderMathInElement(document.body,{delimiters:[{left:\'$$\',right:\'$$\',display:true},{left:\'$\',right:\'$\',display:false}],throwOnError:false})"><\/script>\n' +

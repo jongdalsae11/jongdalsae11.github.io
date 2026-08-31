@@ -64,10 +64,38 @@ for (const f of onDisk)
 for (const rs of S.research || [])
   if (rs.post && !files.has(rs.post)) errors.push(`연구 "${rs.title}" 이 없는 글을 가리킴: ${rs.post}`);
 
+/* 시뮬레이션 — 인용 태그는 자료와 같은 이름 공간을 씁니다 ({{Sim-xx}}) */
+const simDir = path.join(ROOT, 'sims');
+const simOnDisk = fs.existsSync(simDir)
+  ? fs.readdirSync(simDir).filter((f) => f.endsWith('.html')) : [];
+const simFiles = new Set((S.sims || []).map((s) => s.file));
+for (const s of S.sims || []) {
+  if (!s.ref) errors.push(`시뮬레이션 "${s.title}" 에 ref 없음`);
+  else if (seenRef.has(s.ref)) errors.push(`인용 태그 중복: ${s.ref}`);
+  seenRef.add(s.ref);
+  if (!s.file || !fs.existsSync(path.join(simDir, s.file)))
+    errors.push(`시뮬레이션 파일 없음: sims/${s.file} ("${s.title}")`);
+  if (s.post && !files.has(s.post))
+    errors.push(`시뮬레이션 "${s.title}" 이 없는 글을 가리킴: ${s.post}`);
+}
+for (const f of simOnDisk)
+  if (!simFiles.has(f)) notes.push(`content.js 에 등록되지 않은 시뮬레이션: sims/${f}`);
+
+/* 글이 인용한 {{Sim-xx}} 가 실제로 있는지 */
+for (const p of S.posts) {
+  const f = path.join(ROOT, 'posts', p.file);
+  if (!fs.existsSync(f)) continue;
+  for (const m of fs.readFileSync(f, 'utf-8').matchAll(/data-sim="([^"]+)"/g)) {
+    if (![...(S.sims || [])].some((s) => s.ref === m[1]))
+      errors.push(`"${p.title}" 이 없는 시뮬레이션을 인용: ${m[1]}`);
+  }
+}
+
 /* 내부 링크 검사 */
 const allHtml = [
   ...fs.readdirSync(ROOT).filter((f) => f.endsWith('.html')).map((f) => f),
-  ...onDisk.map((f) => 'posts/' + f)
+  ...onDisk.map((f) => 'posts/' + f),
+  ...simOnDisk.map((f) => 'sims/' + f)
 ];
 for (const f of allHtml) {
   const src = r(f).replace(/<code[\s\S]*?<\/code>/g, '');
@@ -105,7 +133,9 @@ const urls = [
     .map((f) => `  <url><loc>${SITE_URL}/${f}</loc><priority>0.7</priority></url>`),
   ...byDate.map((p) =>
     `  <url><loc>${SITE_URL}/posts/${encodeURI(p.file)}</loc>` +
-    `<lastmod>${p.date}</lastmod><priority>0.8</priority></url>`)
+    `<lastmod>${p.date}</lastmod><priority>0.8</priority></url>`),
+  ...(S.sims || []).map((s) =>
+    `  <url><loc>${SITE_URL}/sims/${encodeURI(s.file)}</loc><priority>0.6</priority></url>`)
 ];
 if (w('sitemap.xml',
   `<?xml version="1.0" encoding="UTF-8"?>\n` +
@@ -211,7 +241,8 @@ for (const f of allHtml) {
 /* ── 결과 ────────────────────────────────────────── */
 const RED = '\x1b[31m', YEL = '\x1b[33m', GRN = '\x1b[32m', DIM = '\x1b[2m', OFF = '\x1b[0m';
 console.log(`${DIM}── 사이트 점검 ──${OFF}`);
-console.log(`글 ${S.posts.length} · 자료 ${S.library.length} · 문제 ${S.problems.length} · 연구 ${S.research.length}`);
+console.log(`글 ${S.posts.length} · 자료 ${S.library.length} · 시뮬 ${(S.sims || []).length}` +
+            ` · 문제 ${S.problems.length} · 연구 ${S.research.length}`);
 
 if (errors.length) {
   console.log(`\n${RED}오류 ${errors.length}건${OFF}`);

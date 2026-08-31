@@ -237,15 +237,15 @@
     { k: '증명',      hint: ':::',  run: function () { envWrap('증명'); } },
     { k: '예',        hint: ':::',  run: function () { envWrap('예'); } },
     { k: '참고',      hint: ':::',  run: function () { envWrap('참고'); } },
-    { k: '데모',      hint: ':::demo', run: function () {
-        var s = ed.selectionStart;
-        setRange(s, ed.selectionEnd, ':::demo \n:::', s + 8, s + 8);
+    { k: '시뮬레이션', hint: '{{Sim-}}', run: function () {
+        var b = document.getElementById('btn-cite'); if (b) b.click();
       } },
     { k: '구분선',    hint: '---',  run: function () { setRange(ed.selectionStart, ed.selectionEnd, '\n---\n'); } },
     { k: '링크',      hint: '[]()', run: function () { SHORTCUT.k(); } },
     { k: '이미지',    hint: 'img',  run: function () { var b = document.getElementById('btn-img'); if (b) b.click(); } },
     { k: '글 연결',   hint: '[[]]', run: function () { var b = document.getElementById('btn-wiki'); if (b) b.click(); } },
     { k: '자료 인용', hint: '{{}}', run: function () { var b = document.getElementById('btn-cite'); if (b) b.click(); } }
+
   ];
 
   var slashAt = -1, slashIdx = 0, slashHits = [];

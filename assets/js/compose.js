@@ -167,6 +167,10 @@
         var t = n.tagName.toLowerCase(), inner = inline(n);
         if (n.classList.contains('sidenote')) s += '^[' + inner + ']';
         else if (n.classList.contains('cite')) s += '{{' + (n.getAttribute('data-ref') || inner) + '}}';
+        else if (n.classList.contains('simcite')) {
+          s += '{{' + (n.getAttribute('data-sim') || inner) +
+               (n.getAttribute('data-opts') ? ' ' + n.getAttribute('data-opts') : '') + '}}';
+        }
         else if (n.classList.contains('wikilink')) {
           /* 보이는 이름이 대상 글 제목과 다르면 [[대상|보이는 이름]] 으로 되돌립니다 */
           var tgt = U.postByFile(n.getAttribute('href') || '');
@@ -198,10 +202,10 @@
           Array.prototype.forEach.call(el.children, function (li, i) {
             lines.push((t === 'ol' ? (i + 1) + '. ' : '- ') + one(inline(li)));
           });
-        } else if (el.classList.contains('demo-host')) {
-          var dn = el.getAttribute('data-demo') || '';
-          var dop = el.getAttribute('data-opts') || '';
-          lines.push(':::demo ' + dn + (dop ? '\n' + dop : '') + '\n:::');
+        } else if (el.classList.contains('sim-embed')) {
+          var sn = el.getAttribute('data-sim') || '';
+          var sop = el.getAttribute('data-opts') || '';
+          lines.push('{{' + sn + (sop ? ' ' + sop : '') + '}}');
         } else if (el.classList.contains('thmbox')) {
           /* 정리 환경 — 머리글은 다시 :::종류 제목 으로 되돌립니다 */
           var head = el.querySelector('.thm-head');

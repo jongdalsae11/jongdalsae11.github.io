@@ -8,10 +8,14 @@
   <url><loc>https://jongdalsae11.github.io/library.html</loc><priority>0.7</priority></url>
   <url><loc>https://jongdalsae11.github.io/posts.html</loc><priority>0.7</priority></url>
   <url><loc>https://jongdalsae11.github.io/research.html</loc><priority>0.7</priority></url>
+  <url><loc>https://jongdalsae11.github.io/sims.html</loc><priority>0.7</priority></url>
   <url><loc>https://jongdalsae11.github.io/posts/2026-08-31-lossless-compression.html</loc><lastmod>2026-08-31</lastmod><priority>0.8</priority></url>
   <url><loc>https://jongdalsae11.github.io/posts/2026-08-31-cahchy-sequence-s-completeness-to-supremum-axiom.html</loc><lastmod>2026-08-31</lastmod><priority>0.8</priority></url>
   <url><loc>https://jongdalsae11.github.io/posts/2026-08-31-completeness-of-the-real-numbers.html</loc><lastmod>2026-08-31</lastmod><priority>0.8</priority></url>
   <url><loc>https://jongdalsae11.github.io/posts/2026-08-23-cauchy-sequence.html</loc><lastmod>2026-08-23</lastmod><priority>0.8</priority></url>
   <url><loc>https://jongdalsae11.github.io/posts/2026-08-23-sequence-limit.html</loc><lastmod>2026-08-23</lastmod><priority>0.8</priority></url>
   <url><loc>https://jongdalsae11.github.io/posts/2026-08-17-writing-guide.html</loc><lastmod>2026-08-17</lastmod><priority>0.8</priority></url>
+  <url><loc>https://jongdalsae11.github.io/sims/rle.html</loc><priority>0.6</priority></url>
+  <url><loc>https://jongdalsae11.github.io/sims/lzw.html</loc><priority>0.6</priority></url>
+  <url><loc>https://jongdalsae11.github.io/sims/compress-compare.html</loc><priority>0.6</priority></url>
 </urlset>

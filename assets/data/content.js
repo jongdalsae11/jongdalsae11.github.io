@@ -131,6 +131,35 @@ window.SITE = {
       tags: ['RMQ', '논문'] }
   ],
 
+  /* ── 시뮬레이션 ────────────────────────────────────
+     sims/ 폴더 안의 페이지 하나 = 시뮬레이션 하나.
+     글에서는 자료와 같은 인용 형식으로 씁니다.
+       {{Sim-RLE}}            한 줄에 혼자 두면 → 글 안에 그대로 끼워짐
+       문장 속 {{Sim-RLE}}     → 시뮬레이션으로 가는 작은 링크
+       {{Sim-RLE 잡음=20}}     → 조작칸 초기값을 글마다 다르게
+     ref:  인용할 때 쓰는 고유 태그 (Sim- 으로 시작하게 두면 눈에 띕니다)
+     file: sims/ 안의 파일명
+     post: 이 시뮬레이션이 딸린 글 (선택 — 목록에서 «쓰인 글» 로 보입니다) */
+  sims: [
+    { ref: 'Sim-RLE', title: '런 렝스 부호화 — 잡음이 늘면 어떻게 되나',
+      file: 'rle.html', category: 'school/informatics',
+      post: '2026-08-31-lossless-compression.html',
+      tags: ['압축', 'RLE'],
+      desc: '잡음 슬라이더를 밀어 «AAAA 는 줄지만 ABCABC 는 늘어나는» 경계를 직접 넘어 봅니다.' },
+
+    { ref: 'Sim-LZW', title: 'LZW — 사전이 자라는 걸 한 칸씩',
+      file: 'lzw.html', category: 'school/informatics',
+      post: '2026-08-31-lossless-compression.html',
+      tags: ['압축', 'LZW'],
+      desc: '인코더와 디코더를 나란히 돌려 KwKwK 예외를 실제로 만나게 합니다.' },
+
+    { ref: 'Sim-CMP', title: '같은 데이터, 두 방식',
+      file: 'compress-compare.html', category: 'school/informatics',
+      post: '2026-08-31-lossless-compression.html',
+      tags: ['압축'],
+      desc: '같은 입력에 RLE 와 LZW 를 같은 잣대(bit)로 걸어 이기는 쪽이 뒤집히는 것을 봅니다.' }
+  ],
+
   /* ── 직접 만든 문제 ────────────────────────────────
      diff: easy | mid | hard                                  */
   problems: [

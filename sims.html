@@ -2,13 +2,13 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="직접 만든 경쟁 프로그래밍 문제 모음.">
+  <meta name="description" content="글 안에 끼워 쓰는 인터랙티브 시뮬레이션 모음.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>문제 아카이브 — 종달새 서재</title>
+  <title>시뮬레이션 — 종달새 서재</title>
   <meta property="og:type" content="website">
-  <meta property="og:title" content="문제 아카이브 — 종달새 서재">
-  <meta property="og:description" content="직접 만든 경쟁 프로그래밍 문제 모음.">
-  <meta property="og:url" content="https://jongdalsae11.github.io/archive.html">
+  <meta property="og:title" content="시뮬레이션 — 종달새 서재">
+  <meta property="og:description" content="글 안에 끼워 쓰는 인터랙티브 시뮬레이션 모음.">
+  <meta property="og:url" content="https://jongdalsae11.github.io/sims.html">
   <meta property="og:image" content="https://jongdalsae11.github.io/assets/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/feed.xml">
@@ -21,23 +21,18 @@
   <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="./assets/css/components.css?v=5924ec29">
 </head>
-<body data-crumb="~ / <b>문제 아카이브</b>">
+<body data-crumb="시뮬레이션">
   <main id="main">
     <div class="page">
       <div class="page-head">
-        <p class="eyebrow">PROBLEM SETTING</p>
-        <h1>문제 아카이브</h1>
-        <p class="lede">직접 만든 CP 문제들. 문제 하나하나를 독립된 작품처럼 전시합니다.</p>
+        <p class="eyebrow">SIMULATIONS</p>
+        <h1>시뮬레이션</h1>
+        <p class="lede">글로 설명하기보다 직접 밀어 보는 편이 빠른 것들.
+          하나가 곧 <span class="mono">sims/</span> 안의 페이지 하나입니다.
+          오른쪽 <span class="mono">[Sim-xx]</span> 를 누르면 인용 태그가 복사되고,
+          글 본문에 그대로 붙이면 그 자리에 끼워집니다.</p>
       </div>
-
-      <div class="chips" id="diff-chips">
-        <button class="chip on" data-diff="all">전체</button>
-        <button class="chip" data-diff="easy">쉬움</button>
-        <button class="chip" data-diff="mid">보통</button>
-        <button class="chip" data-diff="hard">어려움</button>
-      </div>
-
-      <ul class="prob-list" data-render="problems"></ul>
+      <div data-render="sims"></div>
     </div>
   </main>
   <footer><p>&copy; 2026 jongdalsae</p></footer>

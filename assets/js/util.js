@@ -320,6 +320,125 @@ window.U = (function () {
   function refById(id) {
     return (S().library || []).filter(function (r) { return r.ref === id; })[0] || null;
   }
+  function simByRef(id) {
+    return (S().sims || []).filter(function (r) { return r.ref === id; })[0] || null;
+  }
+
+  /* ── 글 안의 시뮬레이션 인용 살리기 ───────────────────
+     파서는 자리만 잡아 둡니다 (data-sim 이 붙은 빈 칸).
+       <div class="sim-embed" data-sim="Sim-RLE" data-opts="잡음=20">
+       <span class="simcite" data-sim="Sim-RLE"></span>
+     주소는 여기서 window.ROOT 를 보고 만듭니다. 글은 posts/ 안에, 미리보기는
+     맨 위에 있어서 깊이가 다르기 때문에, 파일에 주소를 굳혀 두면 한쪽이 깨집니다.
+
+     끼워 넣을 때는 iframe 을 씁니다. 글과 시뮬레이션의 CSS·스크립트가 서로
+     간섭하지 않고, 시뮬레이션이 터져도 글은 멀쩡합니다. iframe 은 제 키를
+     스스로 못 정하므로 안쪽에서 «지금 이만큼» 을 알려 주면 여기서 맞춥니다. */
+  var simCache = {};
+  function simFrames(root, opt) {
+    root = root || document;
+    opt = opt || {};
+    var R = (window.ROOT || '.');
+
+    function url(sim, opts, embed) {
+      var q = [];
+      if (embed) q.push('embed=1', 'ref=' + encodeURIComponent(sim.ref));
+      String(opts || '').split(/[,\n]/).forEach(function (kv) {
+        var m = kv.match(/^\s*([^=]+?)\s*=\s*(.*?)\s*$/);
+        if (m) q.push(encodeURIComponent(m[1]) + '=' + encodeURIComponent(m[2]));
+      });
+      return R + '/sims/' + sim.file + (q.length ? '?' + q.join('&') : '');
+    }
+
+    /* ── 문장 속 인용 → 작은 링크 ── */
+    Array.prototype.forEach.call(root.querySelectorAll('span.simcite[data-sim]'), function (sp) {
+      var id = sp.getAttribute('data-sim');
+      var sim = simByRef(id);
+      var a = document.createElement('a');
+      a.className = 'simlink';
+      if (sim) {
+        a.href = url(sim, sp.getAttribute('data-opts'), false);
+        a.textContent = sim.title;
+        a.title = sim.desc || '';
+      } else {
+        a.className = 'simlink simlink--missing';
+        a.href = R + '/sims.html';
+        a.textContent = id + ' (등록되지 않은 시뮬레이션)';
+      }
+      sp.parentNode.replaceChild(a, sp);
+    });
+
+    /* ── 한 줄에 혼자 있던 인용 → 액자에 끼워 넣기 ── */
+    var frames = [];
+    Array.prototype.forEach.call(root.querySelectorAll('div.sim-embed[data-sim]'), function (box) {
+      if (box.dataset.ready) return;
+      var id = box.getAttribute('data-sim');
+      var sim = simByRef(id);
+
+      /* 미리보기는 한 글자 칠 때마다 통째로 다시 그려집니다. 그때마다
+         iframe 을 새로 띄우면 시뮬레이션이 계속 처음으로 돌아가므로,
+         설정이 그대로면 이미 살려 둔 액자를 옮겨 옵니다.             */
+      var key = id + '|' + (box.getAttribute('data-opts') || '');
+      if (opt.reuse && simCache[key] && simCache[key].dataset.ready) {
+        var keep = simCache[key];
+        var src = box.getAttribute('data-src');    /* 줄번호는 새것으로 */
+        if (src) keep.setAttribute('data-src', src);
+        box.parentNode.replaceChild(keep, box);
+        return;
+      }
+
+      box.innerHTML = '';
+      box.dataset.ready = '1';
+      if (opt.reuse) simCache[key] = box;
+
+      if (!sim) {
+        box.classList.add('sim-embed--missing');
+        box.innerHTML = '<p class="sim-miss">‹' + esc(id) + '› 은 content.js 의 ' +
+                        'sims 에 없는 시뮬레이션입니다.</p>';
+        return;
+      }
+
+      var open = url(sim, box.getAttribute('data-opts'), false);
+      var head = document.createElement('div');
+      head.className = 'sim-embed-head';
+      head.innerHTML =
+        '<span class="sim-kicker">시뮬레이션</span>' +
+        '<span class="sim-embed-title">' + esc(sim.title) + '</span>' +
+        '<a class="sim-open" href="' + open + '" target="_blank" rel="noopener">새 창에서 ↗</a>';
+      box.appendChild(head);
+
+      var fr = document.createElement('iframe');
+      fr.className = 'sim-frame';
+      fr.setAttribute('loading', 'lazy');
+      fr.setAttribute('title', sim.title);
+      fr.setAttribute('data-ref', sim.ref);
+      fr.src = url(sim, box.getAttribute('data-opts'), true);
+      fr.height = 260;
+      box.appendChild(fr);
+      frames.push(fr);
+    });
+
+    if (frames.length && !simFrames._bound) {
+      simFrames._bound = true;
+      window.addEventListener('message', function (e) {
+        var d = e.data;
+        if (!d || d.type !== 'sim-height') return;
+        var h = Math.max(120, d.h | 0);
+        var list = document.querySelectorAll('iframe.sim-frame');
+        /* 보낸 창으로 찾는 것이 정확합니다. 그게 안 될 때만 표를 봅니다. */
+        var hit = null;
+        Array.prototype.forEach.call(list, function (f) {
+          if (f.contentWindow && f.contentWindow === e.source) hit = f;
+        });
+        if (!hit && d.ref) {
+          Array.prototype.forEach.call(list, function (f) {
+            if (!hit && f.getAttribute('data-ref') === d.ref) hit = f;
+          });
+        }
+        if (hit) hit.height = h;
+      });
+    }
+  }
 
   /* ── 계층 분류 ───────────────────────────────────────
      분류는 슬래시로 계층을 만듭니다.  예) 'math/number-theory'
@@ -517,6 +636,15 @@ window.U = (function () {
       else seenRef[r.ref] = 1;
     });
 
+    (s.sims || []).forEach(function (r) {
+      if (!r.ref) warn.push('시뮬레이션 "' + r.title + '" 에 ref 가 없습니다.');
+      else if (seenRef[r.ref]) warn.push('인용 태그가 중복됩니다: ' + r.ref);
+      else seenRef[r.ref] = 1;
+      if (!r.file) warn.push('시뮬레이션 "' + r.title + '" 에 file 이 없습니다.');
+      if (r.post && !postByFile(r.post))
+        warn.push('시뮬레이션 "' + r.title + '" 이 없는 글을 가리킵니다: ' + r.post);
+    });
+
     (s.research || []).forEach(function (r) {
       if (r.post && !postByFile(r.post))
         warn.push('연구 "' + r.title + '" 이 없는 글을 가리킵니다: ' + r.post);
@@ -538,6 +666,7 @@ window.U = (function () {
     dot: dot, today: today, label: label,
     tags: tags, real: real, linkify: linkify, byDateDesc: byDateDesc,
     postByFile: postByFile, refById: refById, sortedPosts: sortedPosts,
+    simByRef: simByRef, simFrames: simFrames,
     catColor: catColor, catVar: catVar, applyTheme: applyTheme,
     catTop: catTop, catDepth: catDepth, catChain: catChain,
     catMatches: catMatches, catPath: catPath, catTree: catTree,

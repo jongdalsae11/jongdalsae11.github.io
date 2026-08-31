@@ -496,7 +496,6 @@ a.pn-item:hover .pn-title { color: var(--cyan); }
   .post-body a.wikilink { color: inherit; border-bottom: 1px solid #999; }
   .post-body a.wikilink::before { display: none; }
 }
-}
 
 /* 흐름 이름표 — 이전/다음 위에 "어느 흐름의 몇 번째" 를 알려 줍니다 */
 .post-nav { position: relative; }
@@ -518,3 +517,79 @@ a.pn-item:hover .pn-title { color: var(--cyan); }
 .pn-flow a:hover { border-bottom-color: var(--orange); }
 .pn-flow .pn-step { color: var(--faint); }
 .post-nav + .post-nav { margin-top: 1.6em; padding-top: 1.2em; }
+
+/* ══════════════════════════════════════════════════
+   시뮬레이션 인용
+   · 한 줄에 혼자 둔 {{Sim-xx}} → 액자에 끼워 넣기
+   · 문장 속 {{Sim-xx}}        → 그리로 가는 작은 링크
+   (안쪽 시뮬레이션의 생김새는 sim.css 가 맡습니다)
+   ══════════════════════════════════════════════════ */
+.sim-embed {
+  margin: 2.2em 0;
+  padding: 12px 14px 10px;
+  border: 1px solid var(--line-soft);
+  border-left: 3px solid var(--cyan);
+  border-radius: 0 10px 10px 0;
+  background: var(--thm-bg, #16162a);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.38);
+}
+.sim-embed-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.sim-kicker {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+.sim-embed-title { font-size: 0.92rem; color: var(--text); }
+.sim-open {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: var(--faint);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--line);
+}
+.sim-open:hover { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+.sim-frame {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  transition: height 0.15s ease;
+}
+
+/* 스크립트가 아직 안 돌았을 때 자리에 남는 안내 */
+.sim-fallback, .sim-miss {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--faint);
+}
+.sim-embed--missing { border-left-color: var(--orange); }
+.sim-embed--missing .sim-miss { color: var(--orange); }
+
+/* 문장 속 인용 — 글 연결과 헷갈리지 않게 청록으로, 뒤에 작은 표시 */
+.post-body a.simlink {
+  color: var(--cyan);
+  text-decoration: none;
+  border-bottom: 1.5px dotted color-mix(in srgb, var(--cyan) 60%, transparent);
+}
+.post-body a.simlink::after {
+  content: '▸';
+  font-size: 0.72em;
+  margin-left: 3px;
+  vertical-align: 0.08em;
+}
+.post-body a.simlink:hover { border-bottom-style: solid; }
+.post-body a.simlink--missing { color: var(--orange); border-bottom-color: var(--orange); }
+
+@media print {
+  .sim-frame { display: none; }
+  .sim-embed { break-inside: avoid; box-shadow: none; background: none; }
+}
