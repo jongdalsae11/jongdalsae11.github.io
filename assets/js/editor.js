@@ -237,6 +237,10 @@
     { k: '증명',      hint: ':::',  run: function () { envWrap('증명'); } },
     { k: '예',        hint: ':::',  run: function () { envWrap('예'); } },
     { k: '참고',      hint: ':::',  run: function () { envWrap('참고'); } },
+    { k: '데모',      hint: ':::demo', run: function () {
+        var s = ed.selectionStart;
+        setRange(s, ed.selectionEnd, ':::demo \n:::', s + 8, s + 8);
+      } },
     { k: '구분선',    hint: '---',  run: function () { setRange(ed.selectionStart, ed.selectionEnd, '\n---\n'); } },
     { k: '링크',      hint: '[]()', run: function () { SHORTCUT.k(); } },
     { k: '이미지',    hint: 'img',  run: function () { var b = document.getElementById('btn-img'); if (b) b.click(); } },

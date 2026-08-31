@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="./assets/css/components.css?v=5924ec29">
   <link rel="stylesheet" href="./assets/css/post.css?v=0247aae7">
+  <link rel="stylesheet" href="./assets/css/demo.css?v=c62e1e27">
   <link rel="stylesheet" href="./assets/css/write.css?v=fd5858f9">
 </head>
 <body class="page-write" data-crumb="~ / <b>새로 쓰기</b>">
@@ -293,6 +294,10 @@
                 <tr><td><code>$x^2$</code></td><td>문장 안의 수식</td></tr>
                 <tr><td><code>$$ … $$</code></td><td>가운데 수식</td></tr>
                 <tr><td><code>^[내용]</code></td><td>여백주석</td></tr>
+                <tr><td><code>:::demo rle</code><br><code>:::</code></td>
+                    <td>인터랙티브 데모 넣기<br>
+                        안쪽에 <code>잡음 = 10</code> 처럼 설정<br>
+                        지금 있는 것 — <code>rle</code> · <code>lzw</code> · <code>compress-compare</code></td></tr>
                 <tr><td><code>[[글 제목]]</code></td><td>내 글 연결</td></tr>
                 <tr><td><code>[[글 제목|보이는 이름]]</code></td>
                     <td>문장에 맞춰 다른 이름으로 — 수식도 됩니다<br>
@@ -318,7 +323,7 @@
   <footer><p>&copy; 2026 jongdalsae</p></footer>
 
   <script>window.ROOT='.'</script>
-  <script src="./assets/data/content.js?v=0dcb981b"></script>
+  <script src="./assets/data/content.js?v=35fc382d"></script>
   <script src="./assets/js/util.js?v=0df70ac9"></script>
   <script src="./assets/js/nav.js?v=1b37b837"></script>
   <!-- defer 라서 write.js 보다 늦게 도착합니다. 도착하는 즉시 미리보기를 다시 그리게
@@ -329,9 +334,10 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
     onload="window.WRITE && window.WRITE.refresh()"
     onerror="window.WRITE && window.WRITE.mathFailed()"></script>
-  <script src="./assets/js/write.js?v=57cd29ea"></script>
-  <script src="./assets/js/editor.js?v=da831423"></script>
-  <script src="./assets/js/compose.js?v=db5bba08"></script>
+  <script src="./assets/js/write.js?v=472da1c7"></script>
+  <script src="./assets/js/editor.js?v=ce79a1bf"></script>
+  <script src="./assets/js/compose.js?v=da829859"></script>
+  <script src="./assets/js/demo.js?v=780c9a30"></script>
   <script src="./assets/js/sync.js?v=5eaf6975"></script>
   <script src="./assets/js/save.js?v=f1e0b16b"></script>
 </body>

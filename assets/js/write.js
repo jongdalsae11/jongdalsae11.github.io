@@ -163,6 +163,22 @@
       if (/^:::/.test(ln)) {
         var spec = ln.slice(3).trim();
         var sp = spec.match(/^(\S+)\s*([\s\S]*)$/) || [];
+
+        /* ::: demo 이름  —  글 안에 넣는 인터랙티브 블록.
+           안쪽 줄은 "잡음 = 10" 같은 설정으로 그대로 넘겨 줍니다.       */
+        if ((sp[1] || '').toLowerCase() === 'demo') {
+          var dname = (sp[2] || '').trim().split(/\s+/)[0] || '';
+          var dbody = []; i++;
+          while (i < L.length && L[i].trim() !== ':::') { dbody.push(L[i]); i++; }
+          i++;
+          out.push(at(at0,
+            '<div class="demo-host" data-demo="' + esc(dname) + '"' +
+            (dbody.length ? ' data-opts="' + esc(dbody.join('\n')) + '"' : '') +
+            '><p class="dm-note">‹' + esc(dname) +
+            '› 데모 — 브라우저에서 열면 움직입니다.</p></div>'));
+          continue;
+        }
+
         var kind = ENV[(sp[1] || '').toLowerCase()] || ENV[sp[1]];
         if (kind) {
           var envTitle = (sp[2] || '').trim();
@@ -295,6 +311,11 @@
           throwOnError: false
         });
       }
+      /* 글 안의 데모를 미리보기에서도 돌립니다.
+         reuse: 설정이 그대로면 이미 만든 것을 옮겨 와, 한 글자 칠 때마다
+         데모가 처음으로 돌아가 버리는 일이 없게 합니다.            */
+      if (window.Demo) window.Demo.mountAll(pv, { reuse: true, eager: true });
+
       if (window.hljs) {
         pv.querySelectorAll('pre code').forEach(function (c) { window.hljs.highlightElement(c); });
       }
@@ -879,6 +900,7 @@
       '  <link rel="stylesheet" href="../assets/css/layout.css">\n' +
       '  <link rel="stylesheet" href="../assets/css/components.css">\n' +
       '  <link rel="stylesheet" href="../assets/css/post.css">\n' +
+      '  <link rel="stylesheet" href="../assets/css/demo.css">\n' +
       '</head>\n<body data-crumb="글 / ' + esc(catLabel) +
       ' / <b>' + esc(F.title.value) + '</b>">\n' +
       '  <main id="main">\n    <div class="page page--post">\n      <article>\n' +
@@ -902,6 +924,7 @@
       '  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"><\/script>\n' +
       '  <script src="../assets/js/code.js"><\/script>\n' +
       '  <script src="../assets/js/post.js"><\/script>\n' +
+      '  <script src="../assets/js/demo.js"><\/script>\n' +
       '  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"><\/script>\n' +
       '  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"\n' +
       '    onload="renderMathInElement(document.body,{delimiters:[{left:\'$$\',right:\'$$\',display:true},{left:\'$\',right:\'$\',display:false}],throwOnError:false})"><\/script>\n' +

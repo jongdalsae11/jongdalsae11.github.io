@@ -74,7 +74,8 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
     ├── css/  base · layout · components · post · write
     ├── js/   util · nav · lists · heatmap · progress · code · post
     │         write(작성) · editor(단축키·슬래시) · compose(태그추천·수정)
-    │         sync(양방향 이동) · save(폴더 연결 저장)
+    │         sync(양방향 이동) · save(폴더 연결 저장) · demo(데모 틀)
+    │   demos/  글에 넣는 데모 하나당 파일 하나
     │         fs(폴더 접근 공용) · graph(글 지도) · rating(저지 등급)
     ├── img/  글에 쓰는 이미지     files/  자료 PDF
     └── og.png  링크 공유 썸네일
@@ -97,6 +98,7 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 | 이름 바꾸기 | `assets/js/nav.js` 의 `SITE_NAME` · `SITE_SUB` |
 | 저지 등급 | `about.html` 의 `data-solvedac` · `data-cf` 핸들 (등급은 API 자동) |
 | 전체 색 바꾸기 | `assets/css/base.css` 의 `:root` |
+| 데모 넣기 | 본문에 `:::demo rle` … `:::` (설정은 `잡음 = 10` 처럼 안쪽 줄에) |
 | 무언가 작성하기 | 사이드바 **+ 새로 쓰기** → 모드 선택 → 등록 코드 복사 |
 | 이미 올린 것 고치기 | 글 아래 **고치기** 링크, 또는 작성 도구의 **수정** 버튼 |
 | 글 저장 | **폴더 연결** 한 번 → 이후 **Ctrl+S** (파일 생성 + 등록 자동) |
@@ -135,6 +137,10 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 드래그하면 서식바 · 자주 쓴 태그 추천(빈도순) · 이미 올린 것 불러와 **수정** ·
 영문 자판 상태로 한글 검색(`/wmdaud` → 증명 · 슬래시 메뉴·`Ctrl+K`·선택창 모두) ·
 편집/미리보기 드래그 분할 · 트리 접기(`Ctrl+\`) · 전체화면(`F9`)
+
+**데모** — 글 안에 `:::demo 이름` 으로 인터랙티브 블록. 데모 하나 = 파일 하나
+(`assets/js/demos/이름.js`) · 조작칸·수치판·재생·씨앗난수·지연장착·오류격리는
+`demo.js` 가 대신함 · 지금 있는 것: `rle` · `lzw` · `compress-compare`
 
 **글 지도** — 인용 관계를 위상 깊이로 배치(왼쪽일수록 먼저 읽을 글) ·
 흐름은 주황 레인으로 화면을 가로지름 · 흐름 밖 글은 이어진 곳 옆에 작은 점 ·

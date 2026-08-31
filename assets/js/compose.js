@@ -198,6 +198,10 @@
           Array.prototype.forEach.call(el.children, function (li, i) {
             lines.push((t === 'ol' ? (i + 1) + '. ' : '- ') + one(inline(li)));
           });
+        } else if (el.classList.contains('demo-host')) {
+          var dn = el.getAttribute('data-demo') || '';
+          var dop = el.getAttribute('data-opts') || '';
+          lines.push(':::demo ' + dn + (dop ? '\n' + dop : '') + '\n:::');
         } else if (el.classList.contains('thmbox')) {
           /* 정리 환경 — 머리글은 다시 :::종류 제목 으로 되돌립니다 */
           var head = el.querySelector('.thm-head');

@@ -21,6 +21,9 @@ window.SITE = {
     'algo/data-structure': '자료구조',
     'algo/graph': '그래프',
 
+    school: '학교',
+    'school/informatics': '정보과학',
+
     essay: '에세이',
     'essay/guide': '기록·사용법',
 

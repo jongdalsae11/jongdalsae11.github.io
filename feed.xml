@@ -8,6 +8,14 @@
     <lastBuildDate>Mon, 31 Aug 2026 00:00:00 GMT</lastBuildDate>
     <atom:link href="https://jongdalsae11.github.io/feed.xml" rel="self" type="application/rss+xml"/>
     <item>
+      <title>데이터의 무손실 압축</title>
+      <link>https://jongdalsae11.github.io/posts/2026-08-31-lossless-compression.html</link>
+      <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-31-lossless-compression.html</guid>
+      <pubDate>Mon, 31 Aug 2026 00:00:00 GMT</pubDate>
+      <category>정보과학</category>
+      <description>무손실 압축에 대한 글</description>
+    </item>
+    <item>
       <title>코시 열의 완비성에서 상한공리로</title>
       <link>https://jongdalsae11.github.io/posts/2026-08-31-cahchy-sequence-s-completeness-to-supremum-axiom.html</link>
       <guid isPermaLink="true">https://jongdalsae11.github.io/posts/2026-08-31-cahchy-sequence-s-completeness-to-supremum-axiom.html</guid>
