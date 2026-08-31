@@ -2,12 +2,12 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="잡음을 올리면 런 렝스 부호화의 이득이 어떻게 사라지는지 직접 밀어 보는 시뮬레이션.">
+  <meta name="description" content="런 렝스 부호화가 연속을 세어 «개수+문자» 로 바꾸고, 다시 원래대로 되돌리는 과정을 한 칸씩 따라가는 시뮬레이션.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>런 렝스 부호화 — 종달새 서재</title>
   <meta property="og:type" content="website">
-  <meta property="og:title" content="런 렝스 부호화">
-  <meta property="og:description" content="잡음을 올리면 런 렝스 부호화의 이득이 어떻게 사라지는지 직접 밀어 보는 시뮬레이션.">
+  <meta property="og:title" content="런 렝스 부호화 — 한 칸씩">
+  <meta property="og:description" content="연속을 세어 «개수+문자» 로 바꾸고 다시 되돌리는 과정을 한 칸씩 따라갑니다.">
   <meta property="og:image" content="https://jongdalsae11.github.io/assets/og.png">
   <!-- 글 안에 끼워졌을 때(?embed=1)는 사이드바·머리·꼬리를 띄우지 않습니다 -->
   <script>window.EMBED=/[?&]embed=1/.test(location.search);if(window.EMBED)document.documentElement.className='sim-embed';</script>
@@ -19,16 +19,17 @@
   <link rel="stylesheet" href="../assets/css/base.css?v=04682ee8">
   <link rel="stylesheet" href="../assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="../assets/css/components.css?v=5924ec29">
-  <link rel="stylesheet" href="../assets/css/sim.css?v=1a599ee0">
+  <link rel="stylesheet" href="../assets/css/sim.css?v=40db73d3">
 </head>
 <body class="sim-page" data-crumb="시뮬레이션 / <b>런 렝스 부호화</b>">
   <main id="main">
     <div class="page">
       <div class="page-head sim-chrome">
         <p class="eyebrow">SIMULATION</p>
-        <h1>런 렝스 부호화 — 잡음이 늘면 어떻게 되나</h1>
-        <p class="lede">AAAA 는 잘 줄지만 ABCABC 는 오히려 늘어납니다.
-          그 경계를 손으로 넘어 보는 것이 이 시뮬레이션의 전부입니다.</p>
+        <h1>런 렝스 부호화 — 한 칸씩</h1>
+        <p class="lede">인코딩 코드의 <span class="mono">cnt</span> 가 어떻게 늘어나고
+          언제 <span class="mono">개수+문자</span> 가 튀어나오는지, 그리고 디코딩이
+          여러 자리 숫자를 어떻게 다시 읽어 내는지를 그대로 따라갑니다.</p>
       </div>
 
       <div id="sim"></div>
@@ -42,96 +43,204 @@
   <footer class="sim-chrome"><p>&copy; 2026 jongdalsae</p></footer>
 
   <script>window.ROOT='..'</script>
-  <script src="../assets/data/content.js?v=8ad4832c"></script>
+  <script src="../assets/data/content.js?v=68f0bd90"></script>
   <script src="../assets/js/util.js?v=6ae4aef1"></script>
   <script src="../assets/js/nav.js?v=04ca6e81"></script>
-  <script src="../assets/js/sim.js?v=2f4c7a3b"></script>
+  <script src="../assets/js/sim.js?v=00b7da8f"></script>
   <script>
+  /* ============================================================
+     글의 두 코드(인코딩·디코딩)를 그대로 한 칸씩 밟습니다.
+     변수 이름도 글의 코드와 같게 두었습니다 — cnt · str[i] · s.
+     ============================================================ */
   Sim.run('#sim', {
-    note: '잡음은 각 자리가 B 가 될 확률입니다. 띠나 토큰에 마우스를 올리면 ' +
-          '서로 어디에 해당하는지 보입니다. 잡음이 커질수록 구간이 잘게 쪼개져 ' +
-          '«개수+문자» 로 줄이는 이득이 사라집니다.',
-    seedable: true,
+    note: '‹한 칸 ⏭› 을 누르면 코드가 한 걸음씩 움직입니다. 파란 줄은 «조건이 맞아 ' +
+          '계속 세는» 걸음, 주황 줄은 «내놓는» 걸음입니다. 인코딩이 끝나면 같은 ' +
+          '자리에서 디코딩이 이어집니다.',
     controls: [
-      { id: 'noise', type: 'range', label: '잡음', min: 0, max: 50, step: 1, value: 8, unit: '%' },
-      { id: 'n', type: 'range', label: '길이', min: 200, max: 5000, step: 200, value: 1200, unit: '자' }
+      { id: 'text', type: 'text', label: '입력',
+        value: 'WWWWWWWWWWWWBBBWWWWWWB', placeholder: 'W 와 B 로 아무렇게나' }
     ],
 
     setup: function (c) {
-      /* 자리마다 독립적으로 잡음 확률만큼 B 가 됩니다.
-         («무작위 자리를 n번 뒤집기» 로 하면 같은 자리를 두 번 뒤집는 일이
-          잦아 실제 잡음이 라벨보다 훨씬 낮게 나옵니다)                */
-      var n = c.opts.n, p = c.opts.noise / 100;
-      var a = new Array(n);
-      for (var i = 0; i < n; i++) a[i] = c.rand() < p ? 'B' : 'W';
-      c.state.src = a;
+      var src = String(c.opts.text || '').replace(/\s+/g, '') || 'WWWWWWWWWWWWBBBWWWWWWB';
+      c.state = {
+        src: src,
+        phase: 'enc',
+        /* 인코딩 — i 는 지금 세고 있는 구간의 시작, j 는 비교 중인 자리 */
+        i: 0, j: 0, cnt: 1, toks: [], fresh: -1,
+        /* 디코딩 — k 는 인코딩 결과에서 읽는 자리 */
+        enc: '', k: 0, dcnt: 0, building: false, out: '', dfresh: false,
+        say: '시작합니다. <code>cnt = 1</code> 로 두고 첫 글자부터 봅니다.',
+        tone: ''
+      };
+    },
 
-      /* 인코딩 — 연속을 세어 «개수+문자» 로 */
-      var runs = [], run = 1;
-      for (i = 1; i <= n; i++) {
-        if (i < n && a[i] === a[i - 1]) { run++; continue; }
-        runs.push({ len: run, ch: a[i - 1], end: i });
-        run = 1;
+    step: function (c) {
+      var st = c.state, s = st.src, n = s.length;
+
+      /* ── 인코딩 ────────────────────────────────────
+         while (str[i] == str[i+1] && i+1 < n) { cnt++; i++; }
+         fprintf(out, "%d%c", cnt, str[i]);                     */
+      if (st.phase === 'enc') {
+        st.fresh = -1;
+        if (st.j + 1 < n && s[st.j + 1] === s[st.j]) {
+          st.cnt++; st.j++;
+          st.say = '<code>str[i+1]</code> 도 <b>' + s[st.j] + '</b> 다 — 연속이 이어지므로 ' +
+                   '<code>cnt</code> 를 <b>' + st.cnt + '</b>' + Sim.josa(st.cnt, '로') +
+                   ' 늘리고 한 칸 옮깁니다.';
+          st.tone = 'go';
+          return true;
+        }
+        /* 연속이 끊겼다 → 구간 하나를 내놓는다 */
+        st.toks.push({ cnt: st.cnt, ch: s[st.j] });
+        st.fresh = st.toks.length - 1;
+        st.say = (st.j + 1 < n
+                    ? '다음 글자가 <b>' + s[st.j + 1] + '</b> 라 연속이 끊겼습니다. '
+                    : '문자열이 끝났습니다. ') +
+                 '지금까지 센 구간을 <code>' + st.cnt + s[st.j] + '</code> 로 내놓습니다.';
+        st.tone = 'emit';
+        st.i = st.j + 1; st.j = st.i; st.cnt = 1;
+
+        if (st.i >= n) {
+          st.enc = st.toks.map(function (t) { return t.cnt + t.ch; }).join('');
+          st.phase = 'dec';
+          st.say += ' 인코딩 끝 — <code>' + st.enc + '</code> 입니다. 이제 되돌립니다.';
+        }
+        return true;
       }
-      c.state.runs = runs;
-      c.state.enc = runs.map(function (r) { return r.len + r.ch; }).join('');
+
+      /* ── 디코딩 ────────────────────────────────────
+         cnt = str[i] - '0';
+         while (isdigit(str[i+1])) { cnt = cnt*10 + (str[i+1]-'0'); i++; }
+         for (j = 1; j <= cnt; j++) putchar(str[i+1]);          */
+      if (st.phase === 'dec') {
+        var e = st.enc;
+        st.dfresh = false;
+        if (st.k >= e.length) { st.phase = 'end'; return 'end'; }
+
+        var ch = e[st.k];
+        if (ch >= '0' && ch <= '9') {
+          var d = ch.charCodeAt(0) - 48;
+          if (!st.building) {
+            st.dcnt = d; st.building = true;
+            st.say = '숫자 <b>' + d + '</b>' + Sim.josa(d, '을') +
+                     ' 만났습니다 — <code>cnt = ' + d + '</code>.';
+          } else {
+            var before = st.dcnt;
+            st.dcnt = st.dcnt * 10 + d;
+            st.say = '숫자가 이어집니다 — <code>cnt = ' + before + ' × 10 + ' + d +
+                     ' = ' + st.dcnt + '</code>. 여러 자리 개수는 이렇게 왼쪽으로 밀며 읽습니다.';
+          }
+          st.tone = 'go';
+          st.k++;
+          return true;
+        }
+
+        /* 숫자가 끝났다 → 그 개수만큼 문자를 찍는다 */
+        var rep = new Array(st.dcnt + 1).join(ch);
+        st.out += rep;
+        st.say = '숫자가 끝나고 <b>' + ch + '</b> 가 왔습니다 — <b>' + st.dcnt +
+                 '</b> 번 찍습니다: <code>' + rep + '</code>';
+        st.tone = 'emit';
+        st.dfresh = true;
+        st.building = false; st.dcnt = 0;
+        st.k++;
+        if (st.k >= e.length) {
+          st.phase = 'end';
+          st.say += ' 복원 끝.';
+          return 'end';
+        }
+        return true;
+      }
+      return 'end';
     },
 
     draw: function (c) {
-      var st = c.state, n = st.src.length;
-      var encLen = st.enc.length;
-      var ratio = encLen / n;
-      var worse = ratio >= 1;
+      var st = c.state, s = st.src, n = s.length;
+      var encoding = st.phase === 'enc';
 
-      /* ── 원본 띠 — 구간마다 한 칸, 폭은 길이에 비례 ── */
-      var strip = '<div class="rle-strip" role="img" aria-label="원본 데이터">';
-      st.runs.forEach(function (r, i) {
-        strip += '<span class="rle-run rle-run--' + r.ch.toLowerCase() +
-                 '" data-i="' + i + '" style="flex:' + r.len + ' 0 0"></span>';
-      });
-      strip += '</div>';
+      /* ── 단계 표시 ── */
+      var phase =
+        '<div class="sm-phase">' +
+        '<span class="' + (encoding ? 'on' : 'past') + '">인코딩</span>→' +
+        '<span class="' + (encoding ? '' : 'on') + '">디코딩</span></div>';
 
-      /* ── 토큰 줄 — 너무 많으면 앞부분만 ── */
-      var LIMIT = 60;
-      var toks = st.runs.slice(0, LIMIT).map(function (r, i) {
-        return '<span class="rle-tok" data-i="' + i + '">' +
-               '<b>' + r.len + '</b>' + r.ch + '</span>';
-      }).join('');
-      if (st.runs.length > LIMIT) {
-        toks += '<span class="rle-more">… 그리고 ' + (st.runs.length - LIMIT) + '개 더</span>';
+      /* ── 원본 띠 — 세고 있는 구간은 파랗게, 커서는 진하게 ── */
+      var chars = '';
+      for (var x = 0; x < n; x++) {
+        var cls = 'ch';
+        if (encoding) {
+          if (x < st.i) cls += ' done';
+          else if (x >= st.i && x < st.j) cls += ' run';
+          else if (x === st.j) cls += ' cur';
+        } else cls += ' done';
+        chars += '<span class="' + cls + '">' + s[x] + '</span>';
       }
 
-      c.stage.innerHTML = strip + '<div class="rle-toks">' + toks + '</div>';
+      /* ── 내놓은 토큰들 ── */
+      var toks = st.toks.map(function (t, k) {
+        return '<span class="sm-tok' + (k === st.fresh ? ' fresh' : '') + '">' +
+               '<b>' + t.cnt + '</b>' + t.ch + '</span>';
+      }).join('') || '<span class="sm-val--dim">아직 없음</span>';
 
-      /* ── 수치판 ── */
+      var html =
+        phase +
+        '<div class="sm-row"><span class="sm-tag">원본</span>' +
+          '<span class="sm-chars">' + chars + '</span></div>';
+
+      if (encoding) {
+        html +=
+          '<div class="sm-row"><span class="sm-tag">cnt</span>' +
+            '<span class="sm-val sm-val--hi">' + st.cnt + '</span></div>' +
+          '<div class="sm-row"><span class="sm-tag">str[i]</span>' +
+            '<span class="sm-val sm-val--hi">' + (s[st.j] || '·') + '</span></div>';
+      } else {
+        /* 디코딩 — 인코딩 결과를 읽어 가는 커서 */
+        var ec = '';
+        for (var y = 0; y < st.enc.length; y++) {
+          var c2 = 'ch';
+          if (y < st.k - 1) c2 += ' done';
+          else if (y === st.k - 1 && st.dfresh) c2 += ' out';
+          else if (y === st.k) c2 += ' cur';
+          else if (y < st.k) c2 += ' done';
+          ec += '<span class="' + c2 + '">' + st.enc[y] + '</span>';
+        }
+        html +=
+          '<div class="sm-row"><span class="sm-tag">인코딩</span>' +
+            '<span class="sm-chars">' + ec + '</span></div>' +
+          '<div class="sm-row"><span class="sm-tag">cnt</span>' +
+            '<span class="sm-val sm-val--hi">' + (st.building ? st.dcnt : '·') + '</span></div>';
+      }
+
+      html +=
+        '<div class="sm-row"><span class="sm-tag">' +
+          (encoding ? '결과' : '인코딩 결과') + '</span>' +
+          '<span class="sm-toks">' + toks + '</span></div>';
+
+      if (!encoding) {
+        var ok = st.out === s.slice(0, st.out.length);
+        html +=
+          '<div class="sm-row"><span class="sm-tag">복원</span>' +
+            '<span class="sm-val">' + (st.out || '·') +
+            (st.out ? ' <span class="' + (ok ? 'sm-ok' : 'sm-no') + '">' +
+              (st.phase === 'end'
+                ? (st.out === s ? '원본과 완전히 일치' : '어긋남')
+                : (ok ? '여기까지 일치' : '어긋남')) + '</span>' : '') +
+            '</span></div>';
+      }
+
+      html += '<p class="sm-say' + (st.tone ? ' sm-say--' + st.tone : '') + '">' +
+              st.say + '</p>';
+
+      c.stage.innerHTML = html;
+
       c.stat('원본', n + '자');
-      c.stat('압축', encLen + '자', worse ? 'bad' : 'ok');
-      c.stat('압축률', (ratio * 100).toFixed(1) + '%', worse ? 'bad' : 'ok');
-      c.stat('구간 수', st.runs.length);
-      /* 두 색·독립 잡음에서는 압축률이 100% 를 넘지는 않고 다가갑니다.
-         «넘는» 경우는 글자 종류가 늘 때인데, 그건 비교 시뮬레이션에서 봅니다. */
-      if (worse) c.stat('', '원본보다 커졌습니다', 'bad');
-      else if (ratio > 0.9) c.stat('', '이득이 거의 없습니다', 'bad');
-
-      /* ── 띠와 토큰을 서로 비추기 ── */
-      var strips = c.stage.querySelectorAll('.rle-run');
-      var tokens = c.stage.querySelectorAll('.rle-tok');
-      function link(list) {
-        Array.prototype.forEach.call(list, function (x) {
-          x.addEventListener('mouseenter', function () {
-            var i = x.getAttribute('data-i');
-            c.stage.classList.add('rle-focusing');
-            [strips[i], tokens[i]].forEach(function (y) { if (y) y.classList.add('on'); });
-          });
-          x.addEventListener('mouseleave', function () {
-            c.stage.classList.remove('rle-focusing');
-            Array.prototype.forEach.call(c.stage.querySelectorAll('.on'), function (y) {
-              y.classList.remove('on');
-            });
-          });
-        });
+      c.stat('구간', st.toks.length + '개');
+      if (st.enc) c.stat('인코딩', st.enc.length + '자');
+      if (st.phase === 'end') {
+        c.stat('복원', st.out === s ? '원본과 일치' : '어긋남',
+               st.out === s ? 'ok' : 'bad');
       }
-      link(strips); link(tokens);
     }
   });
   </script>

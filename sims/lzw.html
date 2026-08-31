@@ -2,12 +2,12 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="LZW 인코더와 디코더를 나란히 한 칸씩 진행하며 KwKwK 예외를 직접 만나 보는 시뮬레이션.">
+  <meta name="description" content="LZW 가 s+c 를 사전에서 찾고, 없으면 코드를 내놓고 사전에 등록하는 과정. 인코더와 디코더의 사전이 나란히 자라는 것을 한 칸씩 봅니다.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LZW — 종달새 서재</title>
   <meta property="og:type" content="website">
-  <meta property="og:title" content="LZW — 사전이 자라는 걸 한 칸씩">
-  <meta property="og:description" content="LZW 인코더와 디코더를 나란히 한 칸씩 진행하며 KwKwK 예외를 직접 만나 보는 시뮬레이션.">
+  <meta property="og:title" content="LZW — 사전이 자라는 규칙">
+  <meta property="og:description" content="s+c 를 사전에서 찾고, 없으면 코드를 내놓고 등록한다. 인코더와 디코더의 사전이 나란히 자랍니다.">
   <meta property="og:image" content="https://jongdalsae11.github.io/assets/og.png">
   <script>window.EMBED=/[?&]embed=1/.test(location.search);if(window.EMBED)document.documentElement.className='sim-embed';</script>
   <link rel="icon" href="../assets/favicon.svg">
@@ -18,16 +18,17 @@
   <link rel="stylesheet" href="../assets/css/base.css?v=04682ee8">
   <link rel="stylesheet" href="../assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="../assets/css/components.css?v=5924ec29">
-  <link rel="stylesheet" href="../assets/css/sim.css?v=1a599ee0">
+  <link rel="stylesheet" href="../assets/css/sim.css?v=40db73d3">
 </head>
 <body class="sim-page" data-crumb="시뮬레이션 / <b>LZW</b>">
   <main id="main">
     <div class="page">
       <div class="page-head sim-chrome">
         <p class="eyebrow">SIMULATION</p>
-        <h1>LZW — 사전이 자라는 걸 한 칸씩</h1>
-        <p class="lede">인코더와 디코더를 나란히 돌립니다. 각주로만 적어 두었던 KwKwK 예외 —
-          디코더가 아직 만들지 못한 코드를 받는 순간 — 을 실제로 만나 보게 합니다.</p>
+        <h1>LZW — 사전이 자라는 규칙</h1>
+        <p class="lede"><span class="mono">s+c</span> 가 사전에 있으면 <span class="mono">s</span> 를 늘리고,
+          없으면 <span class="mono">s</span> 의 코드를 내놓고 <span class="mono">s+c</span> 를 등록한다.
+          이 한 줄이 전부입니다. 디코더가 같은 규칙으로 사전을 따라 만드는 것도 나란히 봅니다.</p>
       </div>
 
       <div id="sim"></div>
@@ -41,70 +42,96 @@
   <footer class="sim-chrome"><p>&copy; 2026 jongdalsae</p></footer>
 
   <script>window.ROOT='..'</script>
-  <script src="../assets/data/content.js?v=8ad4832c"></script>
+  <script src="../assets/data/content.js?v=68f0bd90"></script>
   <script src="../assets/js/util.js?v=6ae4aef1"></script>
   <script src="../assets/js/nav.js?v=04ca6e81"></script>
-  <script src="../assets/js/sim.js?v=2f4c7a3b"></script>
+  <script src="../assets/js/sim.js?v=00b7da8f"></script>
   <script>
+  /* ============================================================
+     글의 인코딩 코드와 디코딩 코드를 같은 시계로 돌립니다.
+     인코더가 코드 하나를 내놓을 때마다 디코더가 그것을 받아 소화하므로,
+     두 사전이 «같은 규칙으로 나란히» 자라는 것이 눈에 보입니다.
+     ============================================================ */
   Sim.run('#sim', {
-    note: '‹한 칸 ⏭› 을 눌러 진행해 보세요. 인코더가 방금 사전에 넣은 코드를 ' +
-          '바로 다음에 써 버리면, 디코더는 그 코드를 아직 모릅니다. ' +
-          '그때가 KwKwK 예외입니다.',
+    note: '‹한 칸 ⏭› 을 눌러 보세요. 파란 줄은 «사전에 있어서 s 를 늘리는» 걸음, ' +
+          '주황 줄은 «사전에 없어서 코드를 내놓고 등록하는» 걸음입니다. ' +
+          '입력을 바꿔 가며 사전이 어떻게 달라지는지 보면 좋습니다.',
     controls: [
       { id: 'text', type: 'text', label: '입력',
-        value: 'ABABABAB', placeholder: '예: ABABABAB' }
+        value: 'ABABABAB', placeholder: '예: ABABABAB · TOBEORNOTTOBE' }
     ],
 
     setup: function (c) {
       var src = String(c.opts.text || '').replace(/\s+/g, '') || 'ABABABAB';
 
-      /* 기본 사전 — 등장하는 낱글자 (글의 C++ 코드와 같은 순서) */
+      /* 기본 사전 — 등장하는 낱글자 (글의 코드와 같은 순서) */
       var base = [], seen = {};
       for (var i = 0; i < src.length; i++) {
         if (!seen[src[i]]) { seen[src[i]] = 1; base.push(src[i]); }
       }
-
       var enc = { dic: {}, next: 1, s: '', i: 0, out: [] };
       base.forEach(function (ch) { enc.dic[ch] = enc.next++; });
       var baseN = enc.next - 1;
 
       c.state = {
-        src: src, baseN: baseN, base: base,
-        enc: enc,
+        src: src, baseN: baseN, enc: enc,
         dec: { dic: {}, next: baseN + 1, prev: null, i: 0, out: '' },
-        log: [], done: false, kwk: false, added: null
+        eFresh: null, dFresh: null, kwk: false, done: false,
+        say: '먼저 등장하는 낱글자로 기본 사전을 만들어 둡니다. ' +
+             '이제 <code>s</code> 는 비어 있고, 입력을 앞에서부터 읽습니다.',
+        tone: ''
       };
       base.forEach(function (ch, k) { c.state.dec.dic[k + 1] = ch; });
     },
 
-    /* 인코더를 한 글자 진행하고, 코드가 나오면 디코더도 한 코드 진행 */
     step: function (c) {
       var st = c.state;
       if (st.done) return 'end';
-      st.added = null; st.kwk = false;
+      st.eFresh = null; st.dFresh = null; st.kwk = false;
 
       var e = st.enc, src = st.src;
+      var before = e.out.length;
 
       if (e.i < src.length) {
         var ch = src[e.i];
         if (e.dic[e.s + ch] !== undefined) {
+          /* 사전에 있다 → s 를 늘리기만 한다 (아직 내놓지 않는다) */
           e.s += ch;
           e.i++;
-          return true;                       /* 아직 코드가 나오지 않음 */
+          st.say = '<code>s + c</code> = <b>' + e.s + '</b> 가 사전에 <b>있다</b> — ' +
+                   '코드 <b>' + e.dic[e.s] + '</b> 번. 아직 내놓지 않고 <code>s</code> 를 늘립니다.';
+          st.tone = 'go';
+          return true;
         }
-        e.out.push(e.dic[e.s]);
+        /* 사전에 없다 → s 의 코드를 내놓고, s+c 를 등록하고, s = c */
+        var emitted = e.dic[e.s];
+        e.out.push(emitted);
         e.dic[e.s + ch] = e.next;
-        st.added = { code: e.next, str: e.s + ch };
+        st.eFresh = { code: e.next, str: e.s + ch };
+        st.say = '<code>s + c</code> = <b>' + (e.s + ch) + '</b> 가 사전에 <b>없다</b> — ' +
+                 '그러니 <code>s</code>(<b>' + e.s + '</b>) 의 코드 <b>' + emitted +
+                 '</b>' + Sim.josa(emitted, '을') + ' 내놓고, <b>' + (e.s + ch) +
+                 '</b> 를 <b>' + e.next + '</b> 번으로 등록한 뒤 ' +
+                 '<code>s = ' + ch + '</code> 로 다시 시작합니다.';
+        st.tone = 'emit';
         e.next++;
         e.s = ch;
         e.i++;
       } else {
-        /* 마지막에 남은 s — 루프 안에서는 나올 기회가 없습니다 */
-        if (e.s) { e.out.push(e.dic[e.s]); e.s = ''; }
-        else { st.done = true; return 'end'; }
+        /* 루프가 끝나도 s 하나가 남습니다 — 글에서 각주로 짚은 그 부분 */
+        if (e.s) {
+          e.out.push(e.dic[e.s]);
+          st.say = '입력이 끝났는데 <code>s</code> = <b>' + e.s + '</b> 가 남아 있습니다. ' +
+                   '루프 안에서는 내놓을 기회가 없으므로 여기서 따로 내놓습니다.';
+          st.tone = 'emit';
+          e.s = '';
+          /* 여기서 끝냅니다. 한 걸음 더 두면 마지막에 뜬 KwKwK 안내가
+             아무 일도 없는 걸음에 지워져 버립니다.                      */
+          st.done = true;
+        } else { st.done = true; return 'end'; }
       }
 
-      /* ── 디코더도 새로 나온 코드 하나를 소화 ── */
+      /* ── 디코더 — 새로 나온 코드를 그때그때 소화 ── */
       var d = st.dec;
       while (d.i < e.out.length) {
         var code = e.out[d.i];
@@ -112,11 +139,16 @@
         if (d.dic[code] !== undefined) entry = d.dic[code];
         else { entry = d.prev + d.prev[0]; st.kwk = true; }   /* KwKwK */
         d.out += entry;
-        if (d.prev !== null) d.dic[d.next++] = d.prev + entry[0];
+        if (d.prev !== null) {
+          d.dic[d.next] = d.prev + entry[0];
+          st.dFresh = d.next;
+          d.next++;
+        }
         d.prev = entry;
         d.i++;
       }
-      return true;
+      if (before === e.out.length) st.dFresh = null;
+      return st.done ? 'end' : true;
     },
 
     draw: function (c) {
@@ -125,45 +157,63 @@
       /* ── 입력과 커서 ── */
       var input = '';
       for (var i = 0; i < src.length; i++) {
-        input += '<span class="lz-ch' + (i < e.i ? ' done' : '') +
+        input += '<span class="ch' + (i < e.i ? ' done' : '') +
                  (i === e.i ? ' cur' : '') + '">' + src[i] + '</span>';
       }
 
-      /* ── 사전 (디코더 쪽 — 인코더와 같은 규칙으로 자랍니다) ── */
-      var rows = Object.keys(d.dic).map(Number).sort(function (a, b) { return a - b; })
-        .map(function (k) {
-          var isNew = st.added && st.added.code === k;
-          return '<span class="lz-row' + (isNew ? ' fresh' : '') +
-                 (k <= st.baseN ? ' base' : '') + '">' +
-                 '<b>' + k + '</b>' + d.dic[k] + '</span>';
-        }).join('');
+      function dicHTML(map, fresh) {
+        return Object.keys(map).map(Number).sort(function (a, b) { return a - b; })
+          .map(function (k) {
+            return '<span class="sm-dic-row' + (k === fresh ? ' fresh' : '') +
+                   (k <= st.baseN ? ' base' : '') + '">' +
+                   '<b>' + k + '</b>' + map[k] + '</span>';
+          }).join('');
+      }
+      /* 인코더 사전은 «문자열 → 코드» 이므로 보기 좋게 뒤집습니다 */
+      var eByCode = {};
+      Object.keys(e.dic).forEach(function (str) { eByCode[e.dic[str]] = str; });
 
       c.stage.innerHTML =
-        '<div class="lz-line"><span class="lz-tag">입력</span>' +
-          '<span class="lz-input">' + input + '</span></div>' +
-        '<div class="lz-line"><span class="lz-tag">현재 s</span>' +
-          '<span class="lz-s">' + (e.s || '·') + '</span></div>' +
-        '<div class="lz-line"><span class="lz-tag">사전</span>' +
-          '<span class="lz-dic">' + rows + '</span></div>' +
-        '<div class="lz-line"><span class="lz-tag">코드</span>' +
-          '<span class="lz-out">' + (e.out.join(' ') || '·') + '</span></div>' +
-        '<div class="lz-line"><span class="lz-tag">복원</span>' +
-          '<span class="lz-back">' + (d.out || '·') +
-          '<span class="lz-cmp">' + (d.out === src.slice(0, d.out.length)
-            ? '원본과 일치' : '어긋남') + '</span></span></div>' +
+        '<div class="sm-row"><span class="sm-tag">입력</span>' +
+          '<span class="sm-chars">' + input + '</span></div>' +
+        '<div class="sm-row"><span class="sm-tag">s</span>' +
+          '<span class="sm-val sm-val--hi">' + (e.s || '(비어 있음)') + '</span></div>' +
+        '<div class="sm-row"><span class="sm-tag">c</span>' +
+          '<span class="sm-val sm-val--hi">' + (src[e.i] || '·') + '</span></div>' +
+
+        '<p class="sm-say' + (st.tone ? ' sm-say--' + st.tone : '') + '">' + st.say + '</p>' +
+
+        '<div class="sm-pair">' +
+          '<div class="sm-pane">' +
+            '<div class="sm-pane-head">인코더</div>' +
+            '<div class="sm-row"><span class="sm-tag">코드</span>' +
+              '<span class="sm-val">' + (e.out.join(' ') || '·') + '</span></div>' +
+            '<div class="sm-row"><span class="sm-tag">사전</span>' +
+              '<span class="sm-dic">' +
+                dicHTML(eByCode, st.eFresh ? st.eFresh.code : -1) + '</span></div>' +
+          '</div>' +
+          '<div class="sm-pane">' +
+            '<div class="sm-pane-head">디코더</div>' +
+            '<div class="sm-row"><span class="sm-tag">복원</span>' +
+              '<span class="sm-val">' + (d.out || '·') + '</span></div>' +
+            '<div class="sm-row"><span class="sm-tag">사전</span>' +
+              '<span class="sm-dic">' + dicHTML(d.dic, st.dFresh) + '</span></div>' +
+          '</div>' +
+        '</div>' +
+
         (st.kwk
-          ? '<p class="lz-kwk">KwKwK — 디코더가 아직 모르는 코드가 왔습니다. ' +
-            '직전 문자열에 그 첫 글자를 붙여(<code>prev + prev[0]</code>) 메웁니다.</p>'
+          ? '<p class="sm-kwk">KwKwK — 디코더가 아직 모르는 코드가 왔습니다. ' +
+            '인코더가 방금 등록한 것을 바로 다음 코드로 써 버렸기 때문입니다. ' +
+            '이때는 직전 문자열에 그 첫 글자를 붙여(<code>prev + prev[0]</code>) 메웁니다.</p>'
           : '');
 
       c.stat('읽은 글자', e.i + ' / ' + src.length);
-      c.stat('코드 수', e.out.length);
-      c.stat('사전', Object.keys(d.dic).length + '개');
-      if (st.done) {
-        var bits = Math.max(1, Math.ceil(Math.log2(d.next)));
-        c.stat('원본', src.length * 8 + 'bit');
-        c.stat('압축', e.out.length * bits + 'bit',
-               e.out.length * bits < src.length * 8 ? 'ok' : 'bad');
+      c.stat('내놓은 코드', e.out.length);
+      c.stat('사전', '인코더 ' + Object.keys(e.dic).length +
+                     ' · 디코더 ' + Object.keys(d.dic).length);
+      if (st.done || (e.i >= src.length && !e.s)) {
+        c.stat('복원', d.out === src ? '원본과 일치' : '아직 진행 중',
+               d.out === src ? 'ok' : null);
       }
     }
   });

@@ -67,6 +67,7 @@
               <tr><td>글 HTML</td><td><code>posts/</code></td><td>—</td></tr>
               <tr><td>이미지 (png·jpg·svg)</td><td><code>assets/img/</code></td><td><code>../assets/img/파일명</code></td></tr>
               <tr><td>자료 PDF</td><td><code>assets/files/</code></td><td><code>/assets/files/파일명</code></td></tr>
+              <tr><td>시뮬레이션</td><td><code>sims/</code></td><td><code>{{Sim-태그}}</code> (7절)</td></tr>
             </tbody>
           </table>
           <p>
@@ -280,6 +281,25 @@ $$</code></pre></div>
             <figcaption><span class="fig-no">Fig 1.</span>캡션은 이렇게 보인다 (생략 가능)</figcaption>
           </figure>
 
+          <h3>3.7 시뮬레이션 넣기</h3>
+          <p>
+            글 안에서 직접 만져 볼 수 있는 것은 <strong>시뮬레이션</strong>으로 따로 만들어
+            자료와 같은 인용 형식으로 부른다. <code>sims/</code> 폴더 안의 페이지 하나가
+            시뮬레이션 하나이고, 본문에서는 그 태그만 적으면 된다.
+          </p>
+          <div class="codeblock"><pre><code class="language-plaintext">{{Sim-RLE}}              한 줄에 혼자 두면 → 그 자리에 통째로 끼워진다
+문장 속 {{Sim-RLE}}       → 시뮬레이션으로 가는 링크가 된다
+{{Sim-RLE 잡음=20}}       → 조작칸 초기값을 글마다 다르게 준다</code></pre></div>
+          <p>
+            어떤 태그가 있는지는 <a href="../sims.html">시뮬레이션</a> 페이지에서 보고,
+            오른쪽 <code>[Sim-xx]</code> 를 누르면 태그가 그대로 복사된다.
+            글쓰기 도구에서는 <code>/</code> 를 누르고 <strong>시뮬레이션</strong>을 고르면
+            목록에서 골라 넣을 수 있다.<span class="sidenote">끼워 넣을 때는 별도의 페이지를
+            액자(iframe)로 불러온다. 글과 시뮬레이션이 서로의 스타일이나 스크립트를 건드리지
+            않고, 시뮬레이션 쪽에서 오류가 나도 글은 멀쩡하다. 액자 높이는 안쪽에서 알려 주는
+            대로 자동으로 맞춰진다.</span>
+          </p>
+
           <h2>4. 자료정리집에 자료 올리기</h2>
           <p>
             교재·논문·링크는 글이 아니라 <strong>자료</strong>다.
@@ -353,7 +373,115 @@ HTML을 직접 쓸 때: 이 문장에 근거를 단다 &lt;span class="cite" dat
       note: '이 문제를 만든 계기나 뒷이야기' }
 ]</code></pre></div>
 
-          <h2>7. 홈 화면 관리</h2>
+          <h2>7. 시뮬레이션 만들기</h2>
+          <p>
+            <strong>시뮬레이션 하나 = <code>sims/</code> 안의 파일 하나</strong>다.
+            그 파일 하나만 열면 단독으로도 돌아가고, 글에서 <code>{{Sim-xx}}</code> 로 부르면
+            그 자리에 끼워진다. 가장 빠른 길은 <code>sims/rle.html</code> 을 복사해
+            이름을 바꾸고 아래 세 군데만 고치는 것이다.
+          </p>
+
+          <h3>7.1 뼈대</h3>
+          <p>
+            페이지 아래쪽의 <code>Sim.run</code> 한 덩어리가 시뮬레이션의 전부다.
+            <code>draw</code> 만 있으면 되고, <code>step</code> 을 함께 쓰면 한 칸씩
+            진행하는 형태가 된다.
+          </p>
+          <div class="codeblock"><pre><code class="language-javascript">Sim.run('#sim', {
+  note: '아래에 작게 붙는 설명',
+  controls: [
+    { id: 'n', type: 'range', label: '개수', min: 1, max: 50, value: 10 },
+    { id: 'text', type: 'text', label: '입력', value: 'ABAB' }
+  ],
+
+  setup: function (c) {          // 값이 바뀔 때마다 처음부터 다시
+    c.state = { i: 0, out: [] };
+  },
+
+  step: function (c) {           // 있으면 재생·한 칸 단추가 저절로 생김
+    var st = c.state;
+    st.i++;
+    return st.i &lt; c.opts.n ? true : 'end';   // 끝나면 'end'
+  },
+
+  draw: function (c) {           // 화면 그리기 — 매 걸음마다 불린다
+    c.stage.innerHTML = '지금 ' + c.state.i + ' 번째';
+    c.stat('진행', c.state.i + ' / ' + c.opts.n);
+  }
+});</code></pre></div>
+          <p>
+            <code>c</code> 하나에 필요한 것이 다 들어 있다 —
+            <code>c.opts</code>(조작칸의 현재 값), <code>c.state</code>(내가 쓰는 상태),
+            <code>c.stage</code>(그릴 곳), <code>c.stat(이름, 값, 'ok'|'bad')</code>(아래 수치판),
+            <code>c.rand()</code>(씨앗 난수), <code>c.reduceMotion</code>.
+          </p>
+
+          <h3>7.2 조작칸</h3>
+          <ul>
+            <li><code>type: 'range'</code> — 슬라이더. <code>min · max · step · unit</code></li>
+            <li><code>type: 'select'</code> — 고르기. <code>options: [{ value, label }]</code></li>
+            <li><code>type: 'check'</code> — 켜고 끄기</li>
+            <li><code>type: 'text'</code> — 직접 입력. <code>placeholder</code></li>
+          </ul>
+          <p>
+            <code>seedable: true</code> 를 넣으면 <strong>다시 뽑기</strong> 단추가 생긴다.
+            무작위가 필요하면 <code>Math.random</code> 대신 반드시 <code>c.rand()</code> 를 쓴다.
+            그래야 새로고침해도 같은 그림이 나오고, 눌렀을 때만 새로 뽑힌다.<span class="sidenote">글에
+            "여기서 보다시피"라고 써 놨는데 새로고침하니 다른 그림이 나오는 일을 막기 위한 것이다.</span>
+          </p>
+
+          <h3>7.3 생김새를 맞추는 부품</h3>
+          <p>
+            <code>c.stage.innerHTML</code> 에 아무 HTML 이나 넣어도 되지만,
+            아래 클래스를 쓰면 사이트의 다른 부분과 색·글꼴이 저절로 맞는다.
+            (정의는 <code>assets/css/sim.css</code>)
+          </p>
+          <ul>
+            <li><code>.sm-row</code> + <code>.sm-tag</code> + <code>.sm-val</code> — 이름표와 값 한 줄</li>
+            <li><code>.sm-chars</code> 안의 <code>.ch</code> — 읽어 가는 글자 띠.
+              <code>.done .cur .run .out</code> 을 붙여 상태를 표시한다</li>
+            <li><code>.sm-say</code> — <strong>지금 무슨 일이 일어나는지 한 문장.</strong>
+              <code>.sm-say--go</code>(계속 진행) · <code>.sm-say--emit</code>(결과를 내놓음)</li>
+            <li><code>.sm-dic</code> + <code>.sm-dic-row</code> — 표·사전. <code>.fresh</code> 로 방금 추가된 줄 강조</li>
+            <li><code>.sm-pair</code> + <code>.sm-pane</code> — 두 개를 나란히 두고 비교</li>
+          </ul>
+          <p>
+            원리를 보여 주는 것이 목적이므로, <strong>매 걸음 한 문장씩</strong>
+            무엇을 왜 했는지 <code>.sm-say</code> 에 적어 주는 것이 가장 중요하다.
+            숫자만 바뀌는 화면은 코드를 이미 아는 사람에게만 읽힌다.
+          </p>
+
+          <h3>7.4 등록하고 부르기</h3>
+          <p>
+            파일을 만들었으면 <code>content.js</code> 의 <code>sims</code> 에 한 줄 적는다.
+          </p>
+          <div class="codeblock"><pre><code class="language-javascript">sims: [
+    { ref: 'Sim-RLE',                    // 본문에서 부를 태그 (자료의 ref 와 겹치지 않게)
+      title: '런 렝스 부호화 — 한 칸씩',
+      file: 'rle.html',                  // sims/ 안의 파일명
+      category: 'school/informatics',
+      post: '2026-08-31-lossless-compression.html',   // 이 시뮬레이션이 딸린 글 (선택)
+      tags: ['압축'],
+      desc: '목록에 보일 한 줄 설명' }
+]</code></pre></div>
+          <p>
+            이제 본문에서 <code>{{Sim-RLE}}</code> 로 부르면 된다(3.7 참고).
+            <code>{{Sim-RLE 잡음=20}}</code> 처럼 적으면 그 값이 주소로 넘어가
+            <code>controls</code> 의 <code>id</code> 나 <code>label</code> 이 같은 칸의
+            초기값이 된다.
+          </p>
+
+          <h3>7.5 다 만들고 확인할 것</h3>
+          <ul>
+            <li>단독으로 <code>sims/이름.html</code> 을 열었을 때와,
+              주소 뒤에 <code>?embed=1</code> 을 붙였을 때 <strong>둘 다</strong> 확인한다.
+              뒤쪽이 글에 끼워졌을 때의 모습이다.</li>
+            <li>글쓰기 도구의 미리보기에서도 그대로 돌아간다. 한 글자 칠 때마다
+              처음으로 돌아가지는 않으니 옆에 띄워 두고 써도 된다.</li>
+            <li><code>node tools/build.mjs</code> 가 등록되지 않은 파일이나 없는 태그를 잡아 준다.</li>
+          </ul>
+
+          <h2>8. 홈 화면 관리</h2>
           <ul>
             <li><strong>고정 글</strong> — 글에 <code>pinned: true</code> 를 주면 주황색 테두리로 상단에 고정된다.</li>
             <li><strong>최근 글</strong> — 날짜 순으로 자동 정렬되어 5개까지 표시된다.</li>
@@ -363,7 +491,7 @@ HTML을 직접 쓸 때: 이 문장에 근거를 단다 &lt;span class="cite" dat
               칸에 커서를 올리면 그날의 날짜와 기록 목록이 뜬다.</li>
           </ul>
 
-          <h2>8. 그 밖의 기능</h2>
+          <h2>9. 그 밖의 기능</h2>
           <ul>
             <li><strong>검색</strong> — 어느 페이지에서든 <code>Ctrl + K</code>.
               글·자료·문제·연구의 제목과 태그를 한 번에 찾는다.</li>
@@ -391,7 +519,7 @@ HTML을 직접 쓸 때: 이 문장에 근거를 단다 &lt;span class="cite" dat
             <li><strong>RSS</strong> — <code>/feed.xml</code> 로 새 글을 구독할 수 있다. 자동 생성된다.</li>
           </ul>
 
-          <h2>9. 자주 하는 실수</h2>
+          <h2>10. 자주 하는 실수</h2>
           <ul>
             <li>글 파일만 넣고 <code>content.js</code> 등록을 잊는 경우 → 목록에 안 뜬다.</li>
             <li><code>ref</code> 값이 중복되는 경우 → 먼저 등록된 자료가 잡힌다. 고유하게 짓는다.</li>
@@ -414,7 +542,7 @@ HTML을 직접 쓸 때: 이 문장에 근거를 단다 &lt;span class="cite" dat
   <footer><p>&copy; 2026 jongdalsae</p></footer>
 
   <script>window.ROOT='..'</script>
-  <script src="../assets/data/content.js?v=8ad4832c"></script>
+  <script src="../assets/data/content.js?v=68f0bd90"></script>
   <script src="../assets/js/util.js?v=6ae4aef1"></script>
   <script src="../assets/js/nav.js?v=04ca6e81"></script>
   <script src="../assets/js/progress.js?v=fb65c704"></script>

@@ -39,6 +39,21 @@ window.Sim = (function () {
   var reduceMotion = !!(window.matchMedia &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
+  /* ── 숫자 뒤 조사 ─────────────────────────────────
+     «cnt 를 3 로» 처럼 어색하게 나오는 것을 막습니다. 숫자는 읽는 소리의
+     받침으로 갈리므로(삼·육·영 만 받침) 끝자리만 보면 됩니다.       */
+  function josa(n, kind) {
+    var last = String(n).slice(-1);
+    /* 받침 있는 끝자리 — 일·삼·육·칠·팔·십(영) */
+    var closed = '136780'.indexOf(last) >= 0;
+    /* «로» 는 ㄹ 받침도 그냥 로 (1로 · 7로 · 8로) — 삼·육·십만 으로 */
+    if (kind === '로') return '360'.indexOf(last) >= 0 ? '으로' : '로';
+    if (kind === '을') return closed ? '을' : '를';
+    if (kind === '은') return closed ? '은' : '는';
+    if (kind === '이') return closed ? '이' : '가';
+    return kind;
+  }
+
   function el(tag, cls, text) {
     var e = document.createElement(tag);
     if (cls) e.className = cls;
@@ -311,5 +326,5 @@ window.Sim = (function () {
     }
   }
 
-  return { run: run, rngFrom: rngFrom, embed: EMBED };
+  return { run: run, rngFrom: rngFrom, josa: josa, embed: EMBED };
 }());
