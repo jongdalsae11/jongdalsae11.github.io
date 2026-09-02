@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="완비성 공리를 통한 실수체의 완비를 다룬다.">
-  <title>실수체 R의 완비성 — 종달새 서재</title>
+  <title>실수체 ℝ의 완비성 — 종달새 서재</title>
   <meta property="og:type" content="article">
-  <meta property="og:title" content="실수체 R의 완비성">
+  <meta property="og:title" content="실수체 ℝ의 완비성">
   <meta property="og:description" content="완비성 공리를 통한 실수체의 완비를 다룬다.">
   <meta property="og:image" content="https://jongdalsae11.github.io/assets/og.png">
   <meta name="twitter:card" content="summary_large_image">
@@ -21,12 +21,12 @@
   <link rel="stylesheet" href="../assets/css/components.css?v=5924ec29">
   <link rel="stylesheet" href="../assets/css/post.css?v=97161f0a">
 </head>
-<body data-cat="math/analysis" data-crumb="글 / 수학 / 해석학 / <b>실수체 R의 완비성</b>">
+<body data-cat="math/analysis" data-crumb="글 / 수학 / 해석학 / <b>실수체 ℝ의 완비성</b>">
   <main id="main">
     <div class="page page--post">
       <article>
         <div class="post-head">
-          <h1>실수체 $\R$의 완비성</h1>
+          <h1>실수체 $\mathbb{R}$의 완비성</h1>
           <div class="post-meta">
             <span class="post-date">2026.08.31</span>
             <span class="tag">수열</span>
@@ -39,10 +39,10 @@
 <p>예를 들어 유리수 안에서만 생각한다면, 항들이 $\sqrt{2}$로 모여들어도 그 지점 자체가 유리수에 없을 수 있다. 즉, 항들은 계속 가까워지는데, 정작 도착지가 비어있는 것이다.</p>
 <p>그렇다면 실수에서는 이런 일이 안 생긴다는 걸, 즉 항들이 모여드는 그 자리에 실제로 점이 있다는 걸 보장해주는 게 무엇일까. 그게 바로 완비성이다.</p>
 <h2>상한공리</h2>
-<p>이를 위해 먼저 필요한 것이 상한의 개념이다. 집합 $S \subseteq \R$이 <strong>위로 유계</strong>하다는 것은, $\exists M\in\R, \forall x \in S ~s.t. ~x\leq M $이라는 것이다. 그리고 이때 $M$을 $S$의 상계(upper bound)라고 한다. $S$의 상한(supremum)인 $\sup S$는 $S$의 상계중 최솟값, 즉 최소상계(least upper bound)를 의미한다. 이때 실수체 $\R$에 대해 다음이 성립한다</p>
+<p>이를 위해 먼저 필요한 것이 상한의 개념이다. 집합 $S \subseteq \mathbb{R}$이 <strong>위로 유계</strong>하다는 것은, $\exists M\in\mathbb{R}, \forall x \in S ~s.t. ~x\leq M $이라는 것이다. 그리고 이때 $M$을 $S$의 상계(upper bound)라고 한다. $S$의 상한(supremum)인 $\sup S$는 $S$의 상계중 최솟값, 즉 최소상계(least upper bound)를 의미한다. 이때 실수체 $\mathbb{R}$에 대해 다음이 성립한다</p>
 <div class="key"><p>상한공리</p>
-<p>$S \subseteq \R ~\land ~S\ne \emptyset$ 인 $S$가 위로 유계이면, $S$는 $\R$ 안에 상한 $\sup S$를 갖는다.</p></div>
-<p>지금까지 다룬 명제들과 달리, 이것은 증명되는 정리가 아니라 공리다. 우리가 실수라고 부르는 모든 수체계에 대해 이는 항상 성립하는 성질이다. 앞서 말한 빈틈이 없다는 직관을, 이 상한공리라는 형태로 명시한 것이다.<span class="sidenote"><strong>이 공리를 만족시키도록</strong> $\mathbb{Q}$로부터 $\R$을 직접 구성하는 직접 구성하는 방법(데데킨트 절단, 코시 완비화 등)을 택하면 이 성질이 오히려 증명 가능한 정리가 된다. 다만 그 구성법들은 상한공리를 만족시키기 위해 고안된 것들이지, 상한공리보다 더 근본적인 게 아니다. 이는 별도로 다룬다. 우리가 지금 다루는 $\R$은 구성된 객체가 아닌 실수 자체를 다루고 있음을 알아야 한다.</span></p>
+<p>$S \subseteq \mathbb{R} ~\land ~S\ne \emptyset$ 인 $S$가 위로 유계이면, $S$는 $\mathbb{R}$ 안에 상한 $\sup S$를 갖는다.</p></div>
+<p>지금까지 다룬 명제들과 달리, 이것은 증명되는 정리가 아니라 공리다. 우리가 실수라고 부르는 모든 수체계에 대해 이는 항상 성립하는 성질이다. 앞서 말한 빈틈이 없다는 직관을, 이 상한공리라는 형태로 명시한 것이다.<span class="sidenote"><strong>이 공리를 만족시키도록</strong> $\mathbb{Q}$로부터 $\mathbb{R}$을 직접 구성하는 직접 구성하는 방법(데데킨트 절단, 코시 완비화 등)을 택하면 이 성질이 오히려 증명 가능한 정리가 된다. 다만 그 구성법들은 상한공리를 만족시키기 위해 고안된 것들이지, 상한공리보다 더 근본적인 게 아니다. 이는 별도로 다룬다. 우리가 지금 다루는 $\mathbb{R}$은 구성된 객체가 아닌 실수 자체를 다루고 있음을 알아야 한다.</span></p>
 <p>도입부에서 말한 항들이 모이는 자리에 실제로 점이 있다는 직관을 다시 떠올려보자. 코시 열이 수렴한다는 것은 정확히 이 직관과 일치한다. 즉, 서로 가까워지는 항들이 실제로 어떤 실수 $L$로 모여든다는 것. 즉 <strong>"모든 코시 열은 수렴한다"는 명제 자체가 완비성이다.</strong></p>
 <p>이런 이유로 상한공리는 완비성 공리라고도 불린다.</p>
 <p>이제 상한공리로부터 이 명제를 이끌어내 보자.</p>
@@ -62,27 +62,27 @@ $$M=\max \{ |a_1|,\dots,|a_N|,\ |a_{N+1}|+1 \}$$
 <p>하지만 유계라는 사실은 다음 단계로 넘어갈 발판이 된다. 유계인 수열이라면, 적어도 그 안에서 수렴하는 부분수열을 하나는 반드시 만들어낼 수 있다. 이것이 볼차노-바이어슈트라스 정리이다.</p>
 <h3>2. 볼차노-바이어슈트라스 정리</h3>
 <div class="thmbox thmbox--thm"><p class="thm-head"><span class="thm-name">정리 2</span><span class="thm-title">Bolzano-Weierstraß theorem</span></p><p>유계인 수열 $(a_n)$은 수렴하는 부분수열을 갖는다</p></div>
-<div class="thmbox thmbox--proof"><p class="thm-head"><span class="thm-name">pf</span></p><p> $(a_n)$이 유계이므로, $$\exists M&gt;0~ s.t.~ \forall n \in\N, a_n \in [-M,M]=I_1$$ 또 $n_1 \coloneqq min\{n\in\N:a_n\in I_1\}$이라 하자.  $I_1$이 모든 항을 포함하므로 $n_1=1$이다.</p>
-<p>이때 $k \in \N$에 대해 $n_k \in \N$와 $I_k=[\alpha_k,\beta_k]$가 정의되어있다고 가정할 때, 구간 $I_{k+1}=[\alpha_{k+1},\beta_{k+1}]$를 다음과 같이 정의한다.</p>
+<div class="thmbox thmbox--proof"><p class="thm-head"><span class="thm-name">pf</span></p><p> $(a_n)$이 유계이므로, $$\exists M&gt;0~ s.t.~ \forall n \in\mathbb{N}, a_n \in [-M,M]=I_1$$ 또 $n_1 \coloneqq min\{n\in\mathbb{N}:a_n\in I_1\}$이라 하자.  $I_1$이 모든 항을 포함하므로 $n_1=1$이다.</p>
+<p>이때 $k \in \mathbb{N}$에 대해 $n_k \in \mathbb{N}$와 $I_k=[\alpha_k,\beta_k]$가 정의되어있다고 가정할 때, 구간 $I_{k+1}=[\alpha_{k+1},\beta_{k+1}]$를 다음과 같이 정의한다.</p>
 <p>$I_k$에 대해 $c_k=\frac{\alpha_k+\beta_k}{2}$로 정의하면, 구간 $[\alpha_k,c_k]$와 $[c_k,\beta_k]$ 중 적어도 하나는 수열 $(a_n)$에서 무한히 많은 원소를 포함한다.<span class="sidenote">비둘기집의 원리에 의해, 두 폐구간 모두 수열의 원소를 유한개 가진다면, 수열이 무한수열이라는 가정에 모순된다.</span> 그 구간을 $I_{k+1}$이라 하고, 
-$$I_{k+1}=\begin{cases}[\alpha_k,c_k]&amp;(|\{n\in \N : a_n \in [\alpha_k,c_k]\}|=\infty)\\ [c_k,\beta_k]&amp;(|\{n\in \N : a_n \in [\alpha_k,c_k]\}|&lt;\infty)\end{cases}$$
+$$I_{k+1}=\begin{cases}[\alpha_k,c_k]&amp;(|\{n\in \mathbb{N} : a_n \in [\alpha_k,c_k]\}|=\infty)\\ [c_k,\beta_k]&amp;(|\{n\in \mathbb{N} : a_n \in [\alpha_k,c_k]\}|&lt;\infty)\end{cases}$$
 로 정의한다. 또, $n_{k+1}$은
-$$n_{k+1}\coloneqq min\{n\in \N : a_n \in I_{k+1}, n &gt; n_k\}$$
+$$n_{k+1}\coloneqq min\{n\in \mathbb{N} : a_n \in I_{k+1}, n &gt; n_k\}$$
 와 같이 재귀적으로 정의한다.</p>
-<p>$I_{k+1}$가 무한히 많은 항을 가지므로, $\exists n\in\N ~s.t.~ a_n \in I_{k+1} \land n &gt; n_k$이다.<span class="sidenote">유한집합 $\{1,\dots,n_k\}$만으로는 무한집합 $\N$을 덮을 수 없기 때문이다.</span> 그렇다면 $\emptyset \subsetneq\{n\in\N : a_n \in I_{k+1}\land n&gt;n_k\}\subsetneq\N$ 은 최소원의 원리(well-ordering principle)에 의해 최소원을 가지므로 $n_{k+1}$이 존재한다.</p>
+<p>$I_{k+1}$가 무한히 많은 항을 가지므로, $\exists n\in\mathbb{N} ~s.t.~ a_n \in I_{k+1} \land n &gt; n_k$이다.<span class="sidenote">유한집합 $\{1,\dots,n_k\}$만으로는 무한집합 $\mathbb{N}$을 덮을 수 없기 때문이다.</span> 그렇다면 $\emptyset \subsetneq\{n\in\mathbb{N} : a_n \in I_{k+1}\land n&gt;n_k\}\subsetneq\mathbb{N}$ 은 최소원의 원리(well-ordering principle)에 의해 최소원을 가지므로 $n_{k+1}$이 존재한다.</p>
 <p>이런 재귀적 정의에 의해 
-$$  I_1 \supseteq I_2 \supseteq I_3 \supseteq \dots~~\land~~|I_k| = \frac{2M}{2^{k-1}}~(k\in\N)$$
-를 만족하는 폐구간들<span class="sidenote">이렇게 구간들이 포함관계로 싸여 있는 구조를 <strong>중첩(nested)</strong>되었다고 부른다.</span>과 $n_1&lt;n_2&lt;n_3&lt;\dots$ 를 만족하는 부분수열 $(a_{n_k})_{k\in\N}$ 을 구성할 수 있다. 여기서 모든 $k\in\N$에 대해  $a_{n_k}\in I_k$이다.</p>
+$$  I_1 \supseteq I_2 \supseteq I_3 \supseteq \dots~~\land~~|I_k| = \frac{2M}{2^{k-1}}~(k\in\mathbb{N})$$
+를 만족하는 폐구간들<span class="sidenote">이렇게 구간들이 포함관계로 싸여 있는 구조를 <strong>중첩(nested)</strong>되었다고 부른다.</span>과 $n_1&lt;n_2&lt;n_3&lt;\dots$ 를 만족하는 부분수열 $(a_{n_k})_{k\in\mathbb{N}}$ 을 구성할 수 있다. 여기서 모든 $k\in\mathbb{N}$에 대해  $a_{n_k}\in I_k$이다.</p>
 <hr>
 <p>이제 이 구성한 수열이 정말 수렴하는지 알아보자. $I_k=[\alpha_k,\beta_k]$라고 하면, $(\alpha_k)$는 단조증가하고, $(\beta_k)$는 단조감소하며, $\beta_k-\alpha_k\to0$이다. </p>
-<p>집합 $S=\{\alpha_k:k\in\N\}$에 대해, $S$는 위로 유계이므로(모든 $\beta_k$가 상계이다), <strong>상한공리</strong>에 의해 상한 $L=\sup S$가 존재한다.</p>
-<p>이제 모든 $k\in\N$에 대해 $L\in[\alpha_k,\beta_k]$임을 보이자.</p>
-<p>1. $L$이 $S=\{\alpha_k:k\in\N\}$의 상한이므로, $\alpha_k \leq L$은 자명하다.</p>
-<p>2. $k\in\N$를 고정하자. 임의의 $j\in\N$에 대해 $(I_j)$가 nested이다. </p>
+<p>집합 $S=\{\alpha_k:k\in\mathbb{N}\}$에 대해, $S$는 위로 유계이므로(모든 $\beta_k$가 상계이다), <strong>상한공리</strong>에 의해 상한 $L=\sup S$가 존재한다.</p>
+<p>이제 모든 $k\in\mathbb{N}$에 대해 $L\in[\alpha_k,\beta_k]$임을 보이자.</p>
+<p>1. $L$이 $S=\{\alpha_k:k\in\mathbb{N}\}$의 상한이므로, $\alpha_k \leq L$은 자명하다.</p>
+<p>2. $k\in\mathbb{N}$를 고정하자. 임의의 $j\in\mathbb{N}$에 대해 $(I_j)$가 nested이다. </p>
 <p>$j&lt;k$일 경우 $I_k \subseteq I_j$이므로, $\alpha_j \leq \alpha_k \leq \beta_k$이다.</p>
 <p>$j\geq k$일 경우 $I_j \subseteq I_k$이므로, $\alpha_j \leq \beta_j \leq \beta_k$이다.</p>
 <p>두 경우 모두 $\alpha_j \leq \beta_k$이므로, $\beta_k$는 $S$의 상계이다. $L=\sup S$<span class="sidenote">최소 상계</span>이므로 $L\leq\beta_k$이다.</p>
-<p>따라서 $\alpha_k \leq L \leq \beta_k$, 즉 $L\in I_k$가 모든 $k\in\N$에서 성립한다.</p>
+<p>따라서 $\alpha_k \leq L \leq \beta_k$, 즉 $L\in I_k$가 모든 $k\in\mathbb{N}$에서 성립한다.</p>
 <p>이제 $a_{n_k}\in I_k$이고 $L\in I_k$이므로
 $$|a_{n_k}-L|\leq|I_k|=\frac{2M}{2^{k-1}}\to0 \quad (k\to\infty)$$
 따라서 $a_{n_k}\to L$이다.<span class="sidenote">여기서 $L$이 수열 $(a_n)$의 항일 필요는 없다는 것에 주의하자. $L$은 그저 부분수열이 다가가는 실수 하나일 뿐이다.</span></p></div>
@@ -112,15 +112,15 @@ $$|a_{n_k}-L|\leq|I_k|=\frac{2M}{2^{k-1}}\to0 \quad (k\to\infty)$$
 
 ## 상한공리
 이를 위해 먼저 필요한 것이 상한의 개념이다.
-집합 $S \subseteq \R$이 **위로 유계**하다는 것은, $\exists M\in\R, \forall x \in S ~s.t. ~x\leq M $이라는 것이다. 그리고 이때 $M$을 $S$의 상계(upper bound)라고 한다.
+집합 $S \subseteq \mathbb{R}$이 **위로 유계**하다는 것은, $\exists M\in\mathbb{R}, \forall x \in S ~s.t. ~x\leq M $이라는 것이다. 그리고 이때 $M$을 $S$의 상계(upper bound)라고 한다.
 $S$의 상한(supremum)인 $\sup S$는 $S$의 상계중 최솟값, 즉 최소상계(least upper bound)를 의미한다.
-이때 실수체 $\R$에 대해 다음이 성립한다
+이때 실수체 $\mathbb{R}$에 대해 다음이 성립한다
 !!
 상한공리
 
-$S \subseteq \R ~\land ~S\ne \emptyset$ 인 $S$가 위로 유계이면, $S$는 $\R$ 안에 상한 $\sup S$를 갖는다.
+$S \subseteq \mathbb{R} ~\land ~S\ne \emptyset$ 인 $S$가 위로 유계이면, $S$는 $\mathbb{R}$ 안에 상한 $\sup S$를 갖는다.
 !!
-지금까지 다룬 명제들과 달리, 이것은 증명되는 정리가 아니라 공리다. 우리가 실수라고 부르는 모든 수체계에 대해 이는 항상 성립하는 성질이다. 앞서 말한 빈틈이 없다는 직관을, 이 상한공리라는 형태로 명시한 것이다.^[**이 공리를 만족시키도록** $\mathbb{Q}$로부터 $\R$을 직접 구성하는 직접 구성하는 방법(데데킨트 절단, 코시 완비화 등)을 택하면 이 성질이 오히려 증명 가능한 정리가 된다. 다만 그 구성법들은 상한공리를 만족시키기 위해 고안된 것들이지, 상한공리보다 더 근본적인 게 아니다. 이는 별도로 다룬다. 우리가 지금 다루는 $\R$은 구성된 객체가 아닌 실수 자체를 다루고 있음을 알아야 한다.]
+지금까지 다룬 명제들과 달리, 이것은 증명되는 정리가 아니라 공리다. 우리가 실수라고 부르는 모든 수체계에 대해 이는 항상 성립하는 성질이다. 앞서 말한 빈틈이 없다는 직관을, 이 상한공리라는 형태로 명시한 것이다.^[**이 공리를 만족시키도록** $\mathbb{Q}$로부터 $\mathbb{R}$을 직접 구성하는 직접 구성하는 방법(데데킨트 절단, 코시 완비화 등)을 택하면 이 성질이 오히려 증명 가능한 정리가 된다. 다만 그 구성법들은 상한공리를 만족시키기 위해 고안된 것들이지, 상한공리보다 더 근본적인 게 아니다. 이는 별도로 다룬다. 우리가 지금 다루는 $\mathbb{R}$은 구성된 객체가 아닌 실수 자체를 다루고 있음을 알아야 한다.]
 
 도입부에서 말한 항들이 모이는 자리에 실제로 점이 있다는 직관을 다시 떠올려보자. 코시 열이 수렴한다는 것은 정확히 이 직관과 일치한다. 즉, 서로 가까워지는 항들이 실제로 어떤 실수 $L$로 모여든다는 것. 즉 **"모든 코시 열은 수렴한다"는 명제 자체가 완비성이다.**
 
@@ -158,42 +158,42 @@ $$M=\max \{ |a_1|,\dots,|a_N|,\ |a_{N+1}|+1 \}$$
 유계인 수열 $(a_n)$은 수렴하는 부분수열을 갖는다
 :::
 :::증명  
- $(a_n)$이 유계이므로, $$\exists M>0~ s.t.~ \forall n \in\N, a_n \in [-M,M]=I_1$$
-또 $n_1 \coloneqq min\{n\in\N:a_n\in I_1\}$이라 하자. 
+ $(a_n)$이 유계이므로, $$\exists M>0~ s.t.~ \forall n \in\mathbb{N}, a_n \in [-M,M]=I_1$$
+또 $n_1 \coloneqq min\{n\in\mathbb{N}:a_n\in I_1\}$이라 하자. 
 $I_1$이 모든 항을 포함하므로 $n_1=1$이다.
 
-이때 $k \in \N$에 대해 $n_k \in \N$와 $I_k=[\alpha_k,\beta_k]$가 정의되어있다고 가정할 때, 구간 $I_{k+1}=[\alpha_{k+1},\beta_{k+1}]$를 다음과 같이 정의한다.
+이때 $k \in \mathbb{N}$에 대해 $n_k \in \mathbb{N}$와 $I_k=[\alpha_k,\beta_k]$가 정의되어있다고 가정할 때, 구간 $I_{k+1}=[\alpha_{k+1},\beta_{k+1}]$를 다음과 같이 정의한다.
 
 $I_k$에 대해 $c_k=\frac{\alpha_k+\beta_k}{2}$로 정의하면, 구간 $[\alpha_k,c_k]$와 $[c_k,\beta_k]$ 중 적어도 하나는 수열 $(a_n)$에서 무한히 많은 원소를 포함한다.^[비둘기집의 원리에 의해, 두 폐구간 모두 수열의 원소를 유한개 가진다면, 수열이 무한수열이라는 가정에 모순된다.]
 그 구간을 $I_{k+1}$이라 하고, 
-$$I_{k+1}=\begin{cases}[\alpha_k,c_k]&(|\{n\in \N : a_n \in [\alpha_k,c_k]\}|=\infty)\\ [c_k,\beta_k]&(|\{n\in \N : a_n \in [\alpha_k,c_k]\}|<\infty)\end{cases}$$
+$$I_{k+1}=\begin{cases}[\alpha_k,c_k]&(|\{n\in \mathbb{N} : a_n \in [\alpha_k,c_k]\}|=\infty)\\ [c_k,\beta_k]&(|\{n\in \mathbb{N} : a_n \in [\alpha_k,c_k]\}|<\infty)\end{cases}$$
 로 정의한다.
 또, $n_{k+1}$은
 $$
-n_{k+1}\coloneqq min\{n\in \N : a_n \in I_{k+1}, n > n_k\}
+n_{k+1}\coloneqq min\{n\in \mathbb{N} : a_n \in I_{k+1}, n > n_k\}
 $$
 와 같이 재귀적으로 정의한다.
 
-$I_{k+1}$가 무한히 많은 항을 가지므로, $\exists n\in\N ~s.t.~ a_n \in I_{k+1} \land n > n_k$이다.^[유한집합 $\{1,\dots,n_k\}$만으로는 무한집합 $\N$을 덮을 수 없기 때문이다.]
-그렇다면 $\emptyset \subsetneq\{n\in\N : a_n \in I_{k+1}\land n>n_k\}\subsetneq\N$ 은 최소원의 원리(well-ordering principle)에 의해 최소원을 가지므로 $n_{k+1}$이 존재한다.
+$I_{k+1}$가 무한히 많은 항을 가지므로, $\exists n\in\mathbb{N} ~s.t.~ a_n \in I_{k+1} \land n > n_k$이다.^[유한집합 $\{1,\dots,n_k\}$만으로는 무한집합 $\mathbb{N}$을 덮을 수 없기 때문이다.]
+그렇다면 $\emptyset \subsetneq\{n\in\mathbb{N} : a_n \in I_{k+1}\land n>n_k\}\subsetneq\mathbb{N}$ 은 최소원의 원리(well-ordering principle)에 의해 최소원을 가지므로 $n_{k+1}$이 존재한다.
 
 이런 재귀적 정의에 의해 
 $$
-  I_1 \supseteq I_2 \supseteq I_3 \supseteq \dots~~\land~~|I_k| = \frac{2M}{2^{k-1}}~(k\in\N)
+  I_1 \supseteq I_2 \supseteq I_3 \supseteq \dots~~\land~~|I_k| = \frac{2M}{2^{k-1}}~(k\in\mathbb{N})
 $$
-를 만족하는 폐구간들^[이렇게 구간들이 포함관계로 싸여 있는 구조를 **중첩(nested)**되었다고 부른다.]과 $n_1<n_2<n_3<\dots$ 를 만족하는 부분수열 $(a_{n_k})_{k\in\N}$ 을 구성할 수 있다. 여기서 모든 $k\in\N$에 대해  $a_{n_k}\in I_k$이다.
+를 만족하는 폐구간들^[이렇게 구간들이 포함관계로 싸여 있는 구조를 **중첩(nested)**되었다고 부른다.]과 $n_1<n_2<n_3<\dots$ 를 만족하는 부분수열 $(a_{n_k})_{k\in\mathbb{N}}$ 을 구성할 수 있다. 여기서 모든 $k\in\mathbb{N}$에 대해  $a_{n_k}\in I_k$이다.
 
 ---
 이제 이 구성한 수열이 정말 수렴하는지 알아보자.
 $I_k=[\alpha_k,\beta_k]$라고 하면, $(\alpha_k)$는 단조증가하고, $(\beta_k)$는 단조감소하며, $\beta_k-\alpha_k\to0$이다. 
 
-집합 $S=\{\alpha_k:k\in\N\}$에 대해, $S$는 위로 유계이므로(모든 $\beta_k$가 상계이다), **상한공리**에 의해 상한 $L=\sup S$가 존재한다.
+집합 $S=\{\alpha_k:k\in\mathbb{N}\}$에 대해, $S$는 위로 유계이므로(모든 $\beta_k$가 상계이다), **상한공리**에 의해 상한 $L=\sup S$가 존재한다.
 
-이제 모든 $k\in\N$에 대해 $L\in[\alpha_k,\beta_k]$임을 보이자.
+이제 모든 $k\in\mathbb{N}$에 대해 $L\in[\alpha_k,\beta_k]$임을 보이자.
 
-1. $L$이 $S=\{\alpha_k:k\in\N\}$의 상한이므로, $\alpha_k \leq L$은 자명하다.
+1. $L$이 $S=\{\alpha_k:k\in\mathbb{N}\}$의 상한이므로, $\alpha_k \leq L$은 자명하다.
 
-2. $k\in\N$를 고정하자. 임의의 $j\in\N$에 대해 $(I_j)$가 nested이다. 
+2. $k\in\mathbb{N}$를 고정하자. 임의의 $j\in\mathbb{N}$에 대해 $(I_j)$가 nested이다. 
 
 $j<k$일 경우 $I_k \subseteq I_j$이므로, $\alpha_j \leq \alpha_k \leq \beta_k$이다.
 
@@ -201,7 +201,7 @@ $j\geq k$일 경우 $I_j \subseteq I_k$이므로, $\alpha_j \leq \beta_j \leq \b
 
 두 경우 모두 $\alpha_j \leq \beta_k$이므로, $\beta_k$는 $S$의 상계이다. $L=\sup S$^[최소 상계]이므로 $L\leq\beta_k$이다.
 
-따라서 $\alpha_k \leq L \leq \beta_k$, 즉 $L\in I_k$가 모든 $k\in\N$에서 성립한다.
+따라서 $\alpha_k \leq L \leq \beta_k$, 즉 $L\in I_k$가 모든 $k\in\mathbb{N}$에서 성립한다.
 
 이제 $a_{n_k}\in I_k$이고 $L\in I_k$이므로
 $$|a_{n_k}-L|\leq|I_k|=\frac{2M}{2^{k-1}}\to0 \quad (k\to\infty)$$
@@ -245,7 +245,7 @@ $$
   </main>
   <footer><p>&copy; 2026</p></footer>
   <script>window.ROOT='..'</script>
-  <script src="../assets/data/content.js?v=68f0bd90"></script>
+  <script src="../assets/data/content.js?v=e919907c"></script>
   <script src="../assets/js/util.js?v=6ae4aef1"></script>
   <script src="../assets/js/nav.js?v=04ca6e81"></script>
   <script src="../assets/js/progress.js?v=fb65c704"></script>
