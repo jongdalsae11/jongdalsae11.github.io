@@ -44,7 +44,12 @@ window.SITE = {
      pinned: 홈 상단 고정 여부
      links:  이 글이 인용한 다른 글의 file 목록.
              적어 두면 글 하단의 백링크 두 목록과 인용 관계
-             그래프가 자동으로 만들어집니다. (양쪽 다 자동)     */
+             그래프가 자동으로 만들어집니다. (양쪽 다 자동)
+
+     ※ 제목에 수식을 넣을 때 백슬래시는 반드시 두 번 씁니다 — '$\\mathbb{R}$'.
+       여기는 JS 문자열이라 한 번만 쓰면 '\R' 의 백슬래시가 그냥 삼켜져
+       'R' 이 됩니다. 본문은 멀쩡한데 탭 제목·og·RSS 에만 조용히
+       기울인 R 이 나가서 한참 못 찾았습니다.                       */
   /* 파일명을 만들 때 쓰는 한국어 → 영어 낱말집.
      흔한 수학·알고리즘·물리 용어는 이미 util.js 에 들어 있고,
      여기에 적은 것이 우선합니다. 없는 말은 로마자로 떨어지므로
@@ -83,14 +88,14 @@ window.SITE = {
       summary: '무손실 압축에 대한 글' },
 
     { title: '코시 열의 완비성에서 상한공리로',
-      file: '2026-08-31-cahchy-sequence-s-completeness-to-supremum-axiom.html',
+      file: '2026-08-31-cauchy-sequence-s-completeness-to-supremum-axiom.html',
       category: 'math/analysis',
       date: '2026-08-31',
       tags: ['수열', '극한', '실수'],
       links: ['2026-08-31-completeness-of-the-real-numbers.html'],
       summary: '상한공리에서 완비성을 보이는 과정의 역과정에 대하여.' },
 
-    { title: '실수체 $\R$의 완비성',
+    { title: '실수체 $\\mathbb{R}$의 완비성',
       file: '2026-08-31-completeness-of-the-real-numbers.html',
       category: 'math/analysis',
       date: '2026-08-31',

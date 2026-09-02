@@ -46,7 +46,7 @@ $$\forall(요구하는 ~정밀도),\exists(만족시키는~ 조건), 그 ~조건
 <p>그렇다면 예시를 통해 $\epsilon-N$논법을 사용해보자!</p>
 <p>W.T.S : $a_n= \frac{1}{n}, \lim\limits_{n\to\infty}a_n=0$</p>
 <p>먼저 적당한 N을 잡자. $\epsilon-\delta$논법처럼 적당한 $N$을 잡으면 된다. 주로 부등식을 역산한다.</p>
-<p>$\epsilon &gt; 0$ 에 대해, $\lvert a_n-L\rvert &lt; \epsilon$, 즉 $\frac{1}{n}-0 &lt; \epsilon$ <span class="sidenote">$\because n&gt;0$</span>이므로, $N = \lceil \frac{1}{\epsilon}\rceil$<span class="sidenote">$\because \frac{1}{n} &lt; \epsilon \Lrarr \frac{1}{\epsilon} &lt; n ~\land~N\in\N$</span>으로 정의하면 모든 $n &gt; N$에 대해 부등식이 성립한다. 이렇게 하면</p>
+<p>$\epsilon &gt; 0$ 에 대해, $\lvert a_n-L\rvert &lt; \epsilon$, 즉 $\frac{1}{n}-0 &lt; \epsilon$ <span class="sidenote">$\because n&gt;0$</span>이므로, $N = \lceil \frac{1}{\epsilon}\rceil$<span class="sidenote">$\because \frac{1}{n} &lt; \epsilon \Lrarr \frac{1}{\epsilon} &lt; n ~\land~N\in\mathbb{N}$</span>으로 정의하면 모든 $n &gt; N$에 대해 부등식이 성립한다. 이렇게 하면</p>
 <p>$$\forall\epsilon &gt;0, \exist N \in \mathbb{N}~ s.t.~\forall n &gt;N \Rarr \lvert a_n-0\rvert &lt; \epsilon$$
 이므로, $\lim\limits_{n\to\infty}a_n=0$ 이다.</p>
 <blockquote><p>다음 글에서는 극한값 없이도 수렴성을 판정하는 방법을 다룬다.</p></blockquote>
@@ -77,7 +77,7 @@ W.T.S : $a_n= \frac{1}{n}, \lim\limits_{n\to\infty}a_n=0$
 먼저 적당한 N을 잡자. $\epsilon-\delta$논법처럼 적당한 $N$을 잡으면 된다.
 주로 부등식을 역산한다.
 
-$\epsilon > 0$ 에 대해, $\lvert a_n-L\rvert < \epsilon$, 즉 $\frac{1}{n}-0 < \epsilon$ ^[$\because n>0$]이므로, $N = \lceil \frac{1}{\epsilon}\rceil$^[$\because \frac{1}{n} < \epsilon \Lrarr \frac{1}{\epsilon} < n ~\land~N\in\N$]으로 정의하면 모든 $n > N$에 대해 부등식이 성립한다. 이렇게 하면
+$\epsilon > 0$ 에 대해, $\lvert a_n-L\rvert < \epsilon$, 즉 $\frac{1}{n}-0 < \epsilon$ ^[$\because n>0$]이므로, $N = \lceil \frac{1}{\epsilon}\rceil$^[$\because \frac{1}{n} < \epsilon \Lrarr \frac{1}{\epsilon} < n ~\land~N\in\mathbb{N}$]으로 정의하면 모든 $n > N$에 대해 부등식이 성립한다. 이렇게 하면
 
 $$
 \forall\epsilon >0, \exist N \in \mathbb{N}~ s.t.~\forall n >N \Rarr \lvert a_n-0\rvert < \epsilon
@@ -92,7 +92,7 @@ $$
   </main>
   <footer><p>&copy; 2026 jongdalsae</p></footer>
   <script>window.ROOT='..'</script>
-  <script src="../assets/data/content.js?v=68f0bd90"></script>
+  <script src="../assets/data/content.js?v=e919907c"></script>
   <script src="../assets/js/util.js?v=6ae4aef1"></script>
   <script src="../assets/js/nav.js?v=04ca6e81"></script>
   <script src="../assets/js/progress.js?v=fb65c704"></script>
