@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="./assets/css/layout.css?v=6cc86a2c">
   <link rel="stylesheet" href="./assets/css/components.css?v=5924ec29">
   <link rel="stylesheet" href="./assets/css/post.css?v=97161f0a">
-  <link rel="stylesheet" href="./assets/css/write.css?v=fd5858f9">
+  <link rel="stylesheet" href="./assets/css/write.css?v=5d13c7ba">
 </head>
 <body class="page-write" data-crumb="~ / <b>새로 쓰기</b>">
   <main id="main">
@@ -39,6 +39,11 @@
               <button data-mode="research">연구</button>
             </div>
             <span class="w-head-right">
+              <span class="w-drafts" id="w-drafts">
+                <button class="w-tg w-tg--plain" id="btn-drafts" aria-expanded="false"
+                        title="초안 여러 개를 오가며 씁니다">초안 <b id="draft-n">1</b> <i>▾</i></button>
+                <div class="draft-menu" id="draft-menu" hidden></div>
+              </span>
               <button class="w-tg w-tg--plain" id="btn-edit" title="이미 올린 것을 불러와 고칩니다">수정</button>
               <button class="w-tg" id="tg-fields" aria-expanded="true">정보 <i>▾</i></button>
               <button class="w-tg" id="tg-toolbar" aria-expanded="true" data-for="post">도구 <i>▾</i></button>
@@ -335,9 +340,9 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
     onload="window.WRITE && window.WRITE.refresh()"
     onerror="window.WRITE && window.WRITE.mathFailed()"></script>
-  <script src="./assets/js/write.js?v=1c1d5391"></script>
+  <script src="./assets/js/write.js?v=b4b0e3f4"></script>
   <script src="./assets/js/editor.js?v=669f09c7"></script>
-  <script src="./assets/js/compose.js?v=7ca1dcd9"></script>
+  <script src="./assets/js/compose.js?v=3b7a4824"></script>
   <script src="./assets/js/sync.js?v=5eaf6975"></script>
   <script src="./assets/js/save.js?v=f1e0b16b"></script>
 </body>

@@ -11,7 +11,19 @@
 (function () {
   var $ = function (s) { return document.querySelector(s); };
   var S = window.SITE || { posts: [], library: [], labels: {} };
-  var DRAFT = 'write-draft';
+  /* ── 초안 칸 이름 ──────────────────────────────────
+     예전에는 초안이 'write-draft' 한 칸뿐이었습니다. 그래서 새 글을
+     시작하거나 «수정» 으로 올린 글을 불러오면, 쓰던 초안이 그 자리에서
+     조용히 사라졌습니다. 이제 초안마다 자기 칸을 씁니다.
+
+     초안 전부를 한 객체에 몰아넣지 않은 이유 — save() 는 타자 한 번마다
+     돕니다. 묶어 두면 매번 초안 «전부» 를 다시 직렬화해야 해서, 긴 글이
+     몇 개 쌓이면 타자가 밀립니다. 본문은 각자 칸에 두고, 매번 건드리는
+     것은 자기 칸과 목록(제목·시각만)뿐이게 나눴습니다.              */
+  var DRAFT_OLD = 'write-draft';    /* 옛 단일 초안 — 한 번만 옮겨 옵니다 */
+  var DRAFT_KEY = 'write-draft:';   /* + id — 초안 하나의 실제 내용 */
+  var DRAFT_LIST = 'write-drafts';  /* [{ id, title, editing, updated }] */
+  var DRAFT_CUR = 'write-draft-cur';/* 지금 열려 있는 초안 id */
 
   var ed = $('#editor');
   var F = {
@@ -400,42 +412,217 @@
     el.addEventListener('change', queue);
   });
 
-  /* ── 자동 저장 ───────────────────────────────────── */
+  /* ── 자동 저장 ─────────────────────────────────────
+     초안 여러 개를 오갑니다. 칸 나누기의 까닭은 파일 위쪽 DRAFT_* 주석에. */
+  function lsGet(k) {
+    try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; }
+  }
+  /* 비공개 모드나 저장 공간이 꽉 차면 setItem 이 던집니다. 예전에는 조용히
+     삼켰는데, 초안이 여러 개면 «저장된 줄 알았는데 아니었다» 가 훨씬
+     아프므로 헤더의 «자동 저장됨» 자리에 알립니다.                   */
+  function lsSet(k, v) {
+    try { localStorage.setItem(k, JSON.stringify(v)); return true; }
+    catch (e) { return false; }
+  }
+  function draftList() {
+    var a = lsGet(DRAFT_LIST);
+    return Object.prototype.toString.call(a) === '[object Array]' ? a : [];
+  }
+  function setList(a) { return lsSet(DRAFT_LIST, a); }
+  function newId() {
+    return 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  }
+
+  var curId = null;
+
   function save() {
-    try {
-      localStorage.setItem(DRAFT, JSON.stringify({
-        title: F.title.value, cat: F.cat.value, date: F.date.value,
-        tags: F.tags.value, summary: F.summary.value,
-        slug: F.slug ? F.slug.value : '',
-        editing: window.WRITE && window.WRITE.editing || null,
-        pinned: F.pinned.checked, body: ed.value
-      }));
-      var s = $('#w-saved');
+    if (!curId) return;                 /* 초안을 지우는 도중에는 되살리지 않습니다 */
+    var d = {
+      title: F.title.value, cat: F.cat.value, date: F.date.value,
+      tags: F.tags.value, summary: F.summary.value,
+      slug: F.slug ? F.slug.value : '',
+      editing: window.WRITE && window.WRITE.editing || null,
+      pinned: F.pinned.checked, body: ed.value
+    };
+    var ok = lsSet(DRAFT_KEY + curId, d);
+
+    /* 목록에는 제목과 시각만 — 본문까지 넣으면 타자마다 전부 다시 씁니다 */
+    var list = draftList(), hit = false, i;
+    for (i = 0; i < list.length; i++) {
+      if (list[i].id !== curId) continue;
+      list[i].title = d.title; list[i].editing = !!d.editing;
+      list[i].updated = Date.now(); hit = true; break;
+    }
+    if (!hit) list.unshift({ id: curId, title: d.title,
+                             editing: !!d.editing, updated: Date.now() });
+    ok = setList(list) && ok;
+
+    var s = $('#w-saved');
+    s.textContent = ok ? '자동 저장됨' : '저장 실패 — 저장 공간 확인';
+    s.classList.toggle('w-saved--bad', !ok);
+    if (ok) {
       s.classList.add('flash');
       setTimeout(function () { s.classList.remove('flash'); }, 400);
-    } catch (e) {}
-  }
-  function restore() {
-    var d = null;
-    try { d = JSON.parse(localStorage.getItem(DRAFT)); } catch (e) {}
-    if (d) {
-      F.title.value = d.title || ''; F.cat.value = d.cat || 'essay';
-      F.date.value = d.date || todayStr();
-      F.tags.value = d.tags || ''; F.summary.value = d.summary || '';
-      if (F.slug) F.slug.value = d.slug || '';
-      F.pinned.checked = !!d.pinned; ed.value = d.body || '';
-      /* 새로고침해도 «고치는 중» 상태가 이어지도록 */
-      if (d.editing) {
-        setTimeout(function () {
-          if (window.WRITE && window.WRITE.markEditing) {
-            window.WRITE.markEditing(d.editing.id, d.editing.kind);
-          }
-        }, 0);
-      }
-    } else {
-      F.date.value = todayStr();
-      F.cat.value = 'essay';
     }
+    updateCount();
+  }
+
+  /* 초안 하나를 화면에 붓습니다 */
+  function apply(d) {
+    d = d || {};
+    F.title.value = d.title || '';
+    F.cat.value = d.cat || 'essay';
+    F.date.value = d.date || todayStr();
+    F.tags.value = d.tags || '';
+    F.summary.value = d.summary || '';
+    if (F.slug) F.slug.value = d.slug || '';
+    F.pinned.checked = !!d.pinned;
+    ed.value = d.body || '';
+    /* 새로고침하거나 초안을 갈아타도 «고치는 중» 상태가 따라옵니다.
+       editing 이 없을 때 markEditing(null) 을 «반드시» 불러야 합니다 —
+       안 그러면 앞 초안의 띠가 남아, 새로 쓴 글이 엉뚱한 글을 덮어씁니다. */
+    var mark = function () {
+      if (!window.WRITE || !window.WRITE.markEditing) return;
+      window.WRITE.markEditing(d.editing ? d.editing.id : null,
+                               d.editing ? d.editing.kind : 'post');
+    };
+    /* 첫 restore() 때는 compose.js 가 아직 안 왔으므로 한 박자 미룹니다.
+       와 있으면 «곧바로» 불러야 합니다 — 미루면 «수정» 으로 글을 불러올 때
+       newDraft() 가 남긴 markEditing(null) 이 뒤늦게 터져서, 방금 세운
+       «고치는 중» 띠를 도로 지웁니다.                                */
+    if (window.WRITE && window.WRITE.markEditing) mark(); else setTimeout(mark, 0);
+  }
+
+  function openDraft(id) {
+    if (id === curId) return;
+    save();                              /* 보던 것을 먼저 확정하고 */
+    curId = id;
+    lsSet(DRAFT_CUR, id);
+    apply(lsGet(DRAFT_KEY + id));
+    refresh();
+  }
+
+  function newDraft() {
+    save();
+    curId = newId();
+    lsSet(DRAFT_CUR, curId);
+    apply(null);
+    refresh();
+    return curId;
+  }
+
+  function deleteDraft(id) {
+    /* curId 를 먼저 비웁니다 — 아래 openDraft/newDraft 안의 save() 가
+       방금 지운 초안을 목록에 도로 넣어 버리지 않게.                 */
+    var wasCur = (id === curId);
+    if (wasCur) curId = null;
+    try { localStorage.removeItem(DRAFT_KEY + id); } catch (e) {}
+    setList(draftList().filter(function (x) { return x.id !== id; }));
+    if (!wasCur) { updateCount(); return; }
+    var rest = draftList();
+    /* 마지막 하나를 지웠으면 빈 초안으로 갈아탑니다 —
+       편집칸이 갈 곳 없이 남는 상태를 만들지 않으려고.               */
+    if (rest.length) openDraft(rest[0].id); else newDraft();
+  }
+
+  function restore() {
+    /* 옛 단일 초안을 첫 초안으로 옮겨 옵니다 (쓰던 글이 날아가지 않게) */
+    var old = lsGet(DRAFT_OLD);
+    if (old) {
+      var oid = newId();
+      lsSet(DRAFT_KEY + oid, old);
+      setList([{ id: oid, title: old.title || '',
+                 editing: !!old.editing, updated: Date.now() }].concat(draftList()));
+      lsSet(DRAFT_CUR, oid);
+      try { localStorage.removeItem(DRAFT_OLD); } catch (e) {}
+    }
+
+    var list = draftList();
+    var id = lsGet(DRAFT_CUR);
+    /* 가리키는 칸이 실제로 없으면(다른 탭에서 지웠거나) 가장 최근 것으로 */
+    if (!id || !lsGet(DRAFT_KEY + id)) id = list.length ? list[0].id : null;
+    if (!id) id = newId();
+    curId = id;
+    lsSet(DRAFT_CUR, id);
+    if (!list.filter(function (x) { return x.id === id; }).length) {
+      list.unshift({ id: id, title: '', editing: false, updated: Date.now() });
+      setList(list);
+    }
+    apply(lsGet(DRAFT_KEY + id));
+  }
+
+  /* ── 초안 목록 (헤더의 «초안 n ▾») ───────────────── */
+  var dWrap = $('#w-drafts'), dBtn = $('#btn-drafts'),
+      dMenu = $('#draft-menu'), dNum = $('#draft-n');
+
+  function when(t) {
+    var s = Math.floor((Date.now() - (t || 0)) / 1000);
+    if (s < 60) return '방금';
+    if (s < 3600) return Math.floor(s / 60) + '분 전';
+    if (s < 86400) return Math.floor(s / 3600) + '시간 전';
+    if (s < 86400 * 7) return Math.floor(s / 86400) + '일 전';
+    var d = new Date(t);
+    return (d.getMonth() + 1) + '.' + d.getDate();
+  }
+  function updateCount() { if (dNum) dNum.textContent = draftList().length || 1; }
+
+  function drawMenu() {
+    if (!dMenu) return;
+    var list = draftList().slice().sort(function (a, b) {
+      return (b.updated || 0) - (a.updated || 0);
+    });
+    dMenu.innerHTML =
+      '<div class="draft-list">' + list.map(function (d) {
+        return '<div class="draft-row' + (d.id === curId ? ' on' : '') + '">' +
+          '<button type="button" class="draft-item" data-open="' + esc(d.id) + '">' +
+            /* 제목에 수식이 있을 수 있습니다 — 목록에는 KaTeX 가 닿지 않으므로
+               다른 목록들과 똑같이 U.mathify 로 근사치를 씁니다.        */
+            '<span class="dm-title">' +
+              (d.title ? U.mathify(d.title) : '<em>제목 없음</em>') + '</span>' +
+            (d.editing ? '<span class="dm-tag">수정</span>' : '') +
+            '<span class="dm-when">' + when(d.updated) + '</span>' +
+          '</button>' +
+          '<button type="button" class="dm-x" data-del="' + esc(d.id) + '" ' +
+                  'title="이 초안을 지웁니다" aria-label="초안 지우기">×</button>' +
+        '</div>';
+      }).join('') + '</div>' +
+      '<button type="button" class="draft-new" data-new="1">+ 새 초안</button>';
+    updateCount();
+  }
+
+  function closeMenu() {
+    if (!dMenu || dMenu.hidden) return;
+    dMenu.hidden = true;
+    dBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  if (dBtn) {
+    dBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (dMenu.hidden) { drawMenu(); dMenu.hidden = false; dBtn.setAttribute('aria-expanded', 'true'); }
+      else closeMenu();
+    });
+    dMenu.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('[data-open],[data-del],[data-new]') : null;
+      if (!b) return;
+      if (b.hasAttribute('data-new')) { closeMenu(); newDraft(); return; }
+      if (b.hasAttribute('data-open')) { closeMenu(); openDraft(b.getAttribute('data-open')); return; }
+      var id = b.getAttribute('data-del');
+      var it = draftList().filter(function (x) { return x.id === id; })[0] || {};
+      var body = (lsGet(DRAFT_KEY + id) || {}).body || '';
+      if ((it.title || body.trim()) &&
+          !confirm('초안 «' + (it.title || '제목 없음') + '» 을 지울까요?')) return;
+      deleteDraft(id);
+      drawMenu();
+    });
+    /* Esc 를 document 에 걸면 전체화면 나가기(compose.js)까지 같이 터집니다.
+       목록이 열려 있을 때 초점은 항상 이 안에 있으므로 여기서만 받습니다. */
+    dWrap.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !dMenu.hidden) { closeMenu(); dBtn.focus(); }
+    });
+    document.addEventListener('click', function (e) {
+      if (!dMenu.hidden && !dWrap.contains(e.target)) closeMenu();
+    });
   }
 
   $('#btn-clear').addEventListener('click', function () {
@@ -974,6 +1161,9 @@
     F: F, ed: ed, G: G, $: $, S: S, applyEdit: applyEdit,
     setMode: setMode, refresh: refresh, fileBase: fileBase, tagArr: tagArr,
     getMode: function () { return MODE; },
+    /* «수정» 으로 올린 글을 불러올 때 compose.js 가 부릅니다 —
+       쓰던 초안을 덮지 않고 새 칸에 담기게.                        */
+    newDraft: newDraft,
     buildPostHTML: buildPostHTML,
     genRegister: genRegister,
     lastReg: function () { return LAST_REG; },
