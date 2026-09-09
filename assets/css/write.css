@@ -496,8 +496,95 @@ button.mini.ok { color: var(--cyan); }
 .slash-item.on .sl-key { color: var(--cyan); }
 .slash-empty { padding: 12px; text-align: center; color: var(--faint); font-size: 0.8rem; }
 
+/* ── 초안 목록 ────────────────────────────────────
+   슬래시 메뉴(.slash)와 같은 팝오버 톤. 자리는 JS 로 재지 않고
+   버튼을 기준(position:relative)으로 매답니다 — 헤더 안에 붙박이라
+   슬래시 메뉴처럼 커서를 따라다닐 일이 없습니다.                  */
+.w-drafts { position: relative; display: inline-flex; }
+.draft-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 24;
+  width: 260px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6);
+}
+.draft-menu[hidden] { display: none; }
+.draft-row { display: flex; align-items: stretch; border-radius: 7px; }
+.draft-row:hover { background: var(--surface-2); }
+.draft-row.on .dm-title { color: var(--cyan); }
+.draft-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 4px 7px 10px;
+  background: none;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  font-size: 0.84rem;
+  color: var(--soft);
+}
+/* 제목이 길어도 목록 폭을 밀지 않게 — 시각·× 는 항상 보여야 합니다 */
+.dm-title { flex: 1; min-width: 0; overflow: hidden;
+            text-overflow: ellipsis; white-space: nowrap; }
+.dm-title em { color: var(--faint); font-style: normal; }
+.dm-tag {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: var(--purple);
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: 4px;
+  padding: 0 4px;
+}
+.dm-when { flex: none; font-family: var(--mono); font-size: 0.62rem; color: var(--faint); }
+.dm-x {
+  flex: none;
+  padding: 0 9px;
+  background: none;
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--line);
+}
+.dm-x:hover { color: var(--orange); }
+.draft-new {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 7px 10px;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--line-soft);
+  border-radius: 0 0 7px 7px;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--faint);
+}
+.draft-new:hover { color: var(--cyan); }
+#btn-drafts b { font-weight: 600; color: var(--soft); }
+
 /* 헤드의 보조 토글 */
 .w-tg--plain[aria-pressed="true"] { color: var(--cyan); border-color: rgba(56,189,248,.35); }
+/* 저장이 실패했을 때만 — 조용히 넘어가면 «저장된 줄 알았는데» 가 됩니다 */
+.w-saved--bad { color: var(--orange); }
 
 /* 편집칸 아래 상시 힌트 — 기능이 있다는 걸 알 수 있게 */
 .w-hint {

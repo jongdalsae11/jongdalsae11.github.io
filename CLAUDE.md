@@ -85,7 +85,15 @@
 - 배포는 GitHub Actions 가 **Pages 아티팩트로** 올린다. 되커밋하지 않으므로
   `git pull` 없이 `git push` 만 하면 된다. (예전에 되커밋하다가 push 가
   계속 거부됐던 적이 있다 — 되돌리지 말 것)
-- `localStorage` 키: `write-draft`, `tree-open`, `graph-moved`.
+- `localStorage` 키: `write-drafts`(초안 목록 — 제목·시각만) ·
+  `write-draft:<id>`(초안 하나의 내용) · `write-draft-cur`(지금 열린 초안) ·
+  `tree-open` · `graph-moved`.
+  초안을 한 칸에 몰아넣지 않은 것은 일부러다 — `save()` 가 타자 한 번마다
+  도는데, 묶어 두면 매번 초안 전부를 다시 직렬화해야 해서 타자가 밀린다.
+  (`write-draft` 는 옛 단일 초안 칸. 첫 로드 때 한 번 옮겨 오고 지운다)
+- **초안을 갈아탈 때는 «고치는 중»(`markEditing`) 도 함께 옮겨야 한다.**
+  띠가 남으면 새로 쓴 글이 엉뚱한 글을 덮어쓴다. 초안에 `editing` 이 없으면
+  `markEditing(null)` 을 반드시 부를 것.
 - CSS 를 고친 뒤에는 중괄호 짝이 맞는지 본다. 여분의 `}` 하나가 조용히
   뒤쪽 규칙을 통째로 죽인 적이 있다.
 - 검색과 슬래시 메뉴는 `U.matches` 를 쓴다 — 두벌식 자판 상태로 친 한글

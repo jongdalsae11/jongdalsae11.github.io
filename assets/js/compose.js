@@ -249,6 +249,11 @@
     var meta = (S.posts || []).filter(function (p) { return p.file === file; })[0];
     if (!meta) { alert('content.js 에 등록되지 않은 글입니다.'); return; }
 
+    /* 쓰던 초안을 덮지 않도록 새 칸을 열고 그 위에 붓습니다.
+       (예전에는 초안 칸이 하나뿐이라, 고치러 들어가는 순간 쓰던 글이
+        그대로 사라졌습니다)                                        */
+    if (W.newDraft) W.newDraft();
+
     var F = W.F;
     F.title.value = meta.title || '';
     F.cat.value = meta.category || '';
