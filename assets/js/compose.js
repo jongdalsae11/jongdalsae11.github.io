@@ -261,6 +261,14 @@
     F.tags.value = (meta.tags || []).join(', ');
     F.summary.value = meta.summary || '';
     F.pinned.checked = !!meta.pinned;
+    /* 파일명 칸을 «지금 이 글의 이름» 으로 채워 둡니다. 비워 두면 fileBase()
+       가 제목에서 자동으로 만드는데, 한글 제목은 로마자로 떨어집니다
+       ('코시 열의 완비성에서 상한공리로' → cauchy-yeolui-wanbiseongeseo-…).
+       그래서 태그 하나만 고쳐 저장해도 «이름이 바뀌었습니다» 가 뜨고,
+       확인을 누르면 주소가 깨지고 취소를 누르면 같은 글이 두 벌 생깁니다.
+       실제로 한 번 당해서 파일을 손으로 되돌렸습니다.
+       (날짜 부분은 fileBase() 가 F.date 로 다시 붙이므로 여기서는 뗍니다) */
+    if (F.slug) F.slug.value = file.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/\.html$/, '');
 
     var url = (window.ROOT || '.') + '/posts/' + file;
     fetch(url).then(function (r) {
