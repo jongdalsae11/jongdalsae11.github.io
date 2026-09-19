@@ -79,6 +79,16 @@ window.SITE = {
   ],
 
   posts: [
+    { title: '코시 열의 완비성에서 상한공리로',
+      file: '2026-09-19-cauchy-sequence-s-completeness-to-supremum-axiom.html',
+      category: 'math/analysis',
+      date: '2026-09-19',
+      tags: ['수열', '극한', '실수'],
+      links: [],
+      summary: '상한공리에서 완비성을 보이는 과정의 역과정에 대하여.' },
+
+
+
     { title: '데이터의 무손실 압축',
       file: '2026-08-31-lossless-compression.html',
       category: 'school/informatics',
@@ -87,13 +97,7 @@ window.SITE = {
       links: [],
       summary: '무손실 압축에 대한 글' },
 
-    { title: '코시 열의 완비성에서 상한공리로',
-      file: '2026-08-31-cauchy-sequence-s-completeness-to-supremum-axiom.html',
-      category: 'math/analysis',
-      date: '2026-08-31',
-      tags: ['수열', '극한', '실수'],
-      links: ['2026-08-31-completeness-of-the-real-numbers.html'],
-      summary: '상한공리에서 완비성을 보이는 과정의 역과정에 대하여.' },
+
 
     { title: '실수체 $\\mathbb{R}$의 완비성',
       file: '2026-08-31-completeness-of-the-real-numbers.html',

@@ -16,30 +16,30 @@
   <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-  <link rel="stylesheet" href="../assets/css/base.css?v=04682ee8">
-  <link rel="stylesheet" href="../assets/css/layout.css?v=6cc86a2c">
-  <link rel="stylesheet" href="../assets/css/components.css?v=5924ec29">
-  <link rel="stylesheet" href="../assets/css/post.css?v=97161f0a">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/post.css">
 </head>
-<body data-cat="math/analysis" data-crumb="글 / 수학 / 해석학 / <b>코시 열의 완비성에서 상한공리로</b>">
+<body data-crumb="글 / 해석학 / <b>코시 열의 완비성에서 상한공리로</b>">
   <main id="main">
     <div class="page page--post">
       <article>
         <div class="post-head">
           <h1>코시 열의 완비성에서 상한공리로</h1>
           <div class="post-meta">
-            <span class="post-date">2026.08.31</span>
+            <span class="post-date">2026.09.19</span>
             <span class="tag">수열</span>
             <span class="tag">극한</span>
             <span class="tag">실수</span>
           </div>
         </div>
         <div class="post-body">
-<p><a class="wikilink" href="2026-08-31-completeness-of-the-real-numbers.html">앞선 글</a>에서는 상한공리로부터 "모든 코시 열은 수렴한다"는 것을 보였다. 이제 반대 방향을 증명할 것이다. 코시 열이 항상 수렴한다는 성질만으로, 거꾸로 상한공리를 수 있을까?</p>
-<p>전략은 앞서 볼차노-바이어슈트라스에서 썼던 것과 닮았다. 그때는 구간을 이분법으로 좁혀가며 항이 모이는 자리 $L$을 찾았다. 이번에는 반대로, 상한이 될 후보를 이분법으로 직접 좁혀가며 만들어낸다.</p>
+<p><span class="wikilink nolink" data-target="실수체 $R$의 완비성" title="아직 쓰지 않은 글입니다">앞선 글</span>에서는 상한공리로부터 모든 코시 열은 수렴한다는 것을 보였다. 이제 반대 방향을 증명할 것이다. 코시 열이 항상 수렴한다는 성질만으로, 거꾸로 상한공리를 복원할 수 있을까?</p>
+<p>증명의 전략은 앞서 볼차노-바이어슈트라스에서 썼던 것과 닮았다. 그때는 구간을 이분법으로 좁혀가며 항이 모이는 자리 $L$을 찾았다. 이번에는 반대로, 상한이 될 후보를 이분법으로 직접 좁혀가며 만들어낸다. 볼차노 바이어슈트라스 정리의 증명의 완전 역과정이라고 생각하면 편하다.(그 직관이 있으면, 아래의 증명을 정확히 보지 않더라고 어떤 느낌인지 감이 올것이다.)</p>
 <div class="thmbox thmbox--thm"><p class="thm-head"><span class="thm-name">정리 1</span><span class="thm-title">Cauchy completeness implies supremum axiom</span></p><p>$\mathbb{R}$의 모든 코시 열이 수렴한다고 가정하자. 이때 $S\subseteq\mathbb{R}$이 공집합이 아니고 위로 유계이면, $S$는 상한 $\sup S$를 갖는다.</p></div>
 <div class="thmbox thmbox--proof"><p class="thm-head"><span class="thm-name">pf</span></p><h3>I. 구성 — 상한 후보를 이분법으로 좁히기</h3>
-<p>$S\ne\emptyset$이므로 $x_0\in S$를 하나 고르고, $a_1 \coloneqq x_0-1$이라 하자. $x_0\in S$이고 $x_0&gt;a_1$이므로, $a_1$보다 큰 원소가 $S$ 안에 존재한다. 즉 $a_1$은 $S$의 상계가 아니다.<span class="sidenote">상계였다면 $S$의 모든 원소가 $a_1$ 이하여야 하는데, $x_0&gt;a_1$이므로 모순이다.</span></p>
+<p>$S\ne\emptyset$이므로 $x_0\in S$를 하나 고르고, $a_1 \coloneqq x_0-1$이라 하자.<span class="sidenote">1에는 아무 의미도 없다. 어떤 양수를 뺐다는 것이 중요하다</span> $x_0\in S$이고 $x_0&gt;a_1$이므로, $a_1$보다 큰 원소가 $S$ 안에 존재한다. 즉 $a_1$은 $S$의 상계가 아니다.<span class="sidenote">상계였다면 $S$의 모든 원소가 $a_1$ 이하여야 하는데, $x_0&gt;a_1$이므로 모순이다.</span></p>
 <p>$S$가 위로 유계이므로 $S$의 상계 $b_1$을 하나 고르자.</p>
 <p>이제 $k\in\mathbb{N}$에 대해 $a_k, b_k\in\mathbb{R}$이 정의되어 있고, $a_k$는 $S$의 상계가 아니며 $b_k$는 $S$의 상계라고 가정하자. $c_k=\dfrac{a_k+b_k}{2}$라 하고,</p>
 <p>$$(a_{k+1},\,b_{k+1}) := \begin{cases} (a_k,\,c_k) &amp; (c_k\text{가 }S\text{의 상계인 경우}) \\ (c_k,\,b_k) &amp; (c_k\text{가 }S\text{의 상계가 아닌 경우}) \end{cases}$$</p>
@@ -47,8 +47,8 @@
 <p>이 재귀에 의해 $(a_k)$는 단조증가하고 $(b_k)$는 단조감소하며, 모든 $k\in\mathbb{N}$에서 $a_k&lt;b_k$이고 $a_k$는 $S$의 상계가 아니며 $b_k$는 $S$의 상계다. 또한</p>
 <p>$$b_k-a_k = \frac{b_1-a_1}{2^{k-1}} \to 0$$</p>
 <p>이 성립한다.</p>
-<h3><strong>II. 두 수열이 코시 열임을 확인</strong></h3>
-<p>$m,n\ge N$이라 하자. $(a_k)$는 증가, $(b_k)$는 감소하면서 서로를 감싸므로 $a_N\le a_n,a_m\le b_n,b_m\le b_N$이고, 따라서</p>
+<h3>II. 두 수열이 코시 열임을 확인</h3>
+<p>$m,n\ge N$이라 하자. $(a_k)$가 단조증가하므로 $a_N\le a_n$이고 $a_N\le a_m$이며, $(b_k)$가 단조감소하므로 $b_n\le b_N$이고 $b_m\le b_N$이다. 또한 모든 $k$에서 $a_k&lt;b_k$이므로 $a_n&lt;b_n\le b_N$, $a_m&lt;b_m\le b_N$이다. 즉 $a_n,a_m\in[a_N,b_N]$이므로</p>
 <p>$$|a_n-a_m|\le b_N-a_N \to 0 \quad(N\to\infty)$$</p>
 <p>이므로 $(a_k)$는 코시 열이다. 같은 논리로 $(b_k)$도 코시 열이다.</p>
 <p><strong>III. 가정(코시완비성) 적용</strong></p>
@@ -59,17 +59,16 @@
 <p><em>(2) $L$은 최소상계다.</em> $M&lt;L$인 상계 $M$이 존재한다고 가정하자. $a_k\to L$이므로 충분히 큰 $k$에서 $a_k&gt;M$이 된다. 그런데 $a_k$는 모든 $k$에서 $S$의 상계가 아니므로, $a_k&lt;s$인 $s\in S$가 존재하고, 이때 $s&gt;a_k&gt;M$이 되어 $M$이 상계라는 가정에 모순이다.</p>
 <p>따라서 $L$보다 작은 상계는 없으므로 $L=\sup S$이다. $\blacksquare$</p></div>
 <h3>마무리</h3>
-<p>이로써 두 개의 화살표가 모두 그려졌다.</p>
+<p>이로써 필요충분조건이 만들어졌다!</p>
 <p>$$\text{상한공리} \implies \text{코시 열은 수렴한다} \qquad(\text{앞선 글})$$
 $$\text{코시 열은 수렴한다} \implies \text{상한공리} \qquad(\text{이 글})$$</p>
-<p>이 두 화살표가 완성되고 나서야 비로소 "상한공리와 코시완비성은 동치다"라고 말할 자격이 생긴다. 동치라는 사실이 증명을 생략할 근거였던 적은 없다 — 오히려 지금까지 하나하나 그려온 이 화살표들 자체가 그 동치성을 만들어낸 결과다.</p>
-<p>돌아보면 이번 증명도 앞선 글과 같은 패턴을 따랐다. $L$이 정확히 무엇인지 모른 채로, "$a_k$는 상계가 아니고 $b_k$는 상계다"라는 국소적인 규칙만 지키며 두 수열을 좁혀나갔을 뿐이다. 그런데 그 규칙이 남긴 흔적 — 간격이 0으로 줄어드는 두 코시 열 — 이 가정된 코시완비성을 통해 스스로 상한의 존재를 만들어냈다. 목적지를 모른 채 규칙만 지키며 나아갔더니 그 규칙이 목적지의 존재를 보장해준 것이다 — 이 시리즈 전체를 관통하는 하나의 그림이 여기서도 그대로 반복된 셈이다.</p>
+<p>이 두 화살표가 완성되고 나서야 비로소 상한공리와 코시완비성은 동치라고 말할 자격이 생긴다. 동치라는 사실이 증명을 생략할 근거였던 적은 없다. 오히려 지금까지 하나하나 그려온 이 화살표들 자체가 그 동치성을 만들어낸 결과다.(동치지만, 이 증명과정에 의존적이다)</p>
         </div>
         <section class="backlinks"></section>
         <script type="text/markdown" class="post-src">
-[[실수체 $R$의 완비성|앞선 글]]에서는 상한공리로부터 "모든 코시 열은 수렴한다"는 것을 보였다. 이제 반대 방향을 증명할 것이다. 코시 열이 항상 수렴한다는 성질만으로, 거꾸로 상한공리를 수 있을까?
+[[실수체 $R$의 완비성|앞선 글]]에서는 상한공리로부터 모든 코시 열은 수렴한다는 것을 보였다. 이제 반대 방향을 증명할 것이다. 코시 열이 항상 수렴한다는 성질만으로, 거꾸로 상한공리를 복원할 수 있을까?
 
-전략은 앞서 볼차노-바이어슈트라스에서 썼던 것과 닮았다. 그때는 구간을 이분법으로 좁혀가며 항이 모이는 자리 $L$을 찾았다. 이번에는 반대로, 상한이 될 후보를 이분법으로 직접 좁혀가며 만들어낸다.
+증명의 전략은 앞서 볼차노-바이어슈트라스에서 썼던 것과 닮았다. 그때는 구간을 이분법으로 좁혀가며 항이 모이는 자리 $L$을 찾았다. 이번에는 반대로, 상한이 될 후보를 이분법으로 직접 좁혀가며 만들어낸다. 볼차노 바이어슈트라스 정리의 증명의 완전 역과정이라고 생각하면 편하다.(그 직관이 있으면, 아래의 증명을 정확히 보지 않더라고 어떤 느낌인지 감이 올것이다.)
 
 :::정리 Cauchy completeness implies supremum axiom
 $\mathbb{R}$의 모든 코시 열이 수렴한다고 가정하자. 이때 $S\subseteq\mathbb{R}$이 공집합이 아니고 위로 유계이면, $S$는 상한 $\sup S$를 갖는다.
@@ -79,7 +78,7 @@ $\mathbb{R}$의 모든 코시 열이 수렴한다고 가정하자. 이때 $S\sub
 
 ### I. 구성 — 상한 후보를 이분법으로 좁히기
 
-$S\ne\emptyset$이므로 $x_0\in S$를 하나 고르고, $a_1 \coloneqq x_0-1$이라 하자. $x_0\in S$이고 $x_0>a_1$이므로, $a_1$보다 큰 원소가 $S$ 안에 존재한다. 즉 $a_1$은 $S$의 상계가 아니다.^[상계였다면 $S$의 모든 원소가 $a_1$ 이하여야 하는데, $x_0>a_1$이므로 모순이다.]
+$S\ne\emptyset$이므로 $x_0\in S$를 하나 고르고, $a_1 \coloneqq x_0-1$이라 하자.^[1에는 아무 의미도 없다. 어떤 양수를 뺐다는 것이 중요하다] $x_0\in S$이고 $x_0>a_1$이므로, $a_1$보다 큰 원소가 $S$ 안에 존재한다. 즉 $a_1$은 $S$의 상계가 아니다.^[상계였다면 $S$의 모든 원소가 $a_1$ 이하여야 하는데, $x_0>a_1$이므로 모순이다.]
 
 $S$가 위로 유계이므로 $S$의 상계 $b_1$을 하나 고르자.
 
@@ -99,9 +98,9 @@ $$
 
 이 성립한다.
 
-### **II. 두 수열이 코시 열임을 확인**
+### II. 두 수열이 코시 열임을 확인
 
-$m,n\ge N$이라 하자. $(a_k)$는 증가, $(b_k)$는 감소하면서 서로를 감싸므로 $a_N\le a_n,a_m\le b_n,b_m\le b_N$이고, 따라서
+$m,n\ge N$이라 하자. $(a_k)$가 단조증가하므로 $a_N\le a_n$이고 $a_N\le a_m$이며, $(b_k)$가 단조감소하므로 $b_n\le b_N$이고 $b_m\le b_N$이다. 또한 모든 $k$에서 $a_k<b_k$이므로 $a_n<b_n\le b_N$, $a_m<b_m\le b_N$이다. 즉 $a_n,a_m\in[a_N,b_N]$이므로
 
 $$
 |a_n-a_m|\le b_N-a_N \to 0 \quad(N\to\infty)
@@ -126,7 +125,7 @@ $|b_k-a_k|\to 0$이므로 $b_k\to L$도 성립한다.^[삼각부등식에 의해
 
 ### 마무리
 
-이로써 두 개의 화살표가 모두 그려졌다.
+이로써 필요충분조건이 만들어졌다!
 
 $$
 \text{상한공리} \implies \text{코시 열은 수렴한다} \qquad(\text{앞선 글})
@@ -135,9 +134,7 @@ $$
 \text{코시 열은 수렴한다} \implies \text{상한공리} \qquad(\text{이 글})
 $$
 
-이 두 화살표가 완성되고 나서야 비로소 "상한공리와 코시완비성은 동치다"라고 말할 자격이 생긴다. 동치라는 사실이 증명을 생략할 근거였던 적은 없다 — 오히려 지금까지 하나하나 그려온 이 화살표들 자체가 그 동치성을 만들어낸 결과다.
-
-돌아보면 이번 증명도 앞선 글과 같은 패턴을 따랐다. $L$이 정확히 무엇인지 모른 채로, "$a_k$는 상계가 아니고 $b_k$는 상계다"라는 국소적인 규칙만 지키며 두 수열을 좁혀나갔을 뿐이다. 그런데 그 규칙이 남긴 흔적 — 간격이 0으로 줄어드는 두 코시 열 — 이 가정된 코시완비성을 통해 스스로 상한의 존재를 만들어냈다. 목적지를 모른 채 규칙만 지키며 나아갔더니 그 규칙이 목적지의 존재를 보장해준 것이다 — 이 시리즈 전체를 관통하는 하나의 그림이 여기서도 그대로 반복된 셈이다.
+이 두 화살표가 완성되고 나서야 비로소 상한공리와 코시완비성은 동치라고 말할 자격이 생긴다. 동치라는 사실이 증명을 생략할 근거였던 적은 없다. 오히려 지금까지 하나하나 그려온 이 화살표들 자체가 그 동치성을 만들어낸 결과다.(동치지만, 이 증명과정에 의존적이다)
         </script>
       </article>
       <div class="margin-col"></div>
@@ -145,13 +142,13 @@ $$
   </main>
   <footer><p>&copy; 2026</p></footer>
   <script>window.ROOT='..'</script>
-  <script src="../assets/data/content.js?v=e919907c"></script>
-  <script src="../assets/js/util.js?v=6ae4aef1"></script>
-  <script src="../assets/js/nav.js?v=04ca6e81"></script>
-  <script src="../assets/js/progress.js?v=fb65c704"></script>
+  <script src="../assets/data/content.js"></script>
+  <script src="../assets/js/util.js"></script>
+  <script src="../assets/js/nav.js"></script>
+  <script src="../assets/js/progress.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="../assets/js/code.js?v=4f048cff"></script>
-  <script src="../assets/js/post.js?v=9922deaa"></script>
+  <script src="../assets/js/code.js"></script>
+  <script src="../assets/js/post.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
     onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
