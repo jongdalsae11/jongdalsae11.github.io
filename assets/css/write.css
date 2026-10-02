@@ -23,9 +23,9 @@
 }
 .w-modes button:hover { color: var(--soft); border-color: var(--line); }
 .w-modes button.on {
-  color: var(--cyan);
-  border-color: rgba(56, 189, 248, 0.5);
-  background: rgba(56, 189, 248, 0.08);
+  color: var(--point);
+  border-color: color-mix(in srgb, var(--point) 50%, transparent);
+  background: color-mix(in srgb, var(--point) 8%, transparent);
 }
 
 .write-grid {
@@ -58,7 +58,7 @@
 }
 .w-head-right { display: flex; align-items: center; gap: 8px; }
 .w-saved { color: var(--line); transition: color 0.3s ease; }
-.w-saved.flash { color: var(--cyan); }
+.w-saved.flash { color: var(--point); }
 
 /* 정보 / 도구 접기 토글 */
 .w-tg {
@@ -73,7 +73,7 @@
   transition: color 0.15s, border-color 0.15s;
 }
 .w-tg:hover { color: var(--soft); border-color: var(--line); }
-.w-tg[aria-expanded="true"] { color: var(--cyan); border-color: rgba(56,189,248,.35); }
+.w-tg[aria-expanded="true"] { color: var(--point); border-color: color-mix(in srgb, var(--point) 35%, transparent); }
 .w-tg i { font-style: normal; display: inline-block; transition: transform 0.2s ease; }
 .w-tg[aria-expanded="false"] i { transform: rotate(-90deg); }
 .w-tg[hidden] { display: none; }
@@ -140,7 +140,7 @@ body.mode-other .w-fields { flex: 1 1 auto; overflow-y: auto; }
   outline: none;
   transition: border-color 0.15s ease;
 }
-.w-field input:focus, .w-field select:focus { border-color: var(--cyan); }
+.w-field input:focus, .w-field select:focus { border-color: var(--point); }
 .w-check {
   display: flex;
   align-items: center;
@@ -149,7 +149,7 @@ body.mode-other .w-fields { flex: 1 1 auto; overflow-y: auto; }
   color: var(--soft);
   cursor: pointer;
 }
-.w-check input { accent-color: var(--orange); }
+.w-check input { accent-color: var(--mark); }
 .w-filename {
   margin: 0;
   font-size: 0.7rem;
@@ -189,7 +189,7 @@ body.mode-other .w-fields { flex: 1 1 auto; overflow-y: auto; }
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
 }
-.w-toolbar button:hover { color: var(--cyan); border-color: rgba(56, 189, 248, 0.45); }
+.w-toolbar button:hover { color: var(--point); border-color: color-mix(in srgb, var(--point) 45%, transparent); }
 
 /* 글 연결 / 자료 인용 선택 목록 — 툴바 아래에 떠서 열립니다
    (예전에는 흐름에 끼어들어 편집칸과 버튼을 밀어냈습니다)      */
@@ -200,7 +200,7 @@ body.mode-other .w-fields { flex: 1 1 auto; overflow-y: auto; }
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--shade) 55%, transparent);
   padding: 10px 12px;
   max-height: min(52vh, 420px);
   display: flex;
@@ -219,7 +219,7 @@ body.mode-other .w-fields { flex: 1 1 auto; overflow-y: auto; }
   outline: none;
   margin-bottom: 8px;
 }
-.w-picker input:focus { border-color: var(--cyan); }
+.w-picker input:focus { border-color: var(--point); }
 .w-picker ul {
   list-style: none; margin: 0; padding: 0;
   flex: 1 1 auto; min-height: 0;
@@ -291,11 +291,11 @@ body.mono-editor #editor {
 .w-actions .ghost:hover { color: var(--text); border-color: var(--line); }
 .w-actions .primary {
   color: var(--bg);
-  background: var(--cyan);
-  border: 1px solid var(--cyan);
+  background: var(--point);
+  border: 1px solid var(--point);
   font-weight: 600;
 }
-.w-actions .primary:hover { background: #5cc9fa; }
+.w-actions .primary:hover { background: var(--point-hover); }
 
 /* 오른쪽 탭 */
 .w-tabs { display: flex; border-bottom: 1px solid var(--line-soft); }
@@ -312,13 +312,13 @@ body.mono-editor #editor {
   transition: color 0.15s, border-color 0.15s;
 }
 .w-tabs button:hover { color: var(--soft); }
-.w-tabs button.on { color: var(--cyan); border-bottom-color: var(--cyan); }
+.w-tabs button.on { color: var(--point); border-bottom-color: var(--point); }
 .w-tabbody { flex: 1; overflow-y: auto; background: var(--bg); }
 .w-tabbody[hidden] { display: none; }
 #preview { padding: 24px 28px; }
-#preview ::selection { background: rgba(56, 189, 248, 0.3); }
+#preview ::selection { background: color-mix(in srgb, var(--point) 30%, transparent); }
 /* 편집칸에서 되짚어 찾은 구간을 잠깐 반짝이게 */
-#editor.flash-find { box-shadow: inset 0 0 0 2px rgba(56, 189, 248, 0.5); }
+#editor.flash-find { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--point) 50%, transparent); }
 #preview .sidenote { display: block; }
 
 /* 등록 안내 */
@@ -340,7 +340,7 @@ body.mono-editor #editor {
   border-radius: 9px;
   overflow: hidden;
   margin-bottom: 14px;
-  background: #0d0d1a;
+  background: var(--bg-deep);
 }
 .w-copyhead {
   display: flex;
@@ -358,7 +358,7 @@ body.mono-editor #editor {
   font-family: var(--mono);
   font-size: 0.75rem;
   line-height: 1.7;
-  color: #c9d4e3;
+  color: var(--code-ink);
   overflow-x: auto;
   white-space: pre;
 }
@@ -372,8 +372,8 @@ button.mini {
   padding: 2px 9px;
   cursor: pointer;
 }
-button.mini:hover { color: var(--cyan); }
-button.mini.ok { color: var(--cyan); }
+button.mini:hover { color: var(--point); }
+button.mini.ok { color: var(--point); }
 
 .w-tip {
   font-size: 0.78rem;
@@ -444,7 +444,7 @@ button.mini.ok { color: var(--cyan); }
   background: var(--surface-2);
   border: 1px solid var(--line);
   border-radius: 9px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--shade) 55%, transparent);
   transform: translate(-50%, -100%);
 }
 .sel-bar[hidden] { display: none; }
@@ -459,7 +459,7 @@ button.mini.ok { color: var(--cyan); }
   cursor: pointer;
   white-space: nowrap;
 }
-.sel-bar button:hover { color: var(--cyan); background: rgba(56, 189, 248, 0.1); }
+.sel-bar button:hover { color: var(--point); background: color-mix(in srgb, var(--point) 10%, transparent); }
 .sel-bar .sb-sep { width: 1px; background: var(--line-soft); margin: 3px 2px; }
 
 /* 슬래시 명령 메뉴 */
@@ -473,7 +473,7 @@ button.mini.ok { color: var(--cyan); }
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--shade) 60%, transparent);
 }
 .slash[hidden] { display: none; }
 .slash-item {
@@ -493,7 +493,7 @@ button.mini.ok { color: var(--cyan); }
   color: var(--faint);
 }
 .slash-item.on { background: var(--surface-2); color: var(--text); }
-.slash-item.on .sl-key { color: var(--cyan); }
+.slash-item.on .sl-key { color: var(--point); }
 .slash-empty { padding: 12px; text-align: center; color: var(--faint); font-size: 0.8rem; }
 
 /* ── 초안 목록 ────────────────────────────────────
@@ -513,12 +513,12 @@ button.mini.ok { color: var(--cyan); }
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 10px;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 14px 34px color-mix(in srgb, var(--shade) 60%, transparent);
 }
 .draft-menu[hidden] { display: none; }
 .draft-row { display: flex; align-items: stretch; border-radius: 7px; }
 .draft-row:hover { background: var(--surface-2); }
-.draft-row.on .dm-title { color: var(--cyan); }
+.draft-row.on .dm-title { color: var(--point); }
 .draft-item {
   flex: 1;
   min-width: 0;
@@ -544,8 +544,8 @@ button.mini.ok { color: var(--cyan); }
   font-family: var(--mono);
   font-size: 0.58rem;
   letter-spacing: 0.06em;
-  color: var(--purple);
-  border: 1px solid rgba(168, 85, 247, 0.35);
+  color: var(--note);
+  border: 1px solid color-mix(in srgb, var(--note) 35%, transparent);
   border-radius: 4px;
   padding: 0 4px;
 }
@@ -562,7 +562,7 @@ button.mini.ok { color: var(--cyan); }
   line-height: 1;
   color: var(--line);
 }
-.dm-x:hover { color: var(--orange); }
+.dm-x:hover { color: var(--mark); }
 .draft-new {
   display: block;
   width: 100%;
@@ -578,13 +578,13 @@ button.mini.ok { color: var(--cyan); }
   font-size: 0.78rem;
   color: var(--faint);
 }
-.draft-new:hover { color: var(--cyan); }
+.draft-new:hover { color: var(--point); }
 #btn-drafts b { font-weight: 600; color: var(--soft); }
 
 /* 헤드의 보조 토글 */
-.w-tg--plain[aria-pressed="true"] { color: var(--cyan); border-color: rgba(56,189,248,.35); }
+.w-tg--plain[aria-pressed="true"] { color: var(--point); border-color: color-mix(in srgb, var(--point) 35%, transparent); }
 /* 저장이 실패했을 때만 — 조용히 넘어가면 «저장된 줄 알았는데» 가 됩니다 */
-.w-saved--bad { color: var(--orange); }
+.w-saved--bad { color: var(--mark); }
 
 /* 편집칸 아래 상시 힌트 — 기능이 있다는 걸 알 수 있게 */
 .w-hint {
@@ -610,7 +610,7 @@ button.mini.ok { color: var(--cyan); }
   padding: 1px 6px;
 }
 .w-hint span { color: var(--line); }
-.w-hint-more { margin-left: auto; color: var(--cyan); }
+.w-hint-more { margin-left: auto; color: var(--point); }
 .w-hint-more:hover { text-decoration: underline; }
 @media (max-width: 920px) { .w-hint { font-size: 0.64rem; padding: 6px 10px; } }
 
@@ -657,7 +657,7 @@ button.mini.ok { color: var(--cyan); }
   transition: background 0.15s ease, height 0.15s ease;
 }
 .w-split:hover i, .w-split:focus-visible i, .w-split.dragging i {
-  background: var(--cyan);
+  background: var(--point);
   height: 90px;
 }
 .w-split:focus-visible { outline: none; }
@@ -737,13 +737,13 @@ body.hint-off .w-hint { display: none; }
   gap: 10px;
   margin: 0;
   padding: 7px 14px;
-  border-top: 1px solid rgba(249, 115, 22, 0.3);
-  background: rgba(249, 115, 22, 0.08);
+  border-top: 1px solid color-mix(in srgb, var(--mark) 30%, transparent);
+  background: color-mix(in srgb, var(--mark) 8%, transparent);
   font-size: 0.72rem;
   color: var(--soft);
 }
 .w-editing[hidden] { display: none; }
-.w-editing b { color: var(--orange); font-weight: 600; }
+.w-editing b { color: var(--mark); font-weight: 600; }
 .w-editing code {
   font-family: var(--mono);
   font-size: 0.92em;
@@ -795,11 +795,11 @@ body.hint-off .w-hint { display: none; }
   cursor: pointer;
   transition: color 0.12s, border-color 0.12s, background 0.12s;
 }
-.tag-sug button:hover { color: var(--cyan); border-color: rgba(56,189,248,.45); }
+.tag-sug button:hover { color: var(--point); border-color: color-mix(in srgb, var(--point) 45%, transparent); }
 .tag-sug button.on {
-  color: var(--orange);
-  border-color: rgba(249,115,22,.5);
-  background: rgba(249,115,22,.1);
+  color: var(--mark);
+  border-color: color-mix(in srgb, var(--mark) 50%, transparent);
+  background: color-mix(in srgb, var(--mark) 10%, transparent);
 }
 .tag-sug button i {
   font-style: normal;
@@ -856,9 +856,9 @@ body.stack #preview { padding: 20px clamp(18px, 2vw, 40px); }
 
 /* 수식 라이브러리 로드 실패 알림 */
 .pv-warn {
-  color: var(--orange);
-  border: 1px solid rgba(249, 115, 22, 0.35);
-  background: rgba(249, 115, 22, 0.08);
+  color: var(--mark);
+  border: 1px solid color-mix(in srgb, var(--mark) 35%, transparent);
+  background: color-mix(in srgb, var(--mark) 8%, transparent);
   border-radius: 8px;
   padding: 8px 12px;
 }
@@ -870,8 +870,8 @@ body.stack #preview { padding: 20px clamp(18px, 2vw, 40px); }
   border-radius: 6px;
 }
 @keyframes syncHit {
-  0%   { background: rgba(56, 189, 248, 0.28); box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.28); }
-  70%  { background: rgba(56, 189, 248, 0.16); box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.16); }
+  0%   { background: color-mix(in srgb, var(--point) 28%, transparent); box-shadow: 0 0 0 6px color-mix(in srgb, var(--point) 28%, transparent); }
+  70%  { background: color-mix(in srgb, var(--point) 16%, transparent); box-shadow: 0 0 0 6px color-mix(in srgb, var(--point) 16%, transparent); }
   100% { background: transparent; box-shadow: 0 0 0 6px transparent; }
 }
 /* 낱말 단위 강조 — DOM 을 건드리지 않고 위에 덧그립니다 */
@@ -880,8 +880,8 @@ body.stack #preview { padding: 20px clamp(18px, 2vw, 40px); }
   z-index: 210;
   pointer-events: none;
   border-radius: 3px;
-  background: rgba(56, 189, 248, 0.32);
-  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.32);
+  background: color-mix(in srgb, var(--point) 32%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--point) 32%, transparent);
   animation: syncMark 1s ease-out forwards;
 }
 @keyframes syncMark {
@@ -893,18 +893,18 @@ body.stack #preview { padding: 20px clamp(18px, 2vw, 40px); }
 
 /* Ctrl 을 누르고 있으면 어디를 누를지 보이게 */
 body.sync-ready #preview [data-src]:hover {
-  outline: 1px dashed rgba(56, 189, 248, 0.5);
+  outline: 1px dashed color-mix(in srgb, var(--point) 50%, transparent);
   outline-offset: 4px;
   cursor: alias;
 }
 @media (prefers-reduced-motion: reduce) {
-  .sync-hit { animation: none; background: rgba(56, 189, 248, 0.18); }
+  .sync-hit { animation: none; background: color-mix(in srgb, var(--point) 18%, transparent); }
 }
 
 /* ── 폴더에 바로 저장 ─────────────────────────────── */
 .fs-box {
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  background: rgba(56, 189, 248, 0.06);
+  border: 1px solid color-mix(in srgb, var(--point) 30%, transparent);
+  background: color-mix(in srgb, var(--point) 6%, transparent);
   border-radius: 10px;
   padding: 14px 16px;
   margin: 0 0 22px;
@@ -913,7 +913,7 @@ body.sync-ready #preview [data-src]:hover {
 .fs-lead { margin: 0 0 11px; font-size: 0.78rem; color: var(--soft); line-height: 1.6; }
 .fs-lead code {
   font-family: var(--mono); font-size: 0.92em;
-  color: var(--cyan); background: var(--bg);
+  color: var(--point); background: var(--bg);
   border-radius: 4px; padding: 1px 5px;
 }
 .fs-row { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -928,14 +928,14 @@ body.sync-ready #preview [data-src]:hover {
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.fs-btn:hover { color: var(--text); border-color: var(--cyan); }
+.fs-btn:hover { color: var(--text); border-color: var(--point); }
 .fs-btn--go {
-  color: #05202e;
-  background: var(--cyan);
-  border-color: var(--cyan);
+  color: var(--on-point);
+  background: var(--point);
+  border-color: var(--point);
   font-weight: 600;
 }
-.fs-btn--go:hover { color: #05202e; background: #7dd3fc; }
+.fs-btn--go:hover { color: var(--on-point); background: var(--point-pale); }
 .fs-btn[disabled] { opacity: 0.5; cursor: default; }
 .fs-btn[hidden] { display: none; }
 .fs-note {
@@ -946,8 +946,8 @@ body.sync-ready #preview [data-src]:hover {
   min-height: 1em;
 }
 .fs-note:empty { margin: 0; min-height: 0; }
-.fs-ok { color: var(--emerald, #34d399); }
-.fs-warn { color: var(--orange); }
+.fs-ok { color: var(--ok); }
+.fs-warn { color: var(--mark); }
 
 /* ── 폴더 연결 저장 ───────────────────────────────── */
 .save-state {
@@ -961,23 +961,23 @@ body.sync-ready #preview [data-src]:hover {
   transition: max-height 0.2s ease, padding 0.2s ease;
 }
 .save-state:not(:empty) { max-height: 60px; padding: 8px 14px; }
-.save-state--ok { color: var(--emerald, #34d399); }
-.save-state--bad { color: var(--orange); }
+.save-state--ok { color: var(--ok); }
+.save-state--bad { color: var(--mark); }
 
 #btn-link { font-size: 0.72rem; }
 body.fs-linked #btn-link {
-  color: var(--emerald, #34d399);
-  border-color: rgba(52, 211, 153, 0.4);
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 40%, transparent);
 }
 body.fs-linked #btn-link::before { content: '● '; font-size: 0.8em; }
 
 .w-actions .primary--go {
-  background: rgba(56, 189, 248, 0.14);
-  border-color: rgba(56, 189, 248, 0.55);
-  color: var(--cyan);
+  background: color-mix(in srgb, var(--point) 14%, transparent);
+  border-color: color-mix(in srgb, var(--point) 55%, transparent);
+  color: var(--point);
   font-weight: 600;
 }
-.w-actions .primary--go:hover { background: rgba(56, 189, 248, 0.24); }
+.w-actions .primary--go:hover { background: color-mix(in srgb, var(--point) 24%, transparent); }
 .w-actions .primary--go:disabled { opacity: 0.5; cursor: default; }
 
 /* ── 파일명 직접 지정 ─────────────────────────────── */
@@ -993,14 +993,14 @@ body.fs-linked #btn-link::before { content: '● '; font-size: 0.8em; }
   border-radius: 7px;
   padding: 3px 8px;
 }
-.w-fname:focus-within { border-color: var(--cyan); }
+.w-fname:focus-within { border-color: var(--point); }
 .w-fname code { font-family: inherit; color: var(--faint); white-space: nowrap; }
 .w-fname-dash { color: var(--line); }
 .w-fname input {
   flex: 1 1 auto;
   min-width: 60px;
   font: inherit;
-  color: var(--cyan);
+  color: var(--point);
   background: none;
   border: 0;
   outline: none;
@@ -1018,16 +1018,16 @@ body.fs-linked #btn-link::before { content: '● '; font-size: 0.8em; }
   padding: 1px 7px;
   cursor: pointer;
 }
-.w-fname button:hover { color: var(--cyan); border-color: rgba(56,189,248,.45); }
+.w-fname button:hover { color: var(--point); border-color: color-mix(in srgb, var(--point) 45%, transparent); }
 
 /* 선택 서식바의 글·자료 연결 단추 — 다른 서식과 성격이 달라 색으로 구분 */
 .sel-bar button[data-a="wiki"] { color: var(--wiki); }
 .sel-bar button[data-a="wiki"]:hover {
-  color: #d3c4ff;
+  color: var(--wiki-hi);
   background: color-mix(in srgb, var(--wiki) 14%, transparent);
 }
-.sel-bar button[data-a="cite"] { color: var(--purple); }
+.sel-bar button[data-a="cite"] { color: var(--note); }
 .sel-bar button[data-a="cite"]:hover {
-  color: #c98cff;
-  background: rgba(168, 85, 247, 0.14);
+  color: var(--note-hi);
+  background: color-mix(in srgb, var(--note) 14%, transparent);
 }

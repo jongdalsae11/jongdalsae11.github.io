@@ -1,25 +1,77 @@
 /* ============================================================
    base.css — 디자인 토큰 · 리셋 · 타이포그래피 · 링크 · 스크롤바
    색을 바꾸려면 아래 :root 만 수정하면 사이트 전체에 반영됩니다.
+
+   ※ CSS 어디에서도 색을 직접 적지 말고 여기 토큰만 씁니다.
+     반투명이 필요하면 rgba(…) 대신
+       color-mix(in srgb, var(--point) 22%, transparent)
+     처럼 씁니다. (투명색과 섞으면 정확히 rgba(토큰, 0.22) 가 됩니다)
+     예전에는 rgba(56, 189, 248, …) 같은 값이 투명도만 20가지로 흩어져
+     있어서, 밝은 모드를 넣으려니 300곳 넘게 손대야 했습니다.
+
+   ※ 이름은 색이 아니라 «역할» 입니다. 밝은 모드에서는 --point 가
+     하늘색이 아닐 수도 있는데 이름이 --cyan 이면 거짓말이 되기 때문입니다.
    ============================================================ */
 
 :root {
-  /* ── 공식 컬러 팔레트 ───────────────────────────── */
-  --bg:        #0a0a14;   /* Global Background */
-  --surface:   #141423;   /* Surface / Panel */
-  --surface-2: #1b1b2e;   /* 살짝 더 밝은 레이어 (호버 등) */
-  --text:      #e4e4ed;   /* Primary Text */
-  --line:      #3a3a52;   /* Muted / Border */
+  /* ── 바탕·글자 ─────────────────────────────────── */
+  --bg:        #0a0a14;   /* 페이지 바탕 */
+  --bg-deep:   #0d0d1a;   /* 코드 블록처럼 바탕보다 한 층 가라앉은 곳 */
+  --surface:   #141423;   /* 판·카드 */
+  --surface-2: #1b1b2e;   /* 살짝 더 밝은 층 (호버 등) */
+  --well:      #16162a;   /* 활동 잔디의 빈 칸 */
+  --text:      #e4e4ed;   /* 본문 */
+  --link:      #c9c9d8;   /* 본문 링크 — 본문보다 반 걸음 흐리게 */
+  --line:      #3a3a52;   /* 테두리 */
   --line-soft: #26263a;   /* 더 옅은 실선 */
-  --soft:      #9a9ab0;   /* 보조 텍스트 */
-  --faint:     #62627e;   /* 흐린 메타 텍스트 */
+  --soft:      #9a9ab0;   /* 보조 글자 */
+  --faint:     #62627e;   /* 흐린 메타 글자 */
 
-  --cyan:   #38bdf8;      /* 상호작용 (10~15%) — 링크 호버, 트리 활성, 강조 */
-  --purple: #a855f7;      /* 분류·보조 (5%) — 태그, 날짜, 주석, 진행 레일 */
-  --orange: #f97316;      /* 화룡점정 (1%) — 고정 글, 핵심 결론 */
-  --thm-bg: #16162a;      /* 정리·증명 상자 바닥 — surface 보다 한 단계 위 */
-  --wiki:   #b79cff;      /* 내 글 연결 — 분류 팔레트 밖의 색이라
+  /* ── 강조 ──────────────────────────────────────── */
+  --point:       #38bdf8; /* 상호작용 (10~15%) — 링크 호버, 트리 활성, 지금 위치 */
+  --point-hover: #5cc9fa; /* 하늘색 단추를 눌렀을 때 */
+  --point-pale:  #7dd3fc; /* 하늘색 단추의 더 옅은 호버 */
+  --on-point:    #05202e; /* 하늘색 바탕 위의 글자 */
+  --note:        #a855f7; /* 보조 (5%) — 태그, 날짜, 주석, 진행 레일 */
+  --note-hi:     #c98cff; /* 보조색 글자를 바탕 위에 올릴 때 */
+  --mark:        #f97316; /* 화룡점정 (1%) — 고정 글, 핵심 결론 */
+  --mark-hover:  #fb8b3c;
+  --ok:          #34d399; /* 저장됨·성공 */
+  --danger:      #f87171; /* 오류 */
+  --thm-bg:      #16162a; /* 정리·증명 상자 바닥 — surface 보다 한 단계 위 */
+  --wiki:        #b79cff; /* 내 글 연결 — 분류 팔레트 밖의 색이라
                              어느 분류의 글에서도 배경 강조색과 섞이지 않습니다 */
+  --wiki-hi:     #d3c4ff; /* 위키링크 호버 */
+
+  /* ── 반투명으로만 쓰는 재료 ──────────────────────
+     직접 칠하지 않고 color-mix 로 아주 옅게 섞어서만 씁니다.        */
+  --tint:  #b4d6f0;       /* 줄 호버의 푸르스름한 물빛 (2.5~7%) */
+  --shade: #000;          /* 그림자 */
+  --glint: #fff;          /* 상자 위쪽 가장자리의 아주 옅은 빛 */
+
+  /* ── 분류 색 ───────────────────────────────────
+     util.js 가 분류가 등장한 순서대로 1번부터 배정합니다.
+     content.js 의 colors: { math: '#…' } 로 직접 지정하면 그게 우선합니다. */
+  --cat-1: #38bdf8;
+  --cat-2: #a855f7;
+  --cat-3: #34d399;
+  --cat-4: #fbbf24;
+  --cat-5: #fb7185;
+  --cat-6: #818cf8;
+  --cat-7: #2dd4bf;
+  --cat-8: #f97316;
+
+  /* ── 코드 ──────────────────────────────────────── */
+  --code-ink: #c9d4e3;    /* 코드 기본 글자 */
+  --code-gut: #3a3a55;    /* 줄번호 */
+  --hl-com:   #565674;    /* 주석 */
+  --hl-kw:    #c084fc;    /* 예약어·자료형 */
+  --hl-fn:    var(--point); /* 함수 이름 */
+  --hl-num:   #fb923c;    /* 숫자 */
+  --hl-str:   #5eead4;    /* 문자열 */
+  --hl-bi:    #93c5fd;    /* 내장 함수·속성·변수 */
+  --hl-meta:  #8b8ba3;    /* #include 같은 전처리 */
+  --hl-pun:   #9aa7b8;    /* 연산자·구두점 */
 
   /* ── 폰트 ──────────────────────────────────────── */
   --sans:  'NanumSquareNeo', 'NanumSquare Neo', 'Apple SD Gothic Neo',
@@ -52,7 +104,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-::selection { background: rgba(56, 189, 248, 0.22); }
+::selection { background: color-mix(in srgb, var(--point) 22%, transparent); }
 
 /* ── 기본 타이포그래피 ─────────────────────────────── */
 /* 나눔스퀘어 네오 CDN은 굵기별로 폰트 패밀리가 나뉘어 있어 매핑 */
@@ -83,7 +135,7 @@ hr {
 a { color: inherit; text-decoration: none; }
 
 main a:not(.plain) {
-  color: #c9c9d8;
+  color: var(--link);
   text-decoration: underline;
   text-decoration-color: var(--line);
   text-decoration-thickness: 1px;
@@ -91,8 +143,8 @@ main a:not(.plain) {
   transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 main a:not(.plain):hover {
-  color: var(--cyan);
-  text-decoration-color: var(--cyan);
+  color: var(--point);
+  text-decoration-color: var(--point);
 }
 main a[href^="http"]:not(.plain)::after {
   content: '↗';
@@ -113,14 +165,14 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-corner { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(168, 85, 247, 0.4);
+  background: color-mix(in srgb, var(--note) 40%, transparent);
   border-radius: 6px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(168, 85, 247, 0.72); background-clip: content-box; }
-::-webkit-scrollbar-thumb:active { background: var(--purple); background-clip: content-box; }
-* { scrollbar-width: thin; scrollbar-color: rgba(168, 85, 247, 0.45) transparent; }
+::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--note) 72%, transparent); background-clip: content-box; }
+::-webkit-scrollbar-thumb:active { background: var(--note); background-clip: content-box; }
+* { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--note) 45%, transparent) transparent; }
 
 /* ── 표 (이력 등) ─────────────────────────────────── */
 table { width: 100%; border-collapse: collapse; margin: 1.2em 0 2em; }
@@ -140,7 +192,7 @@ td {
   border-bottom: 1px solid var(--line-soft);
   font-size: 0.92rem;
 }
-tr:hover td { background: rgba(180, 214, 240, 0.025); }
+tr:hover td { background: color-mix(in srgb, var(--tint) 2.5%, transparent); }
 
 /* ── 인용 ─────────────────────────────────────────── */
 blockquote {
@@ -153,7 +205,7 @@ blockquote {
 /* ── 키보드 포커스 표시 ─────────────────────────────
    마우스 클릭에는 나타나지 않고 Tab 이동에만 보입니다.   */
 :focus-visible {
-  outline: 2px solid var(--cyan);
+  outline: 2px solid var(--point);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -166,11 +218,11 @@ blockquote {
   z-index: 200;
   transform: translateY(-200%);
   background: var(--surface);
-  border: 1px solid var(--cyan);
+  border: 1px solid var(--point);
   border-radius: 8px;
   padding: 8px 14px;
   font-size: 0.82rem;
-  color: var(--cyan);
+  color: var(--point);
   transition: transform 0.15s ease;
 }
 .skip-link:focus { transform: none; }
@@ -192,7 +244,7 @@ blockquote {
     --bg: #fff; --surface: #fff; --surface-2: #fff;
     --text: #111; --soft: #333; --faint: #555;
     --line: #bbb; --line-soft: #ddd;
-    --cyan: #0b6; --purple: #639; --orange: #a50;
+    --point: #0b6; --note: #639; --mark: #a50;
   }
   body { background: #fff !important; color: #111; font-size: 11pt; }
   .sidebar, .topbar, .rail, .nav-fab, .nav-backdrop, .search-modal,
