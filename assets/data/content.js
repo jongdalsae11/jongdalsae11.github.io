@@ -75,7 +75,7 @@ window.SITE = {
   flows: [
     { id: 'analysis-basics',
       label: '해석학의 기초',
-      posts: ['2026-08-23-sequence-limit.html', '2026-08-23-cauchy-sequence.html', '2026-08-31-completeness-of-the-real-numbers.html'] }
+      posts: ['2026-08-23-sequence-limit.html', '2026-08-23-cauchy-sequence.html', '2026-08-31-completeness-of-the-real-numbers.html', '2026-09-19-cauchy-sequence-s-completeness-to-supremum-axiom.html'] }
   ],
 
   posts: [
@@ -84,7 +84,7 @@ window.SITE = {
       category: 'math/analysis',
       date: '2026-09-19',
       tags: ['수열', '극한', '실수'],
-      links: [],
+      links: ['2026-08-31-completeness-of-the-real-numbers.html'],
       summary: '상한공리에서 완비성을 보이는 과정의 역과정에 대하여.' },
 
 
