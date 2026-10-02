@@ -12,7 +12,9 @@
 
    조작
      · 노드를 끌어 옮길 수 있고, 옮긴 자리는 브라우저에 기억됩니다.
-     · 바탕을 끌면 이동, 휠로 확대, 처음 열면 가운데에 맞춰 놓습니다.
+     · 바탕을 끌면 이동(화면 밖으로 달아나지 않게 붙잡음),
+       Ctrl + 휠 또는 두 손가락 벌리기로 확대, 처음 열면 가운데에 맞춥니다.
+       그냥 휠은 페이지 스크롤로 돌려줍니다.
      · 화살표는 눈에 보이는 선보다 두꺼운 "잡는 영역" 을 따로 깔아
        가늘어도 정확히 집을 수 있습니다.
 
@@ -280,18 +282,48 @@
       'translate(' + view.x + ',' + view.y + ') scale(' + view.k + ')');
   }
 
-  /* 처음 열 때 — 내용 전체가 가운데에 오도록 */
-  function fit() {
+  /* 노드 전체를 감싸는 상자 (지도 좌표).
+     gutter 를 켜면 왼쪽 이름표 자리까지 넓힙니다 — 가운데 맞출 때만 씁니다. */
+  function bounds(gutter) {
     var files = Object.keys(L.node);
-    if (!files.length) return;
+    if (!files.length) return null;
     var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
     files.forEach(function (f) {
       var n = L.node[f], r = radius(n) + 26;
       x0 = Math.min(x0, n.px - r); x1 = Math.max(x1, n.px + r);
       y0 = Math.min(y0, n.py - r); y1 = Math.max(y1, n.py + r);
     });
-    /* 왼쪽 이름표 자리도 함께 보이도록 */
-    x0 = Math.min(x0, 10);
+    if (gutter) x0 = Math.min(x0, 10);
+    return { x0: x0, y0: y0, x1: x1, y1: y1 };
+  }
+
+  /* 내용이 화면 밖으로 완전히 달아나지 못하게 붙잡습니다.
+     예전에는 이동에 한계가 없어서, 바탕을 한 번 세게 끌면 노드가 전부
+     화면 밖으로 사라지고 어디로 갔는지 찾을 길이 없었습니다.
+     딱 가장자리에 붙이지 않고 KEEP 만큼은 늘 보이게 둔 것은, 내용보다
+     화면이 넓을 때도 조금은 옮길 수 있어야 답답하지 않기 때문입니다.
+     ※ 여기서는 이름표 자리(거터)를 빼고 «노드» 만으로 잽니다.
+       처음엔 fit() 과 같은 상자를 썼더니, 오른쪽으로 끌면 왼쪽 거터의
+       이름표만 KEEP 만큼 남고 노드는 전부 화면 밖으로 나갔습니다.       */
+  var KEEP = 120;
+  function clamp() {
+    var b = L && bounds(false);
+    if (!b) return;
+    var W = host.clientWidth || 900, H = host.clientHeight || 560;
+    var keepX = Math.min(KEEP, (b.x1 - b.x0) * view.k);
+    var keepY = Math.min(KEEP, (b.y1 - b.y0) * view.k);
+    /* 화면 좌표 = view + 지도 좌표 × k */
+    view.x = Math.min(view.x, W - keepX - b.x0 * view.k);   /* 오른쪽으로 너무 감 */
+    view.x = Math.max(view.x, keepX - b.x1 * view.k);       /* 왼쪽으로 너무 감 */
+    view.y = Math.min(view.y, H - keepY - b.y0 * view.k);
+    view.y = Math.max(view.y, keepY - b.y1 * view.k);
+  }
+
+  /* 처음 열 때 — 내용 전체가 가운데에 오도록 */
+  function fit() {
+    var b = bounds(true);   /* 왼쪽 이름표 자리도 함께 보이도록 */
+    if (!b) return;
+    var x0 = b.x0, y0 = b.y0, x1 = b.x1, y1 = b.y1;
 
     var W = host.clientWidth || 900, H = host.clientHeight || 560;
     var k = Math.min(1.1, Math.min(W / (x1 - x0 + 40), H / (y1 - y0 + 40)));
@@ -336,6 +368,8 @@
     mode = 'pan';
     drag = { x: e.clientX - view.x, y: e.clientY - view.y };
     host.classList.add('panning');
+    /* 막지 않으면 끄는 동안 지나간 이름표 글자가 파랗게 선택됩니다 */
+    e.preventDefault();
   });
 
   window.addEventListener('mousemove', function (e) {
@@ -343,6 +377,7 @@
     if (mode === 'pan') {
       view.x = e.clientX - drag.x;
       view.y = e.clientY - drag.y;
+      clamp();
       apply();
       return;
     }
@@ -369,15 +404,46 @@
     host.classList.remove('dragging', 'panning');
   });
 
+  /* ── 확대: Ctrl + 휠, 또는 트랙패드 두 손가락 벌리기 ──
+     예전에는 지도 위의 휠을 전부 확대로 가로챘습니다. 그런데 지도가 화면
+     높이를 거의 다 차지해서, 페이지를 내리려던 휠이 매번 지도에 걸려
+     엉뚱하게 확대만 되고 스크롤은 먹통이 됐습니다. 그래서 그냥 휠은
+     페이지에 돌려주고, Ctrl 을 함께 눌렀을 때만 확대합니다.
+     (트랙패드 핀치는 브라우저가 ctrlKey 가 켜진 wheel 로 보내 주므로
+      따로 처리하지 않아도 그대로 확대가 됩니다)
+
+     확대 폭도 휠 세기에 비례시킵니다. 예전처럼 한 번에 12% 씩 고정으로
+     뛰면, 마우스 휠은 덜컥거리고 잘게 여러 번 쏘는 트랙패드는 폭주합니다. */
+  var toast = document.createElement('div');
+  toast.className = 'g-toast';
+  toast.textContent = 'Ctrl + 휠로 확대';
+  var toastT = 0;
+  function nudge() {
+    /* 다시 그릴 때마다 host.innerHTML = '' 로 비우므로 그때그때 붙입니다 */
+    if (toast.parentNode !== host) host.appendChild(toast);
+    toast.classList.add('on');
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toast.classList.remove('on'); }, 1100);
+  }
+
   host.addEventListener('wheel', function (e) {
+    if (!e.ctrlKey && !e.metaKey) { nudge(); return; }   /* 페이지 스크롤은 그대로 */
     e.preventDefault();
     var box = host.getBoundingClientRect();
     var mx = e.clientX - box.left, my = e.clientY - box.top;
-    var k2 = Math.min(2.5, Math.max(0.2, view.k * (e.deltaY < 0 ? 1.12 : 1 / 1.12)));
+    /* deltaMode — 0: 픽셀, 1: 줄, 2: 페이지. 줄 단위로 주는 브라우저도 있습니다 */
+    var dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? box.height : 1);
+    /* 핀치는 작은 값을 촘촘히, 휠은 한 칸에 100 안팎을 보냅니다.
+       같은 계수를 쓰면 핀치가 굼뜨므로 작은 값은 더 민감하게 받습니다. */
+    var rate = Math.abs(dy) < 50 ? 0.01 : 0.0015;
+    var f = Math.exp(-dy * rate);
+    f = Math.min(1.25, Math.max(0.8, f));                 /* 한 번에 너무 크게 뛰지 않게 */
+    var k2 = Math.min(2.5, Math.max(0.2, view.k * f));
     /* 마우스 아래 지점을 고정한 채 확대 */
     view.x = mx - (mx - view.x) * (k2 / view.k);
     view.y = my - (my - view.y) * (k2 / view.k);
     view.k = k2;
+    clamp();
     apply();
   }, { passive: false });
 
