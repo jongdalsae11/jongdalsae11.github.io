@@ -497,18 +497,17 @@ window.U = (function () {
   }
 
   /* ── 분류별 색 ───────────────────────────────────────
-     다크 톤 위에서 서로 구분되는 색을 분류마다 하나씩 배정합니다.
-     content.js 에 colors: { math: '#...' } 로 직접 지정할 수도 있고,
-     지정하지 않으면 등장 순서대로 아래 팔레트에서 자동 배정됩니다.   */
+     분류마다 하나씩 배정합니다. content.js 에 colors: { math: '#...' }
+     로 직접 지정할 수도 있고, 지정하지 않으면 등장 순서대로 자동 배정됩니다.
+
+     실제 색값은 여기 두지 않고 base.css 의 --cat-1 … --cat-8 을 가리키기만
+     합니다. 예전에는 hex 를 여기 박아 두었는데, 그러면 밝은/어두운 모드를
+     오갈 때 분류 색만 CSS 를 따라오지 못합니다. 쓰는 쪽은 전부
+     style="--cat:…" 처럼 CSS 변수로 받으므로 var() 를 넘겨도 그대로 됩니다.
+     (색을 JS 에서 계산하는 곳이 생기면 이 전제가 깨지니 주의)          */
   var PALETTE = [
-    '#38bdf8', /* cyan   */
-    '#a855f7', /* purple */
-    '#34d399', /* emerald*/
-    '#fbbf24', /* amber  */
-    '#fb7185', /* rose   */
-    '#818cf8', /* indigo */
-    '#2dd4bf', /* teal   */
-    '#f97316'  /* orange */
+    'var(--cat-1)', 'var(--cat-2)', 'var(--cat-3)', 'var(--cat-4)',
+    'var(--cat-5)', 'var(--cat-6)', 'var(--cat-7)', 'var(--cat-8)'
   ];
   var catMap = null;
 
@@ -528,9 +527,9 @@ window.U = (function () {
   }
   function catColor(id) {
     if (!catMap) buildCatMap();
-    return catMap[id] || catMap[catTop(id)] || '#38bdf8';
+    return catMap[id] || catMap[catTop(id)] || 'var(--cat-1)';
   }
-  /* 요소에 붙일 인라인 변수 — style="--cat:#38bdf8" */
+  /* 요소에 붙일 인라인 변수 — style="--cat:var(--cat-1)" */
   function catVar(id) { return ' style="--cat:' + catColor(id) + '"'; }
 
   /* 분류 색을 :root 변수로 심고, 글 페이지면 본문 전체에 적용 */

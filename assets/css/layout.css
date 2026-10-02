@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   padding: 0 28px;
-  background: rgba(10, 10, 20, 0.72);
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line-soft);
@@ -98,7 +98,7 @@ main {
 .page-head .eyebrow {
   font-family: var(--mono);
   font-size: 0.72rem;
-  color: var(--purple);
+  color: var(--note);
   letter-spacing: 0.14em;
   margin: 0 0 10px;
 }
@@ -141,7 +141,7 @@ body.rail-dragging { user-select: none; -webkit-user-select: none; }
   position: absolute;
   top: 0; left: 3px;
   width: 2px;
-  background: linear-gradient(180deg, rgba(168, 85, 247, 0.05), var(--purple));
+  background: linear-gradient(180deg, color-mix(in srgb, var(--note) 5%, transparent), var(--note));
   border-radius: 1px;
   pointer-events: none;
 }
@@ -149,8 +149,8 @@ body.rail-dragging { user-select: none; -webkit-user-select: none; }
   position: absolute; left: 1px;
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: var(--purple);
-  box-shadow: 0 0 8px rgba(168, 85, 247, 0.55);
+  background: var(--note);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--note) 55%, transparent);
   pointer-events: none;
 }
 
@@ -176,18 +176,18 @@ footer p {
   width: 48px; height: 48px;
   border-radius: 50%;
   border: 1px solid var(--line);
-  background: rgba(20, 20, 35, 0.8);
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
   backdrop-filter: blur(8px);
   color: var(--soft);
   font-size: 1.2rem;
   cursor: pointer;
   z-index: 95;
 }
-body.nav-open .nav-fab { color: var(--cyan); border-color: var(--cyan); }
+body.nav-open .nav-fab { color: var(--point); border-color: var(--point); }
 .nav-backdrop {
   display: none;
   position: fixed; inset: 0;
-  background: rgba(10, 10, 20, 0.45);
+  background: color-mix(in srgb, var(--bg) 45%, transparent);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   z-index: 90;
@@ -206,7 +206,7 @@ body.nav-open .nav-fab { color: var(--cyan); border-color: var(--cyan); }
     /* 닫힐 때는 미끄러진 뒤에 숨기고, 열릴 때는 즉시 보이게 */
     transition: transform 0.28s cubic-bezier(0.33, 1, 0.68, 1),
                 visibility 0s linear 0.28s;
-    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.5);
+    box-shadow: 8px 0 30px color-mix(in srgb, var(--shade) 50%, transparent);
     will-change: transform;
     visibility: hidden;
   }
@@ -268,7 +268,7 @@ body.nav-open .nav-fab { color: var(--cyan); border-color: var(--cyan); }
   border-radius: 1px;
   transition: background 0.15s ease, width 0.2s ease;
 }
-.nav-toggle:hover i { background: var(--cyan); }
+.nav-toggle:hover i { background: var(--point); }
 .nav-toggle[aria-expanded="false"] i:nth-child(2) { width: 8px; }
 
 body.nav-off .sidebar { transform: translateX(-100%); }

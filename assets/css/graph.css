@@ -3,7 +3,7 @@
    ============================================================ */
 
 .page--graph { max-width: none; }
-.lede-flow { color: var(--orange); font-weight: 600; }
+.lede-flow { color: var(--mark); font-weight: 600; }
 
 /* ── 위쪽 막대 ────────────────────────────────────── */
 .g-bar {
@@ -34,17 +34,17 @@
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
-.g-btn:hover { color: var(--cyan); border-color: rgba(56, 189, 248, 0.45); }
+.g-btn:hover { color: var(--point); border-color: color-mix(in srgb, var(--point) 45%, transparent); }
 .g-btn[aria-pressed="true"] {
-  color: var(--orange);
-  border-color: rgba(249, 115, 22, 0.5);
-  background: rgba(249, 115, 22, 0.1);
+  color: var(--mark);
+  border-color: color-mix(in srgb, var(--mark) 50%, transparent);
+  background: color-mix(in srgb, var(--mark) 10%, transparent);
 }
 .g-btn--go {
   margin-left: 0;
-  color: var(--cyan);
-  border-color: rgba(56, 189, 248, 0.5);
-  background: rgba(56, 189, 248, 0.12);
+  color: var(--point);
+  border-color: color-mix(in srgb, var(--point) 50%, transparent);
+  background: color-mix(in srgb, var(--point) 12%, transparent);
   font-weight: 600;
 }
 .g-btn--ghost { margin-left: 0; }
@@ -104,7 +104,7 @@
 .lane-label {
   font-family: var(--mono);
   font-size: 13px;
-  fill: var(--orange);
+  fill: var(--mark);
   letter-spacing: 0.04em;
   dominant-baseline: middle;
 }
@@ -126,13 +126,13 @@
   pointer-events: none;
   transition: stroke 0.15s, opacity 0.15s, stroke-width 0.15s;
 }
-.ge--flow { stroke: var(--orange); stroke-width: 2.8; opacity: 0.9; }
+.ge--flow { stroke: var(--mark); stroke-width: 2.8; opacity: 0.9; }
 .ah { fill: var(--line); }
-.ah--flow { fill: var(--orange); }
+.ah--flow { fill: var(--mark); }
 
 .focusing .ge { opacity: 0.1; }
-.focusing .ge.on { opacity: 1; stroke: var(--cyan); stroke-width: 2.2; }
-.focusing .ge--flow.on { stroke: var(--orange); stroke-width: 3.4; }
+.focusing .ge.on { opacity: 1; stroke: var(--point); stroke-width: 2.2; }
+.focusing .ge--flow.on { stroke: var(--mark); stroke-width: 3.4; }
 .focusing .gn { opacity: 0.22; }
 .focusing .gn.on { opacity: 1; }
 
@@ -140,19 +140,19 @@
    옵시디언처럼 원 하나 + 아래 이름. 이어진 곳이 많을수록 커집니다. */
 .gn { cursor: pointer; transition: opacity 0.15s; }
 .gn-halo {
-  fill: var(--cat, var(--cyan));
+  fill: var(--cat, var(--point));
   opacity: 0;
   transition: opacity 0.15s;
 }
 .gn:hover .gn-halo, .gn.on .gn-halo { opacity: 0.16; }
 .gn-dot {
-  fill: color-mix(in srgb, var(--cat, var(--cyan)) 22%, var(--bg));
-  stroke: var(--cat, var(--cyan));
+  fill: color-mix(in srgb, var(--cat, var(--point)) 22%, var(--bg));
+  stroke: var(--cat, var(--point));
   stroke-width: 1.8;
   transition: fill 0.15s;
 }
 .gn--flow .gn-dot { stroke-width: 2.6; }
-.gn:hover .gn-dot { fill: var(--cat, var(--cyan)); }
+.gn:hover .gn-dot { fill: var(--cat, var(--point)); }
 .gn-label {
   text-anchor: middle;
   font-size: 11.5px;
@@ -167,15 +167,15 @@
 .gn:hover .gn-label, .gn.on .gn-label { fill: var(--text); }
 
 /* 편집 중 고른 순서 */
-.gn-badge circle { fill: var(--orange); }
+.gn-badge circle { fill: var(--mark); }
 .gn-badge text {
   text-anchor: middle;
   font-size: 11px;
   font-weight: 700;
-  fill: #0a0a14;
+  fill: var(--bg);
   pointer-events: none;
 }
-.gn--picked .gn-dot { stroke: var(--orange); stroke-width: 3; }
+.gn--picked .gn-dot { stroke: var(--mark); stroke-width: 3; }
 body.picking .g-canvas { cursor: crosshair; }
 
 /* ── 흐름 편집 패널 ───────────────────────────────── */
@@ -184,7 +184,7 @@ body.picking .g-canvas { cursor: crosshair; }
   display: flex;
   flex-direction: column;
   gap: 10px;
-  border: 1px solid rgba(249, 115, 22, 0.35);
+  border: 1px solid color-mix(in srgb, var(--mark) 35%, transparent);
   border-radius: 12px;
   background: var(--surface);
   padding: 14px 16px;
@@ -195,7 +195,7 @@ body.picking .g-canvas { cursor: crosshair; }
 .flow-edit h2 {
   margin: 0;
   font-size: 0.92rem;
-  color: var(--orange);
+  color: var(--mark);
 }
 .fl-guide { margin: 0; font-size: 0.72rem; color: var(--faint); line-height: 1.6; }
 .fl-field { display: flex; flex-direction: column; gap: 4px; }
@@ -210,7 +210,7 @@ body.picking .g-canvas { cursor: crosshair; }
   padding: 5px 9px;
   outline: none;
 }
-.fl-field input:focus, .fl-field select:focus { border-color: var(--orange); }
+.fl-field input:focus, .fl-field select:focus { border-color: var(--mark); }
 
 .fl-list {
   list-style: none;
@@ -237,8 +237,8 @@ body.picking .g-canvas { cursor: crosshair; }
   display: grid; place-items: center;
   font-family: var(--mono);
   font-size: 0.64rem;
-  color: #0a0a14;
-  background: var(--orange);
+  color: var(--bg);
+  background: var(--mark);
   border-radius: 50%;
 }
 .fl-list li button {
@@ -250,7 +250,7 @@ body.picking .g-canvas { cursor: crosshair; }
   cursor: pointer;
   padding: 0 2px;
 }
-.fl-list li button:hover { color: var(--orange); }
+.fl-list li button:hover { color: var(--mark); }
 .fl-list .fl-empty {
   display: block;
   color: var(--line);
@@ -262,8 +262,8 @@ body.picking .g-canvas { cursor: crosshair; }
 }
 
 .flow-state { margin: 0; font-size: 0.7rem; color: var(--faint); min-height: 1em; }
-.flow-state--ok { color: var(--emerald, #34d399); }
-.flow-state--bad { color: var(--orange); }
+.flow-state--ok { color: var(--ok); }
+.flow-state--bad { color: var(--mark); }
 .fl-actions { display: flex; gap: 8px; }
 .fl-actions .g-btn { flex: 1 1 auto; text-align: center; }
 .fl-note { margin: 0; font-size: 0.66rem; color: var(--line); line-height: 1.6; }

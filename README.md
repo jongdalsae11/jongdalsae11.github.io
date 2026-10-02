@@ -106,12 +106,13 @@ node tools/build.mjs --check  # 점검만 (파일 안 고침)
 | 여러 편 동시에 쓰기 | 작성 도구 헤더의 **초안 n ▾** → **+ 새 초안** |
 | 읽는 순서 정하기 | **글 지도** → 흐름 편집 → 노드를 순서대로 클릭 → 저장 |
 
-**기본 팔레트** — bg `#0a0a14` · surface `#141423` · text `#e4e4ed` · line `#3a3a52`
-· cyan `#38bdf8`(상호작용) · purple `#a855f7`(보조) · orange `#f97316`(1% 강조)
-· wiki `#b79cff`(내 글 연결 — 분류 팔레트 밖의 색)
-· thm-bg `#16162a`(정리·증명 상자 바닥)
-**분류색 팔레트** — cyan · purple · emerald · amber · rose · indigo · teal · orange
-(등장 순서대로 자동 배정)
+**색 토큰** — 모든 색은 `base.css` 의 `:root` 에 **역할 이름**으로 있고, 다른 CSS 는
+그 이름만 씁니다. 반투명은 `color-mix(in srgb, var(--point) 22%, transparent)`.
+· 바탕·글자 — `--bg` · `--surface` · `--text` · `--link` · `--line` · `--soft` · `--faint`
+· 강조 — `--point`(상호작용) · `--note`(보조: 태그·날짜·주석) · `--mark`(1% 강조: 고정·핵심 결론)
+· `--wiki`(내 글 연결 — 분류 팔레트 밖의 색) · `--thm-bg`(정리·증명 상자 바닥) · `--ok` · `--danger`
+· 코드 — `--code-ink` · `--code-gut` · `--hl-*`(신택스 하이라이팅)
+**분류색 팔레트** — `--cat-1` … `--cat-8` (등장 순서대로 자동 배정)
 
 ## 기능
 
