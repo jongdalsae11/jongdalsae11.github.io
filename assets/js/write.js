@@ -1109,8 +1109,12 @@
       '  <link rel="preconnect" href="https://fonts.googleapis.com">\n' +
       '  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n' +
       '  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css">\n' +
-      '  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">\n' +
+      '  <link rel="stylesheet" href="https://hangeul.pstatic.net/hangeul_static/css/maru-buri.css">\n' +
+      '  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">\n' +
       '  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">\n' +
+      /* theme.js 는 CSS 보다 먼저, defer 없이 — 먹으로 골라 둔 사람에게
+         종이색이 번쩍 지나가지 않게 (theme.js 머리말 참고)            */
+      '  <script src="../assets/js/theme.js"><\/script>\n' +
       '  <link rel="stylesheet" href="../assets/css/base.css">\n' +
       '  <link rel="stylesheet" href="../assets/css/layout.css">\n' +
       '  <link rel="stylesheet" href="../assets/css/components.css">\n' +

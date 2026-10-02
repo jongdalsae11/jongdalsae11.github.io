@@ -80,6 +80,9 @@
 - 글에 끼울 때는 **iframe** 이다. 부모 쪽이 `U.simFrames`, 자식 쪽이 `sim.js`.
   높이는 자식이 `postMessage` 로 알려 준다 — 보낸 창(`e.source`)으로 먼저 찾고,
   안 되면 `ref` 로 찾는다.
+- 끼운 시뮬레이션은 부모의 밝기를 `?theme=` 으로 받고, 바뀌면 `postMessage` 로
+  따라간다. 안쪽 페이지는 자기가 작성 도구(먹 기본) 안인지 글(밝게 기본) 안인지
+  모르기 때문에 `localStorage` 만 봐서는 안 된다.
 - `?embed=1` 이면 `window.EMBED` 가 서고 `nav.js` 가 아무것도 그리지 않는다.
   시뮬레이션 페이지를 새로 만들면 `<head>` 의 그 한 줄을 빼먹지 말 것.
 - 효율 비교가 아니라 **원리**를 보여 주는 쪽으로 만든다. 걸음마다 무슨 일을
@@ -87,12 +90,22 @@
 
 ### 그 밖
 
+- **모든 페이지의 `<head>` 에 `theme.js` 를 CSS 보다 먼저, `defer` 없이** 둔다.
+  본문이 그려지기 전에 `<html data-theme>` 이 서야 한다. 빠뜨리면 먹으로 골라 둔
+  사람에게 종이색이 번쩍 지나간다. 새 글은 `write.js` 의 `buildPostHTML` 이
+  넣어 주지만, 페이지·시뮬레이션을 손으로 만들 때는 직접 넣어야 한다.
+  (작성 도구만 `<html data-theme-scope="write">` 로 따로 기억한다)
+- 색값은 `base.css` 에 **두 벌** — `:root, :root[data-theme="light"]`(종이) 와
+  `:root[data-theme="dark"]`(먹). 토큰을 새로 만들면 양쪽에 다 넣을 것.
+  `@media print` 의 `:root` 도 `:root[data-theme]` 과 무게를 맞춰 두었다 —
+  안 그러면 먹으로 보던 사람이 인쇄할 때 먹색이 종이에 찍힌다.
 - 배포는 GitHub Actions 가 **Pages 아티팩트로** 올린다. 되커밋하지 않으므로
   `git pull` 없이 `git push` 만 하면 된다. (예전에 되커밋하다가 push 가
   계속 거부됐던 적이 있다 — 되돌리지 말 것)
 - `localStorage` 키: `write-drafts`(초안 목록 — 제목·시각만) ·
   `write-draft:<id>`(초안 하나의 내용) · `write-draft-cur`(지금 열린 초안) ·
-  `tree-open` · `graph-moved`.
+  `tree-open` · `graph-moved` · `theme`(사이트 밝기, 기본 light) ·
+  `theme-write`(작성 도구 밝기, 기본 dark — 사이트와 일부러 칸을 나눴다).
   초안을 한 칸에 몰아넣지 않은 것은 일부러다 — `save()` 가 타자 한 번마다
   도는데, 묶어 두면 매번 초안 전부를 다시 직렬화해야 해서 타자가 밀린다.
   (`write-draft` 는 옛 단일 초안 칸. 첫 로드 때 한 번 옮겨 오고 지운다)

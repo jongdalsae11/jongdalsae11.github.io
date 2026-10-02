@@ -144,10 +144,16 @@ var SITE_SUB  = 'SKYLARK ARCHIVE';
     '<header class="topbar">' +
       '<button class="nav-toggle" type="button" aria-label="트리 접기/펴기" title="트리 접기 (Ctrl+\\)">' +
         '<i></i><i></i><i></i></button>' +
-      '<span class="crumb">' + crumb + '</span></header>' +
+      '<span class="crumb">' + crumb + '</span>' +
+      /* 밝게/먹 전환 — 누르는 일은 theme.js 가 문서 전체에서 받아 줍니다 */
+      '<button class="theme-toggle" type="button" data-theme-toggle></button></header>' +
     '<aside class="sidebar tree-noanim"><nav aria-label="사이트 메뉴">' + html + '</nav></aside>' +
     '<button class="nav-fab" type="button" aria-label="메뉴">≡</button>' +
     '<div class="nav-backdrop"></div>');
+
+  /* 단추 글자(«밝게» / «먹») 는 theme.js 가 지금 상태를 보고 채웁니다 */
+  var themeBtn = document.querySelector('.topbar .theme-toggle');
+  if (themeBtn && window.THEME) window.THEME.paint(themeBtn);
 
   var sidebar = document.querySelector('.sidebar');
 

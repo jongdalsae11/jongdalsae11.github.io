@@ -19,7 +19,22 @@
    줄 사이 간격보다 문단 사이 간격이 확실히 넓어야 눈이 문단을 구분합니다.
    예전에는 line-height 1.9 (줄 간격 ≈ 14px) 에 p margin 1em (≈ 16px) 이라
    둘이 거의 같아서, 어디서 문단이 끝나는지 보이지 않고 회색 벽처럼 읽혔습니다. */
-.post-body { font-size: 1.02rem; line-height: 1.78; }
+.post-body { font-size: 1.1rem; line-height: 1.85; }
+
+/* 글꼴 — 글 머리와 본문만 명조(Source Serif 4 + 마루 부리).
+   메뉴·목록 같은 화면 틀은 고딕 그대로 두어 «읽을 것» 과 «누를 것» 이
+   갈리게 했습니다.
+   명조는 같은 크기에서 고딕보다 작아 보여서 본문을 17px 로 올렸고,
+   base.css 가 h2·h3·strong·b 에 나눔스퀘어 굵은꼴을 직접 걸어 두었으므로
+   본문 안에서는 다시 명조로 돌려 줘야 합니다. (안 그러면 소제목과
+   굵은 글씨만 고딕으로 튑니다)                                       */
+.post-head h1,
+.post-body,
+.post-body h2, .post-body h3, .post-body h4,
+.post-body strong, .post-body b { font-family: var(--serif); }
+.post-head h1,
+.post-body h2, .post-body h3, .post-body h4,
+.post-body strong, .post-body b { font-weight: 600; }
 .post-body p { margin: 0 0 1.65em; }
 .post-body h2 {
   font-size: 1.24rem;

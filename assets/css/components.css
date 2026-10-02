@@ -392,12 +392,14 @@
 .ref-id:hover { color: var(--point); }
 .ref-id::after { content: ' ⧉'; font-size: 0.85em; opacity: 0.6; }
 
-/* ── 코드 블록 (VSCode 다크 · Fira Code) ──────────── */
+/* ── 코드 블록 (Fira Code) ──────────────────────────
+   각진 모서리 + 짙은 갈색 가는 테두리. 인라인 코드(백틱)는 반대로
+   둥글게 두어, 덩어리 코드와 문장 속 코드가 한눈에 갈리게 했습니다. */
 .codeblock {
   position: relative;
   margin: 1.6em 0;
-  border: 1px solid var(--line-soft);
-  border-radius: 9px;
+  border: 1px solid var(--code-line);
+  border-radius: 0;
   background: var(--bg-deep);
   font-size: 0.82rem;
 }
@@ -459,7 +461,6 @@
   border-top: 1px solid var(--line-soft);
   padding: 8px;
   cursor: pointer;
-  border-radius: 0 0 9px 9px;
 }
 .cb-expand:hover { color: var(--point); }
 
@@ -467,7 +468,8 @@
 p code, li code, td code {
   font-family: var(--mono);
   font-size: 0.84em;
-  background: var(--surface-2);
+  color: var(--code-ink);
+  background: var(--bg-deep);
   border: 1px solid var(--line-soft);
   border-radius: 5px;
   padding: 0.5px 5px;
@@ -917,7 +919,7 @@ a.stat--misc:hover { border-color: var(--line); background: var(--surface-2); }
   .prob-meta { margin-left: 0; flex: 1 0 100%; }
 
   /* 코드블록: 여백 줄이고 가로 스크롤 */
-  .codeblock { font-size: 0.78rem; border-radius: 8px; }
+  .codeblock { font-size: 0.78rem; }
   .codeblock .cb-gutter { padding-left: 10px; }
   .codeblock pre { padding: 12px 12px; }
   .codeblock .cb-scroll { max-height: 60vh; }
