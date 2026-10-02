@@ -66,6 +66,26 @@
   cursor: grab;
   position: relative;
 }
+/* 그냥 휠을 굴렸을 때 «Ctrl + 휠로 확대» 를 잠깐 알려 주는 쪽지.
+   지도는 휠을 가로채지 않으므로 이게 없으면 확대하는 법을 모릅니다.
+   pointer-events 를 끈 것은 쪽지가 떠 있는 동안에도 끌기·누르기가
+   그 아래 지도로 그대로 가야 하기 때문입니다.                    */
+.g-toast {
+  position: absolute;
+  left: 50%; bottom: 16px;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  font-size: 0.78rem;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  pointer-events: none;
+}
+.g-toast.on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .g-toast { transition: none; } }
 .g-canvas.panning { cursor: grabbing; }
 .g-canvas.dragging { cursor: grabbing; }
 /* SVG 는 칸을 가득 채우고, 안쪽 <g> 를 옮겨 이동·확대합니다.
