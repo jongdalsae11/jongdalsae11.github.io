@@ -343,6 +343,11 @@ window.U = (function () {
     function url(sim, opts, embed) {
       var q = [];
       if (embed) q.push('embed=1', 'ref=' + encodeURIComponent(sim.ref));
+      /* 끼운 시뮬레이션은 부모의 밝기를 그대로 받습니다. 안쪽은 자기가
+         작성 도구(먹 기본) 안인지 글(밝게 기본) 안인지 모르기 때문입니다.
+         바꿀 때는 theme.js 가 postMessage 로 따로 알려 줍니다.          */
+      var th = document.documentElement.getAttribute('data-theme');
+      if (embed && th) q.push('theme=' + th);
       String(opts || '').split(/[,\n]/).forEach(function (kv) {
         var m = kv.match(/^\s*([^=]+?)\s*=\s*(.*?)\s*$/);
         if (m) q.push(encodeURIComponent(m[1]) + '=' + encodeURIComponent(m[2]));

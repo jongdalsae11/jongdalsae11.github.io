@@ -25,6 +25,23 @@
 }
 .topbar .crumb b { color: var(--soft); font-weight: 500; }
 
+/* 밝게/먹 전환 — 아이콘(해·달) 대신 글자로 둡니다. 아이콘은 어느 쪽이
+   «지금» 이고 어느 쪽이 «누르면 갈 곳» 인지 늘 헷갈리게 만듭니다.     */
+.theme-toggle {
+  margin-left: auto;
+  font: inherit;
+  font-size: 0.74rem;
+  color: var(--faint);
+  background: none;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  padding: 2px 11px;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.theme-toggle:hover { color: var(--point); border-color: var(--point); }
+.theme-toggle:focus-visible { outline: 2px solid var(--point); outline-offset: 2px; }
+
 /* 스크롤 내릴 때 헤더 숨김 (화면 개방감) */
 .topbar { transition: transform 0.25s ease; }
 body.hide-topbar .topbar { transform: translateY(-100%); }
