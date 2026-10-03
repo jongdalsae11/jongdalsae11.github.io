@@ -90,10 +90,50 @@
     if (b) { e.preventDefault(); toggle(); }
   });
 
+  /* ── 글자 크기 — 방문자가 고르는 «가 가 가» ─────────
+     <html data-size="s|m|l"> 를 세우면 base.css 가 --read-size 를 바꿔 끼웁니다.
+     밝기와 같은 이유로 여기(<head>)에서 먼저 정합니다 — 나중에 정하면
+     «크게» 를 골라 둔 사람에게 글자가 한 번 작게 그려졌다가 튑니다.
+     작성 도구도 같은 칸을 씁니다 (미리보기가 실제 글과 같아 보이게).   */
+  var SIZE_KEY = 'text-size';
+  var SIZES = { s: '작게', m: '보통', l: '크게' };
+  function loadSize() { try { return localStorage.getItem(SIZE_KEY); } catch (e) { return null; } }
+  var size = SIZES[loadSize()] ? loadSize() : 'm';
+  root.setAttribute('data-size', size);
+
+  function paintSize() {
+    var bs = document.querySelectorAll('[data-size-set]');
+    for (var i = 0; i < bs.length; i++) {
+      bs[i].setAttribute('aria-pressed', bs[i].getAttribute('data-size-set') === size ? 'true' : 'false');
+    }
+  }
+  function applySize(v) {
+    if (!SIZES[v]) return;
+    size = v;
+    root.setAttribute('data-size', v);
+    paintSize();
+  }
+  function setSize(v) {
+    if (!SIZES[v]) return;
+    try { localStorage.setItem(SIZE_KEY, v); } catch (e) {}
+    applySize(v);
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-size-set]');
+    if (b) { e.preventDefault(); setSize(b.getAttribute('data-size-set')); }
+  });
+  /* 다른 탭에서 바꾸면 따라갑니다 */
+  window.addEventListener('storage', function (e) {
+    if (e.key === SIZE_KEY) applySize(e.newValue);
+  });
+
   window.THEME = {
     get: function () { return cur; },
     set: set,
     toggle: toggle,
-    paint: paint
+    paint: paint,
+    getSize: function () { return size; },
+    setSize: setSize,
+    paintSize: paintSize
   };
 }());
