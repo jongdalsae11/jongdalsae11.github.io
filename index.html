@@ -18,60 +18,42 @@
   <script src="./assets/js/theme.js?v=0fb6e8dc"></script>
   <link rel="stylesheet" href="./assets/css/base.css?v=a4973438">
   <link rel="stylesheet" href="./assets/css/layout.css?v=dd68ac88">
-  <link rel="stylesheet" href="./assets/css/components.css?v=2974290e">
+  <link rel="stylesheet" href="./assets/css/components.css?v=8bb9ddca">
 </head>
 <body data-crumb="~ / <b>홈</b>">
   <main id="main">
-    <div class="page">
-      <div class="page-head">
-        <p class="eyebrow">MATH · ALGORITHM · NOTES</p>
+    <div class="page page--home">
+      <header class="home-head">
         <h1>종달새 서재</h1>
-        <p class="lede">수학과 알고리즘을 오래 붙들고 있는 곳. 읽은 것과 푼 것을 이어 붙여 둡니다.</p>
-      </div>
+        <p class="home-lede">수학과 알고리즘을 오래 붙들고 있는 곳. 읽은 것과 푼 것을 이어 붙여 둡니다.</p>
+      </header>
 
-      <p class="term" data-render="now"></p>
+      <!-- 소개 문단 — content.js 의 intro 에서 고칩니다 -->
+      <div class="home-intro" data-render="intro"></div>
 
-      <div data-render="stats"></div>
+      <div data-render="pinline"></div>
 
-      <h2>고정된 글</h2>
-      <div class="pins" data-render="pins"></div>
+      <h2 class="home-sec">최근 글</h2>
+      <ul class="home-rows" data-render="recent"></ul>
+      <a class="home-more plain" href="./posts.html">글 전체 보기</a>
 
-      <h2>최근 글</h2>
-      <ul class="rows" data-render="recent"></ul>
+      <!-- 읽는 순서 — content.js 의 flows 하나가 한 줄 -->
+      <div data-render="flowlines"></div>
 
-      <h2>활동</h2>
-      <div class="heat-wrap" id="heat"></div>
+      <h2 class="home-sec">쓴 날</h2>
+      <div class="heat-wrap heat-wrap--quiet" id="heat"></div>
       <p class="heat-note" id="heat-note"></p>
 
-      <h2>자주 쓰는 주제</h2>
-      <div class="cloud" data-render="tagcloud"></div>
-
-      <div class="home-cols">
-        <section>
-          <h3 class="col-head">최근 추가한 자료
-            <a class="col-more plain" href="./library.html">전체 →</a></h3>
-          <ul class="minis" data-render="recentLib"></ul>
-        </section>
-        <section>
-          <h3 class="col-head">최근 만든 문제
-            <a class="col-more plain" href="./archive.html">전체 →</a></h3>
-          <ul class="minis" data-render="recentProb"></ul>
-        </section>
-      </div>
-
-      <p class="lucky-line">
-        읽을 게 마땅치 않으면
-        <a class="lucky plain" href="#" data-render="lucky">아무 글이나 한 편 →</a>
-      </p>
+      <nav class="home-foot" data-render="homefoot" aria-label="더 둘러보기"></nav>
     </div>
   </main>
   <footer><p>&copy; 2026 jongdalsae</p></footer>
 
   <script>window.ROOT='.'</script>
-  <script src="./assets/data/content.js?v=7cb0e9fc"></script>
+  <script src="./assets/data/content.js?v=d4c042fd"></script>
   <script src="./assets/js/util.js?v=c736f69f"></script>
   <script src="./assets/js/nav.js?v=e1b52c75"></script>
-  <script src="./assets/js/lists.js?v=b2d8799f"></script>
+  <script src="./assets/js/lists.js?v=2df81f6a"></script>
   <script src="./assets/js/heatmap.js?v=12e71001"></script>
   <script src="./assets/js/progress.js?v=fb65c704"></script>
 </body>
