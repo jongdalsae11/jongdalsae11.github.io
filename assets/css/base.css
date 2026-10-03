@@ -22,6 +22,13 @@
      수식은 KaTeX(Computer Modern) 그대로 두어 본문과 구분합니다.     */
   --serif: 'Source Serif 4', 'MaruBuri', 'Noto Serif KR', Georgia, serif;
   --mono:  'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
+
+  /* ── 읽는 글자 크기 ─────────────────────────────
+     글 본문 · 글 제목 · 홈 소개 · 목록의 글 제목이 전부 이 값을 따라갑니다.
+     크기를 바꾸고 싶으면 이 숫자 하나만 고치면 됩니다. 글 안의 소제목과
+     수식은 비율(em)로 따라 움직입니다. 메뉴·날짜 같은 화면 틀은 따로입니다.
+     명조로 바꿀 때 17.6px 로 두었다가, 크다는 말을 듣고 16px 로 줄였습니다. */
+  --read-size: 16px;
   --math:  'KaTeX_Main', 'CMU Serif', 'Computer Modern', Georgia, serif;
 
   /* ── 치수 ──────────────────────────────────────── */
@@ -29,6 +36,12 @@
   --topbar-h: 44px;
   --content-w: 740px;
 }
+
+/* 방문자가 고른 글자 크기 (상단바 «가 가 가» — theme.js 가 data-size 를 세움).
+   «보통» 은 위의 --read-size 그대로이고, 작게·크게만 여기서 바꿔 끼웁니다.
+   크게(17.5px)는 처음 명조로 바꿨을 때의 크기(17.6px)와 거의 같습니다. */
+:root[data-size="s"] { --read-size: 15px; }
+:root[data-size="l"] { --read-size: 17.5px; }
 
 /* ════════ 밝게 — 종이 (사이트 기본) ════════
    흰 종이가 아니라 살짝 누런 종이색입니다. 순백(#fff)은 화면에서

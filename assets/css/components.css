@@ -36,7 +36,7 @@
   display: block;
   font-family: var(--serif);
   font-weight: 400;
-  font-size: 1.06rem;
+  font-size: var(--read-size);
   color: var(--text);
   transition: color 0.15s ease;
 }
@@ -734,13 +734,13 @@ figcaption .fig-no {
 }
 .home-lede {
   font-family: var(--serif);
-  font-size: 1.08rem;
+  font-size: var(--read-size);
   color: var(--soft);
   margin: 0;
 }
 .home-intro {
   font-family: var(--serif);
-  font-size: 1.08rem;
+  font-size: var(--read-size);
   line-height: 1.95;
   margin-top: 40px;
 }
@@ -767,7 +767,7 @@ figcaption .fig-no {
   border: 0;
 }
 
-.home-t { font-family: var(--serif); font-size: 1.06rem; color: var(--text); }
+.home-t { font-family: var(--serif); font-size: var(--read-size); color: var(--text); }
 .home-d { color: var(--faint); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
 .home-c { color: var(--faint); font-size: 0.8rem; white-space: nowrap; }
 

@@ -5,7 +5,7 @@
 
 /* ── 글 머리 ──────────────────────────────────────── */
 .post-head { margin-bottom: 2.8em; }
-.post-head h1 { font-size: 1.75rem; margin-bottom: 0.4em; }
+.post-head h1 { font-size: calc(var(--read-size) * 1.75); margin-bottom: 0.4em; }
 .post-meta {
   display: flex;
   align-items: baseline;
@@ -24,12 +24,12 @@
    줄 사이 간격보다 문단 사이 간격이 확실히 넓어야 눈이 문단을 구분합니다.
    예전에는 line-height 1.9 (줄 간격 ≈ 14px) 에 p margin 1em (≈ 16px) 이라
    둘이 거의 같아서, 어디서 문단이 끝나는지 보이지 않고 회색 벽처럼 읽혔습니다. */
-.post-body { font-size: 1.1rem; line-height: 1.85; }
+.post-body { font-size: var(--read-size); line-height: 1.85; }
 
 /* 글꼴 — 글 머리와 본문만 명조(Source Serif 4 + 마루 부리).
    메뉴·목록 같은 화면 틀은 고딕 그대로 두어 «읽을 것» 과 «누를 것» 이
    갈리게 했습니다.
-   명조는 같은 크기에서 고딕보다 작아 보여서 본문을 17px 로 올렸고,
+   본문 크기는 base.css 의 --read-size 하나로 정합니다.
    base.css 가 h2·h3·strong·b 에 나눔스퀘어 굵은꼴을 직접 걸어 두었으므로
    본문 안에서는 다시 명조로 돌려 줘야 합니다. (안 그러면 소제목과
    굵은 글씨만 고딕으로 튑니다)                                       */
@@ -42,10 +42,10 @@
 .post-body strong, .post-body b { font-weight: 600; }
 .post-body p { margin: 0 0 1.65em; }
 .post-body h2 {
-  font-size: 1.3rem;
+  font-size: 1.3em;
   margin: 2.8em 0 0.85em;
 }
-.post-body h3 { margin: 2.1em 0 0.6em; }
+.post-body h3 { font-size: 1.05em; margin: 2.1em 0 0.6em; }
 .post-body > :first-child { margin-top: 0; }
 
 /* 문단 안에 들어온 수식 — 앞뒤 문장과 한 덩어리로 읽히도록 간격을 좁힙니다 */
@@ -327,8 +327,7 @@ a.pn-item:hover .pn-title { color: var(--point); }
 
 /* ── 모바일: 글 읽기 ──────────────────────────────── */
 @media (max-width: 920px) {
-  .post-head h1 { font-size: 1.45rem; }
-  .post-body { font-size: 1rem; line-height: 1.85; }
+  .post-head h1 { font-size: calc(var(--read-size) * 1.45); }
   .post-meta { --meta-gap: 8px; }
   .toc { margin-bottom: 1.8em; }
   .toc a { padding-top: 6px; padding-bottom: 6px; }   /* 터치 영역 */

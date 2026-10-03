@@ -26,8 +26,33 @@
 
 /* 밝게/먹 전환 — 아이콘(해·달) 대신 글자로 둡니다. 아이콘은 어느 쪽이
    «지금» 이고 어느 쪽이 «누르면 갈 곳» 인지 늘 헷갈리게 만듭니다.     */
-.theme-toggle {
+/* 글자 크기 «가 가 가» — 글자 크기 자체가 «작게 · 보통 · 크게» 를 보여 줍니다.
+   고른 것만 진하게, 나머지는 흐리게. 상자 없이 글자만 둡니다.          */
+.size-pick {
   margin-left: auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  margin-right: 10px;
+}
+.size-pick button {
+  font: inherit;
+  line-height: 1;
+  padding: 3px 4px;
+  color: var(--faint);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.size-pick button[data-size-set="s"] { font-size: 0.7rem; }
+.size-pick button[data-size-set="m"] { font-size: 0.82rem; }
+.size-pick button[data-size-set="l"] { font-size: 0.96rem; }
+.size-pick button:hover { color: var(--point); }
+.size-pick button[aria-pressed="true"] { color: var(--text); }
+.size-pick button:focus-visible { outline: 2px solid var(--point); outline-offset: 1px; }
+
+.theme-toggle {
   font: inherit;
   font-size: 0.74rem;
   color: var(--faint);

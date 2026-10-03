@@ -105,7 +105,8 @@
 - `localStorage` 키: `write-drafts`(초안 목록 — 제목·시각만) ·
   `write-draft:<id>`(초안 하나의 내용) · `write-draft-cur`(지금 열린 초안) ·
   `tree-open` · `graph-moved` · `theme`(사이트 밝기, 기본 light) ·
-  `theme-write`(작성 도구 밝기, 기본 dark — 사이트와 일부러 칸을 나눴다).
+  `theme-write`(작성 도구 밝기, 기본 dark — 사이트와 일부러 칸을 나눴다) ·
+  `text-size`(방문자가 고른 글자 크기 s/m/l — 사이트·작성 도구 공통).
   초안을 한 칸에 몰아넣지 않은 것은 일부러다 — `save()` 가 타자 한 번마다
   도는데, 묶어 두면 매번 초안 전부를 다시 직렬화해야 해서 타자가 밀린다.
   (`write-draft` 는 옛 단일 초안 칸. 첫 로드 때 한 번 옮겨 오고 지운다)
