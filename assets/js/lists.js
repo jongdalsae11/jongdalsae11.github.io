@@ -1,6 +1,6 @@
 /* ============================================================
    lists.js — content.js 데이터로 각 페이지의 목록을 렌더링
-   · 홈 대시보드 · 글 목록(카테고리별) · 자료정리집 · 문제 · 연구
+   · 홈 · 글 목록(카테고리별) · 자료정리집 · 문제 · 연구
    · data-render="..." 속성이 있는 요소를 찾아 채웁니다.
    ============================================================ */
 
@@ -27,129 +27,82 @@
   }
 
   var R = {
-    /* ── 홈: 현재 탐구 중 ── */
-    now: function (el) {
-      el.innerHTML = esc(S.now || '') + '<span class="cursor"></span>';
+    /* ── 홈 ───────────────────────────────────────────
+       예전 홈은 «현재 탐구 중» 터미널 줄, 분류별 숫자 카드, 태그 구름,
+       최근 자료·문제 두 칸까지 대시보드처럼 쌓여 있었습니다. 글이 몇 편
+       안 될 때는 숫자가 작아서 오히려 비어 보였고, 보는 사람들에게서
+       «흔한 AI 디자인 같다» 는 말을 들었습니다. 그래서 소개 몇 문장과
+       글 목록만 남겼습니다. (4단계 — 시안 B «목록» + C 의 «소개»)      */
+
+    /* 소개 문단 — content.js 의 intro (문자열 하나 또는 문단 배열).
+       내가 직접 쓰는 글이라 HTML 을 그대로 받습니다.                 */
+    intro: function (el) {
+      var t = S.intro;
+      if (!t) { el.remove(); return; }
+      var paras = [].concat(t);
+      el.innerHTML = paras.map(function (p) { return '<p>' + p + '</p>'; }).join('');
     },
 
-    /* ── 홈: 분류별 현황 ──────────────────────────────
-       최상위 분류만 카드로 보여주고 하위는 그 안에 작게 —
-       분류가 많아져도 화면이 터지지 않습니다.               */
-    stats: function (el) {
-      var tree = U.catTree(S.posts || []);
-      var total = (S.posts || []).length;
-      var MAX_SUB = 4;   /* 하위는 상위 4개까지만, 나머지는 +n */
-
-      var cards = tree.map(function (top) {
-        var subs = top.children.slice().sort(function (a, b) { return b.count - a.count; });
-        var shown = subs.slice(0, MAX_SUB);
-        var restN = subs.length - shown.length;
-        return '<a class="stat plain" href="' + ROOT + '/posts.html#' +
-            encodeURIComponent(top.id) + '"' + U.catVar(top.id) + '>' +
-          '<span class="stat-head">' +
-            '<span class="stat-n">' + top.count + '</span>' +
-            '<span class="stat-l">' + esc(top.label) + '</span>' +
-          '</span>' +
-          '<span class="stat-bar"><i style="width:' +
-            Math.round(top.count / Math.max(total, 1) * 100) + '%"></i></span>' +
-          (subs.length
-            ? '<span class="stat-subs">' +
-                shown.map(function (c) {
-                  return '<span class="stat-sub">' + esc(c.label) +
-                         '<b>' + c.count + '</b></span>';
-                }).join('') +
-                (restN > 0 ? '<span class="stat-sub stat-more">+' + restN + '</span>' : '') +
-              '</span>'
-            : '') +
-        '</a>';
-      }).join('');
-
-      el.innerHTML =
-        '<div class="stat-row">' + cards + '</div>' +
-        '<div class="stat-row stat-row--meta">' +
-          '<a class="stat stat--misc plain" href="' + ROOT + '/archive.html">' +
-            '<span class="stat-head"><span class="stat-n">' + (S.problems || []).length +
-            '</span><span class="stat-l">직접 만든 문제</span></span></a>' +
-          '<a class="stat stat--misc plain" href="' + ROOT + '/library.html">' +
-            '<span class="stat-head"><span class="stat-n">' + (S.library || []).length +
-            '</span><span class="stat-l">보관 중인 자료</span></span></a>' +
-        '</div>';
-    },
-
-    /* ── 홈: 고정 글 ── */
-    pins: function (el) {
+    /* 고정 글 — 카드 대신 한 줄 */
+    pinline: function (el) {
       var pinned = (S.posts || []).filter(function (p) { return p.pinned; });
+      if (!pinned.length) { el.remove(); return; }
+      el.className = 'home-pins';
       el.innerHTML = pinned.map(function (p) {
-        return '<a class="pin plain" href="' + postHref(p) + '">' +
-          '<span class="pin-label">PINNED · ' + esc(U.catPath(p.category, ' › ')) + '</span>' +
-          '<p class="pin-title">' + U.mathify(p.title) + '</p>' +
-          '<p class="pin-desc">' + esc(p.summary || '') + '</p></a>';
+        return '<a class="home-pin plain" href="' + postHref(p) + '">' +
+          '<span class="home-pin-k">고정</span>' +
+          '<span class="home-t">' + U.mathify(p.title) + '</span></a>';
       }).join('');
     },
 
-    /* ── 홈: 최근 글 ── */
+    /* 최근 글 — 날짜 · 제목 · 분류 한 줄씩.
+       글 목록 페이지의 rowsOf 와 따로 둔 것은 일부러입니다. 거기는
+       태그·분류 경로까지 보여야 하고, 홈은 한눈에 훑는 것이 목적입니다. */
     recent: function (el) {
-      el.innerHTML = rowsOf(U.sortedPosts().slice(0, 5));
-    },
-
-    /* ── 홈: 자주 쓰는 태그 (빈도에 따라 크기가 달라짐) ── */
-    tagcloud: function (el) {
-      var pool = {};
-      (S.posts || []).forEach(function (p) {
-        (p.tags || []).forEach(function (t) { pool[t] = (pool[t] || 0) + 1; });
-      });
-      var keys = Object.keys(pool).sort(function (a, b) {
-        return pool[b] - pool[a] || a.localeCompare(b);
-      });
-      if (!keys.length) { el.innerHTML = '<p class="empty">아직 태그가 없습니다.</p>'; return; }
-      var max = pool[keys[0]];
-      el.innerHTML = keys.slice(0, 24).map(function (t) {
-        var w = pool[t] / max;                       /* 0~1 */
-        var size = (0.72 + w * 0.34).toFixed(2);     /* rem */
-        var op = (0.6 + w * 0.4).toFixed(2);
-        return '<a class="cloud-tag plain" href="' + ROOT + '/posts.html#tag=' +
-          encodeURIComponent(t) + '" style="font-size:' + size + 'rem;opacity:' + op +
-          '" title="글 ' + pool[t] + '편">' + esc(t) +
-          '<span class="ct-n">' + pool[t] + '</span></a>';
-      }).join('');
-    },
-
-    /* ── 홈: 최근 추가한 자료 ── */
-    recentLib: function (el) {
-      var list = (S.library || []).slice(-4).reverse();
-      if (!list.length) { el.innerHTML = '<li class="empty">자료가 없습니다.</li>'; return; }
-      el.innerHTML = list.map(function (r) {
-        return '<li' + U.catVar(r.category) + '><a class="mini plain" href="' + ROOT +
-          '/library.html#' + encodeURIComponent(r.ref) + '">' +
-          '<span class="mini-title">' + U.mathify(r.title) + '</span>' +
-          '<span class="mini-sub">' + esc(U.catPath(r.category, ' › ')) +
-            (r.year ? ' · ' + r.year : '') + '</span>' +
-          '<span class="mini-tag mono">' + esc(r.ref) + '</span></a></li>';
-      }).join('');
-    },
-
-    /* ── 홈: 최근 만든 문제 ── */
-    recentProb: function (el) {
-      var diffLabel = { easy: '쉬움', mid: '보통', hard: '어려움' };
-      var list = (S.problems || []).slice().sort(byDateDesc).slice(0, 4);
-      if (!list.length) { el.innerHTML = '<li class="empty">문제가 없습니다.</li>'; return; }
+      var list = U.sortedPosts().slice(0, 5);
+      if (!list.length) { el.innerHTML = '<li class="empty">아직 글이 없습니다.</li>'; return; }
       el.innerHTML = list.map(function (p) {
-        return '<li><a class="mini plain" href="' + ROOT + '/archive.html">' +
-          '<span class="mini-title">' + U.mathify(p.title) + '</span>' +
-          '<span class="mini-sub">' + dot(p.date) + ' · ' +
-            (diffLabel[p.diff] || p.diff) + '</span>' +
-          '<span class="mini-tag mono">' + esc((p.tags || [])[0] || '') + '</span></a></li>';
+        return '<li><a class="home-row plain" href="' + postHref(p) + '">' +
+          '<span class="home-d">' + dot(p.date) + '</span>' +
+          '<span class="home-t">' + U.mathify(p.title) + '</span>' +
+          '<span class="home-c">' + esc(label(p.category)) + '</span></a></li>';
       }).join('');
     },
 
-    /* ── 홈: 아무 글이나 한 편 ── */
-    lucky: function (el) {
-      var all = S.posts || [];
-      if (!all.length) return;
-      el.addEventListener('click', function (e) {
+    /* 읽는 순서 — 흐름 하나가 화살표로 이어진 한 줄 */
+    flowlines: function (el) {
+      var flows = U.flows();
+      if (!flows.length) { el.remove(); return; }
+      el.innerHTML = flows.map(function (f) {
+        var steps = f.posts.map(function (file) {
+          var p = U.postByFile(file);
+          return p ? '<a class="plain" href="' + postHref(p) + '">' + U.mathify(p.title) + '</a>' : '';
+        }).filter(Boolean);
+        return '<h2 class="home-sec">읽는 순서 — ' + esc(f.label || f.id) + '</h2>' +
+          '<p class="home-flow">' + steps.join('<span class="home-ar" aria-hidden="true">→</span>') + '</p>';
+      }).join('');
+    },
+
+    /* 맨 아래 한 줄 — 다른 곳으로 가는 길 + 아무 글이나 한 편.
+       0개인 곳(문제·연구)은 빈 페이지로 보내지 않도록 링크를 뺍니다. */
+    homefoot: function (el) {
+      var n = function (a) { return (a || []).length; };
+      var links = [['graph.html', '글 지도', 0]];
+      if (n(S.sims)) links.push(['sims.html', '시뮬레이션', n(S.sims)]);
+      if (n(S.library)) links.push(['library.html', '자료정리집', n(S.library)]);
+      if (n(S.problems)) links.push(['archive.html', '문제', n(S.problems)]);
+      if (n(S.research)) links.push(['research.html', '연구', n(S.research)]);
+      el.innerHTML = links.map(function (l) {
+        return '<a class="plain" href="' + ROOT + '/' + l[0] + '">' + l[1] +
+          (l[2] ? ' <span class="home-n">' + l[2] + '</span>' : '') + '</a>';
+      }).join('') +
+        (n(S.posts) ? '<a class="home-lucky plain" href="#">아무 글이나 한 편 →</a>' : '');
+
+      var lucky = el.querySelector('.home-lucky');
+      if (lucky) lucky.addEventListener('click', function (e) {
         e.preventDefault();
-        var p = all[Math.floor(Math.random() * all.length)];
-        location.href = ROOT + '/posts/' + p.file;
+        var all = S.posts;
+        location.href = postHref(all[Math.floor(Math.random() * all.length)]);
       });
     },
 
