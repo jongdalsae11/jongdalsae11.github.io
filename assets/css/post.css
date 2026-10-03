@@ -12,7 +12,12 @@
   gap: 12px;
   flex-wrap: wrap;
 }
-.post-date { font-family: var(--mono); font-size: 0.76rem; color: var(--faint); }
+.post-meta { --meta-gap: 14px; gap: 4px var(--meta-gap); font-size: 0.86rem; color: var(--faint); }
+/* 메타 줄은 flex 라 태그끼리도 14px 씩 벌어져 «수열 ··· 실수» 처럼 보였습니다.
+   태그는 글이 만들 때 메타 줄 바로 아래 형제로 박히므로(각 글 HTML),
+   감싸는 요소를 새로 두는 대신 뒤 태그만 간격만큼 당겨 붙입니다.     */
+.post-meta .tag + .tag { margin-left: calc(-1 * var(--meta-gap)); }
+.post-date { font-size: 0.86rem; color: var(--faint); font-variant-numeric: tabular-nums; }
 
 /* ── 본문 타이포그래피 ────────────────────────────── */
 /* 본문 리듬 —
@@ -37,10 +42,8 @@
 .post-body strong, .post-body b { font-weight: 600; }
 .post-body p { margin: 0 0 1.65em; }
 .post-body h2 {
-  font-size: 1.24rem;
+  font-size: 1.3rem;
   margin: 2.8em 0 0.85em;
-  padding-bottom: 0.35em;
-  border-bottom: 1px solid var(--line-soft);
 }
 .post-body h3 { margin: 2.1em 0 0.6em; }
 .post-body > :first-child { margin-top: 0; }
@@ -53,9 +56,7 @@
 /* 핵심 결론 강조 — 주황 1% (아껴서 사용) */
 .key {
   border-left: 2px solid var(--mark);
-  background: color-mix(in srgb, var(--mark) 5%, transparent);
-  padding: 10px 16px;
-  border-radius: 0 8px 8px 0;
+  padding: 2px 0 2px 1.1em;
   margin: 1.5em 0;
 }
 
@@ -184,49 +185,30 @@
 
 /* ── 백링크 ───────────────────────────────────────── */
 .backlinks { margin-top: 4em; }
+.backlinks { padding-top: 1.4em; border-top: 1px solid var(--line-soft); }
 .backlinks h2 {
-  font-size: 0.8rem;
-  font-family: var(--mono);
-  font-weight: 500;
-  color: var(--faint);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  border: 0;
-}
-.bl-list { list-style: none; margin: 0 0 1.8em; padding: 0; }
-.bl-list li {
-  padding: 8px 4px;
-  border-bottom: 1px solid var(--line-soft);
-  font-size: 0.88rem;
-}
-.bl-list .bl-why {
-  display: block;
+  font-family: var(--sans);
   font-size: 0.76rem;
+  font-weight: 400;
   color: var(--faint);
-  font-style: italic;
+  letter-spacing: 0.06em;
+  margin: 0 0 0.6em;
 }
+.bl-list { list-style: none; margin: 0 0 2em; padding: 0; }
+.bl-list li { padding: 3px 0; font-family: var(--serif); font-size: 1rem; }
+.bl-list .bl-why { display: block; font-family: var(--sans); font-size: 0.8rem; color: var(--faint); }
 
 /* ── 인용 관계 미니 그래프 ────────────────────────── */
-.cite-graph {
-  border: 1px solid var(--line-soft);
-  border-radius: 10px;
-  background: var(--surface);
-  margin: 1em 0 2em;
-}
+.cite-graph { margin: 0.5em 0 2em; }
 .cite-graph svg { display: block; width: 100%; height: auto; }
 .cg-edge { stroke: var(--line); stroke-width: 1; }
 .cg-node { fill: var(--surface-2); stroke: var(--line); stroke-width: 1; }
 .cg-node--me { stroke: var(--point); stroke-width: 1.5; fill: color-mix(in srgb, var(--point) 8%, transparent); }
-.cg-label { fill: var(--soft); font-family: var(--mono); font-size: 10px; }
+.cg-label { fill: var(--soft); font-family: var(--sans); font-size: 11px; }
 .cg-label--me { fill: var(--point); }
 
 /* ── 읽는 시간 ────────────────────────────────────── */
-.read-time {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  color: var(--faint);
-}
-.read-time::before { content: '· '; }
+.read-time { font-size: 0.86rem; color: var(--faint); }
 
 /* ── 이전 / 다음 글 ───────────────────────────────── */
 .post-nav {
@@ -237,26 +219,17 @@
   padding-top: 1.6em;
   border-top: 1px solid var(--line-soft);
 }
+/* 이전/다음 — 상자 두 개 대신 글자 두 줄 */
 .pn-item {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 13px 16px;
-  border: 1px solid var(--line-soft);
-  border-radius: 10px;
-  background: var(--surface);
-  transition: border-color 0.2s ease, background 0.2s ease;
+  gap: 2px;
   min-width: 0;
 }
-a.pn-item:hover { border-color: var(--line); background: var(--surface-2); }
-.pn-empty { border: 0; background: none; }
-.pn-dir {
-  font-family: var(--mono);
-  font-size: 0.66rem;
-  color: var(--faint);
-}
+.pn-dir { font-size: 0.76rem; color: var(--faint); }
 .pn-title {
-  font-size: 0.88rem;
+  font-family: var(--serif);
+  font-size: 1rem;
   color: var(--text);
   line-height: 1.5;
   overflow: hidden;
@@ -279,77 +252,86 @@ a.pn-item:hover .pn-title { color: var(--point); }
 }
 
 /* ── 목차 ─────────────────────────────────────────── */
+/* 왼쪽 가는 세로선에 붙은 작은 고딕 목록. 지금 읽는 곳은 선 위의 하늘색 마디.
+   처음 상자를 걷었을 땐 명조에 본문과 거의 같은 크기로 두었더니, 글 첫머리에
+   문단이 하나 더 있는 것처럼 읽혔습니다. 메타 줄·사이드바와 같은 «화면 틀»
+   글꼴로 옮겨 «눌러서 가는 것» 으로 보이게 했습니다. 세로선은 사이드바 트리의
+   안내선과 같은 결입니다.
+   (오른쪽 여백에 붙이는 안도 봤지만, 그 여백은 여백주석 자리라 겹칩니다)
+   길이에 따라 줄이는 규칙은 post.js 에 있습니다.                         */
 .toc {
-  border: 1px solid var(--line-soft);
-  border-left: 2px solid var(--cat, var(--point));
-  border-radius: 0 10px 10px 0;
-  background: var(--surface);
-  padding: 10px 18px;
-  margin: 0 0 2.4em;
-  font-size: 0.85rem;
+  margin: 0 0 2.6em;
+  font-size: 0.86rem;
 }
 .toc summary {
-  cursor: pointer;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.7em;
+  margin-bottom: 10px;
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
   color: var(--faint);
-  text-transform: uppercase;
+  cursor: pointer;
   list-style: none;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 .toc summary::-webkit-details-marker { display: none; }
-.toc summary::before {
-  content: '▾';
-  font-size: 0.8em;
-  transition: transform 0.2s ease;
-}
-.toc:not([open]) summary::before { transform: rotate(-90deg); }
 .toc summary:hover { color: var(--soft); }
-.toc-n {
-  margin-left: auto;
-  color: var(--cat, var(--point));
-  font-size: 0.9em;
+/* 접혀 있을 때만 «대주제 N개 · 펼치기 ▾» 를 붙입니다 */
+.toc-n { display: none; letter-spacing: 0; color: var(--soft); }
+.toc:not([open]) .toc-n { display: inline; }
+.toc:not([open]) summary::after { content: '펼치기 ▾'; letter-spacing: 0; color: var(--faint); }
+.toc:not([open]) summary {
+  margin-bottom: 0;
+  padding-bottom: 2px;
+  border-bottom: 1px dotted var(--line);
 }
+.toc:not([open]) summary:hover,
+.toc:not([open]) summary:hover .toc-n { color: var(--point); }
+
 .toc ol {
   list-style: none;
-  margin: 12px 0 6px;
+  margin: 0;
   padding: 0;
-  counter-reset: toc;
+  border-left: 1px solid var(--line);
 }
 .toc li { margin: 0; }
-.toc li.lv-h3 { padding-left: 18px; }
 .toc a {
   display: block;
-  padding: 4px 8px;
-  border-radius: 6px;
-  border-left: 2px solid transparent;
+  margin-left: -1px;              /* 마디가 세로선 위에 정확히 겹치도록 */
+  padding: 3px 0 3px 14px;
+  border-left: 1px solid transparent;
   color: var(--soft);
-  font-size: 0.84rem;
-  line-height: 1.5;
-  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  line-height: 1.55;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
-.toc a:hover { color: var(--text); background: var(--surface-2); }
-.toc a.on {
-  color: var(--cat, var(--point));
-  border-left-color: var(--cat, var(--point));
-  background: color-mix(in srgb, var(--cat, var(--point)) 8%, transparent);
+.toc li.lv-sub a { padding-left: 28px; font-size: 0.95em; }
+.toc a:hover { color: var(--text); }
+.toc a.on { color: var(--point); border-left-color: var(--point); }
+/* 소주제를 숨긴 상태 */
+.toc--tops li.lv-sub { display: none; }
+.toc-more {
+  margin: 8px 0 0 14px;
+  padding: 0;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--faint);
+  background: none;
+  border: 0;
+  border-bottom: 1px dotted var(--line);
+  cursor: pointer;
 }
+.toc-more:hover { color: var(--point); border-color: var(--point); }
 
 /* 글 제목 영역도 분류색 적용 */
 .post-head .post-date { color: var(--faint); }
-.post-body h2 { border-bottom-color: color-mix(in srgb, var(--cat, var(--point)) 18%, var(--line-soft)); }
 
 /* ── 모바일: 글 읽기 ──────────────────────────────── */
 @media (max-width: 920px) {
   .post-head h1 { font-size: 1.45rem; }
   .post-body { font-size: 1rem; line-height: 1.85; }
-  .post-meta { gap: 8px; }
-  .toc { padding: 10px 14px; margin-bottom: 1.8em; }
-  .toc a { padding: 7px 8px; }        /* 터치 영역 */
-  .toc li.lv-h3 { padding-left: 12px; }
+  .post-meta { --meta-gap: 8px; }
+  .toc { margin-bottom: 1.8em; }
+  .toc a { padding-top: 6px; padding-bottom: 6px; }   /* 터치 영역 */
   .cite-graph { overflow-x: auto; }
   .cite-graph svg { min-width: 460px; }
   .backlinks { margin-top: 3em; }
@@ -360,9 +342,8 @@ a.pn-item:hover .pn-title { color: var(--point); }
 /* 글 메타줄의 '고치기' — 작성 도구로 이 글 불러오기 */
 .post-meta .edit-link {
   margin-left: auto;
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--line);
+  font-size: 0.8rem;
+  color: var(--faint);
   border-bottom: 1px solid transparent;
 }
 .post-meta .edit-link:hover { color: var(--point); border-bottom-color: color-mix(in srgb, var(--point) 50%, transparent); }
@@ -371,68 +352,48 @@ a.pn-item:hover .pn-title { color: var(--point); }
 /* ============================================================
    정리 환경 — LaTeX 의 theorem / lemma / definition / proof
 
-   바닥은 본문보다 한 단계 밝은 --thm-bg.
-   배경이 이미 거의 검정(#0a0a14)이라 «더 어둡게» 로는 색차가 안 나옵니다.
-   (완전 검정으로 내려도 ΔE 6 인데, 한 단계 밝히면 ΔE 11 로 확실히 읽힘)
-   위쪽 안쪽 그림자로 면이 떠 있는 느낌을 더합니다.
+   상자를 걷고 LaTeX 처럼 «정리 1 (이름). 본문» 으로 씁니다.
+   대신 정리·보조정리·따름정리·명제에만 분류색 가는 왼쪽 선을 둬서,
+   긴 증명 사이에서도 «어디서부터가 주장인지» 가 한눈에 보이게 했습니다.
+
+   이력 — 처음엔 LaTeX 관례대로 상자가 없었고, 어두운 바탕 시절에 음영
+   상자(--thm-bg + 안쪽 그림자)를 붙였다가, 5단계에서 다시 걷었습니다.
+   상자가 줄줄이 이어지면 글이 «카드 모음» 처럼 보였습니다.
    ============================================================ */
 .thmbox {
-  margin: 1.9em 0;
-  padding: 0.9em 1.15em;
-  border-left: 3px solid var(--cat, var(--point));
-  border-radius: 0 8px 8px 0;
-  background: var(--thm-bg);
-  box-shadow: inset 0 1px 2px color-mix(in srgb, var(--shade) 38%, transparent),
-              inset 0 1px 0 color-mix(in srgb, var(--glint) 3.5%, transparent);
+  margin: 1.8em 0;
+  padding: 0.1em 0 0.1em 1.1em;
+  border-left: 2px solid color-mix(in srgb, var(--cat, var(--point)) 60%, transparent);
 }
 .thmbox > :last-child { margin-bottom: 0; }
-.thmbox .thm-head {
-  margin: 0 0 0.5em;
-  font-size: 0.92em;
-}
-.thm-name {
-  font-weight: 700;
-  color: var(--cat, var(--point));
-  letter-spacing: 0.01em;
-}
-.thm-title {
-  margin-left: 0.5em;
-  color: var(--soft);
-  font-style: italic;
-}
+/* 머리(정리 1 (이름).)는 첫 문단과 한 줄로 잇습니다 */
+.thmbox .thm-head { display: inline; margin: 0; }
+.thmbox .thm-head::after { content: '.'; margin-right: 0.45em; }
+.thmbox .thm-head + p { display: inline; }
+.thm-name { font-weight: 600; color: var(--text); }
+.thm-title { margin-left: 0.35em; color: var(--text); }
 .thm-title::before { content: '('; }
 .thm-title::after  { content: ')'; }
 
-/* 정의·예·참고는 조금 더 조용하게 — 바닥은 같고 왼쪽 선만 흐리게 */
-.thmbox--def, .thmbox--ex, .thmbox--rem {
-  border-left-color: color-mix(in srgb, var(--cat, var(--point)) 45%, var(--line));
-}
-.thmbox--def .thm-name { color: var(--soft); }
-.thmbox--ex .thm-name, .thmbox--rem .thm-name { color: var(--faint); font-weight: 600; }
+/* 정의는 선을 더 옅게, 예·참고는 선 없이 이름만 조용하게 */
+.thmbox--def { border-left-color: color-mix(in srgb, var(--cat, var(--point)) 30%, transparent); }
+.thmbox--ex, .thmbox--rem { border-left: 0; padding-left: 0; }
+.thmbox--ex .thm-name, .thmbox--rem .thm-name { color: var(--soft); }
 
-/* 증명 — 번호 없이 pf. 로 시작하고 끝에 ∎.
-   예전에는 상자를 아예 없앴는데(LaTeX 관례), 음영을 주기로 하면서
-   다른 환경과 같은 상자를 쓰되 왼쪽 선만 옅게 두어 구분합니다. */
-.thmbox--proof {
-  padding: 0.7em 1.15em;
-  border-left-color: color-mix(in srgb, var(--cat, var(--point)) 35%, transparent);
-}
-.thmbox--proof .thm-head { display: inline; margin: 0; }
+/* 증명 — 선 없이 pf. 로 시작하고 끝에 ∎ */
+.thmbox--proof { border-left: 0; padding-left: 0; }
 .thmbox--proof .thm-name {
-  color: var(--faint);
+  color: var(--soft);
   font-weight: 400;
   font-style: italic;
   /* pf. 는 라틴 약어이므로 본문 한글 글꼴이 아니라 수식 글꼴로 */
   font-family: var(--math, Georgia, 'Times New Roman', serif);
 }
-.thmbox--proof .thm-name::after { content: '.'; }
-/* 제목 줄 다음 문단을 같은 줄에서 잇습니다 */
-.thmbox--proof .thm-head + p { display: inline; }
 .thmbox--proof > :last-child::after {
   content: '∎';
   float: right;
   margin-left: 0.6em;
-  color: var(--cat, var(--point));
+  color: var(--faint);
 }
 .thmbox--proof::after { content: ''; display: block; clear: both; }
 
@@ -519,10 +480,8 @@ a.pn-item:hover .pn-title { color: var(--point); }
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 0 0 2px;
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
+  margin: 0 0 6px;
+  font-size: 0.8rem;
 }
 .pn-flow a {
   color: var(--mark);
