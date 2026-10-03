@@ -7,7 +7,6 @@
    ============================================================ */
 
 var SITE_NAME = '종달새 서재';
-var SITE_SUB  = 'SKYLARK ARCHIVE';
 
 (function () {
   /* 시뮬레이션이 글 안에 끼워진 상태(?embed=1)면 껍데기를 그리지 않습니다.
@@ -102,20 +101,24 @@ var SITE_SUB  = 'SKYLARK ARCHIVE';
     }).join('');
   }
 
+  /* 영문 부제(SKYLARK ARCHIVE)는 걷었습니다 — 한국어 사이트에 붙은 영문
+     대문자 눈썹이 «흔한 템플릿» 인상을 만든다는 말을 들어서 (5단계).
+     «새로 쓰기» 는 손님에게 필요 없는 단추라 트리 맨 아래로 내렸습니다. */
   var html = '<div class="site-id"><a class="plain" href="' + ROOT + '/index.html">' +
-             '<span class="site-name">' + SITE_NAME + '</span>' +
-             '<span class="site-sub">' + SITE_SUB + '</span></a></div>' +
+             '<span class="site-name">' + SITE_NAME + '</span></a></div>' +
              '<button class="nav-search" type="button" id="open-search">' +
              '<span>검색</span><kbd>Ctrl K</kbd></button>' +
-             '<a class="nav-new plain" href="' + ROOT + '/write.html">' +
-             '<span class="plus">+</span> 새로 쓰기</a>' +
              '<ul class="tree">';
 
   NODES.forEach(function (n) {
     if (n.tree) {
       var key = n.key;
+      /* !! 로 꼭 참/거짓으로 바꿔 둡니다. currentPost 는 글 객체라
+         그대로 두면 아래 aria-expanded 에 "[object Object]" 가 들어가고,
+         'true' 와 비교하는 펼침 처리가 실패해서 글을 읽는 중에도
+         «글» 갈래가 접혀 있었습니다.                                 */
       var hasHere = here === fileOf(n.base) ||
-                    (n.key === 'posts' && currentPost);
+                    !!(n.key === 'posts' && currentPost);
       var open = hasHere || !!openSet[key];
       html += '<li class="tree-group">' +
         '<div class="tree-row tree-row--top">' +
@@ -135,7 +138,8 @@ var SITE_SUB  = 'SKYLARK ARCHIVE';
         '" href="' + ROOT + '/' + n.href + '">' + n.label + '</a></div></li>';
     }
   });
-  html += '</ul>';
+  html += '</ul>' +
+    '<a class="nav-new plain" href="' + ROOT + '/write.html">새로 쓰기</a>';
 
   var crumb = document.body.getAttribute('data-crumb') || '';
 

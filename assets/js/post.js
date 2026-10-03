@@ -87,15 +87,48 @@ document.addEventListener('DOMContentLoaded', function () {
     heads.forEach(function (h, i) {
       if (!h.id) h.id = 'h-' + (i + 1) + '-' + U.slug(headText(h)).slice(0, 24);
     });
+    /* ── 길이에 따라 줄이기 — 펼쳤을 때의 «줄 수» 로 셉니다 ──
+       · 대주제 + 소주제가 7줄 이하      → 전부 보임
+       · 넘으면                          → 대주제만 (끝에 «소주제까지 보기»)
+       · 대주제만으로도 7개를 넘으면     → 접힌 한 줄로 시작
+       「글 쓰는 법」처럼 소제목이 20개 넘는 글은 목차가 첫 화면을
+       통째로 덮어서, 본문이 어디서 시작하는지 보이지 않았습니다.
+       h2 없이 h3 만 쓴 글이면 h3 가 곧 대주제입니다.                    */
+    var TOC_MAX = 7;
+    var hasH2 = heads.some(function (h) { return h.tagName === 'H2'; });
+    var topTag = hasH2 ? 'H2' : 'H3';
+    var tops = heads.filter(function (h) { return h.tagName === topTag; });
+    var topsOnly = heads.length > TOC_MAX && tops.length < heads.length;
+    var closed = heads.length > TOC_MAX && tops.length > TOC_MAX;
+
+    /* 소주제마다 «어느 대주제 아래인가» — 소주제를 숨겼을 때
+       지금 읽는 위치를 그 대주제에 표시하려고 기억해 둡니다. */
+    var parentOf = {}, lastTop = null;
+    heads.forEach(function (h) {
+      if (h.tagName === topTag) lastTop = h.id;
+      else parentOf[h.id] = lastTop;
+    });
+
     var toc = document.createElement('details');
-    toc.className = 'toc';
-    toc.open = true;
-    toc.innerHTML = '<summary>목차 <span class="toc-n">' + heads.length + '</span></summary>' +
+    toc.className = 'toc' + (topsOnly ? ' toc--tops' : '');
+    toc.open = !closed;
+    toc.innerHTML =
+      '<summary><span class="toc-lab">목차</span>' +
+        '<span class="toc-n">대주제 ' + tops.length + '개</span></summary>' +
       '<ol>' + heads.map(function (h) {
-        return '<li class="lv-' + h.tagName.toLowerCase() + '">' +
-          '<a href="#' + h.id + '">' + h.innerHTML + '</a></li>';
-      }).join('') + '</ol>';
+        return '<li class="lv-' + (h.tagName === topTag ? 'top' : 'sub') + '">' +
+          /* plain — 본문 링크 규칙(main a:not(.plain))의 밑줄·색에서 빠지게 */
+          '<a class="plain" href="#' + h.id + '">' + h.innerHTML + '</a></li>';
+      }).join('') + '</ol>' +
+      (topsOnly ? '<button type="button" class="toc-more">소주제까지 보기</button>' : '');
     body.parentNode.insertBefore(toc, body);
+
+    var more = toc.querySelector('.toc-more');
+    if (more) more.addEventListener('click', function () {
+      var hide = toc.classList.toggle('toc--tops');
+      more.textContent = hide ? '소주제까지 보기' : '대주제만 보기';
+      mark(lastSeen);   /* 숨김이 바뀌었으니 표시할 줄도 다시 고릅니다 */
+    });
 
     /* 목차를 만든 시점에 KaTeX 가 아직 안 왔다면 $…$ 가 그대로 들어옵니다.
        그때는 목차에 대고 한 번 더 렌더합니다. */
@@ -108,17 +141,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /* 현재 읽는 위치 표시 (지원하지 않는 브라우저에서는 목차만 표시) */
+    var links = {}, lastSeen = null;
+    toc.querySelectorAll('a').forEach(function (a) {
+      links[a.getAttribute('href').slice(1)] = a;
+    });
+    /* 블록 안 함수 선언은 ES5 에서 표준이 아니라 함수 식으로 둡니다 */
+    var mark = function (id) {
+      if (!id) return;
+      lastSeen = id;
+      toc.querySelectorAll('a.on').forEach(function (a) { a.classList.remove('on'); });
+      /* 소주제가 숨어 있으면 그 소주제가 속한 대주제에 표시합니다 */
+      if (parentOf[id] && toc.classList.contains('toc--tops')) id = parentOf[id];
+      var a = links[id];
+      if (a) a.classList.add('on');
+    };
     if (window.IntersectionObserver) {
-      var links = {};
-      toc.querySelectorAll('a').forEach(function (a) {
-        links[a.getAttribute('href').slice(1)] = a;
-      });
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) {
-          if (!en.isIntersecting) return;
-          toc.querySelectorAll('a.on').forEach(function (a) { a.classList.remove('on'); });
-          var a = links[en.target.id];
-          if (a) a.classList.add('on');
+          if (en.isIntersecting) mark(en.target.id);
         });
       }, { rootMargin: '-70px 0px -75% 0px' });
       heads.forEach(function (h) { io.observe(h); });

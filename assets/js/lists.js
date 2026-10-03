@@ -18,11 +18,16 @@
   function rowsOf(list) {
     if (!list.length) return '<li class="empty">아직 항목이 없습니다.</li>';
     return list.map(function (p) {
+      /* 제목 아래에 요약과 태그를 붙입니다. 예전엔 제목·분류·태그가 한 줄에
+         나란히 섰는데, 알약 태그를 걷고 나니 한 줄이 너무 길어졌습니다.   */
       return '<li' + U.catVar(p.category) + '><a class="row plain" href="' + postHref(p) + '">' +
         '<span class="row-date">' + dot(p.date) + '</span>' +
-        '<span class="row-title">' + U.mathify(p.title) + '</span>' +
-        '<span class="row-cat">' + U.catPath(p.category, ' › ') + '</span>' +
-        '<span class="row-tags">' + tags(p.tags) + '</span></a></li>';
+        '<span class="row-main">' +
+          '<span class="row-title">' + U.mathify(p.title) + '</span>' +
+          (p.summary ? '<span class="row-sum">' + esc(p.summary) + '</span>' : '') +
+          '<span class="row-tags">' + tags(p.tags) + '</span>' +
+        '</span>' +
+        '<span class="row-cat">' + esc(label(p.category)) + '</span></a></li>';
     }).join('');
   }
 

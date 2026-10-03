@@ -17,11 +17,10 @@
   border-bottom: 1px solid var(--line-soft);
   z-index: 50;
 }
+/* 경로 — 모노 대문자 간격 대신 보통 고딕 (5단계) */
 .topbar .crumb {
-  font-family: var(--mono);
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   color: var(--faint);
-  letter-spacing: 0.03em;
 }
 .topbar .crumb b { color: var(--soft); font-weight: 500; }
 
@@ -54,7 +53,7 @@ body.hide-topbar .topbar { transform: translateY(-100%); }
   position: fixed;
   top: 0; left: 0; bottom: 0;
   width: var(--sidebar-w);
-  background: var(--surface);
+  background: var(--bg);
   border-right: 1px solid var(--line-soft);
   padding: 26px 18px 26px 22px;
   overflow-y: auto;
@@ -67,18 +66,12 @@ body.hide-topbar .topbar { transform: translateY(-100%); }
 .site-id { margin-bottom: 26px; }
 .site-id .site-name {
   display: block;
-  font-weight: 800;
-  font-size: 1.02rem;
-  letter-spacing: 0.01em;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.12rem;
   color: var(--text);
 }
-.site-id .site-sub {
-  font-family: var(--mono);
-  font-size: 0.68rem;
-  color: var(--faint);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
+
 
 .tree { list-style: none; margin: 0; padding: 0; }
 .tree ul { list-style: none; margin: 0; padding: 0; }
@@ -112,17 +105,13 @@ main {
 .margin-col { position: relative; min-height: 100%; }
 
 .page-head { margin-bottom: 2.6em; }
-.page-head .eyebrow {
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  color: var(--note);
-  letter-spacing: 0.14em;
-  margin: 0 0 10px;
-}
 .page-head .lede { color: var(--soft); max-width: 56ch; }
 
 /* ── 우측 세로 진행 레일 ──────────────────────────────
-   회색 트랙 + 시작/끝점 + 보라 그라데이션 + 보라 원형 썸  */
+   가는 선 트랙 + 하늘색 채움 + 작은 하늘색 썸.
+   예전엔 8px 회색 트랙에 보라 그라데이션과 빛 번지는 썸이었습니다.
+   잡는 영역(.rail 의 폭 8px)은 그대로 두고 «보이는 것» 만 가늘게 했습니다 —
+   선만큼 좁히면 마우스로 집기가 어려워집니다.                      */
 .rail {
   position: fixed;
   right: 13px;
@@ -139,35 +128,29 @@ body.rail-dragging { user-select: none; -webkit-user-select: none; }
 /* 끄는 중에는 썸을 조금 키워 손에 잡히는 느낌 */
 .rail .rail-dot { transition: width 0.12s ease, height 0.12s ease, left 0.12s ease; }
 .rail:hover .rail-dot, .rail.dragging .rail-dot {
-  width: 9px; height: 9px; left: -0.5px;
+  width: 7px; height: 7px; left: 0.5px;
 }
 .rail-track {
-  position: absolute; inset: 0;
-  background: var(--line-soft);
-  border-radius: 4px;
-}
-.rail-cap {
-  position: absolute; left: 2px;
-  width: 4px; height: 4px;
-  border-radius: 50%;
+  position: absolute;
+  top: 0; bottom: 0; left: 3.5px;
+  width: 1px;
   background: var(--line);
 }
+.rail-cap { display: none; }
 .rail-cap--top { top: 2px; }
 .rail-cap--bot { bottom: 2px; }
 .rail-fill {
   position: absolute;
-  top: 0; left: 3px;
-  width: 2px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--note) 5%, transparent), var(--note));
-  border-radius: 1px;
+  top: 0; left: 3.5px;
+  width: 1px;
+  background: var(--point);
   pointer-events: none;
 }
 .rail-dot {
-  position: absolute; left: 1px;
-  width: 6px; height: 6px;
+  position: absolute; left: 1.5px;
+  width: 5px; height: 5px;
   border-radius: 50%;
-  background: var(--note);
-  box-shadow: 0 0 8px color-mix(in srgb, var(--note) 55%, transparent);
+  background: var(--point);
   pointer-events: none;
 }
 
@@ -178,9 +161,8 @@ footer {
   text-align: right;
 }
 footer p {
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  color: var(--line);
+  font-size: 0.76rem;
+  color: var(--faint);
   margin: 0;
 }
 
